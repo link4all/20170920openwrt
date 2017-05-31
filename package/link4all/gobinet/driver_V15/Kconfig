@@ -1,0 +1,4 @@
+config USB_NET_GOBINET
+    tristate "support qca9x07"
+    help
+        it is a driver to support qca9x07

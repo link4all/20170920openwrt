@@ -563,7 +563,7 @@ define Device/tl-wr841n-v8
 endef
 
 define Device/tl-wr841n-v9
-    $(Device/tplink-4mlzma)
+    $(Device/tplink-16mlzma)
     BOARDNAME := TL-WR841N-v9
     DEVICE_PROFILE := TLWR841
     TPLINK_HWID := 0x08410009

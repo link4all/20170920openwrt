@@ -1,0 +1,66 @@
+Index: linux-3.18.45/drivers/usb/serial/option.c
+===================================================================
+--- linux-3.18.45.orig/drivers/usb/serial/option.c	2016-11-30 00:44:43.000000000 +0800
++++ linux-3.18.45/drivers/usb/serial/option.c	2017-03-25 14:15:33.456394287 +0800
+@@ -52,6 +52,15 @@
+ static void option_instat_callback(struct urb *urb);
+ 
+ /* Vendor and product IDs */
++//add nodecom nl660
++#define NODECOM_VENDOR_ID			0x1508
++#define NODECOM_NL660_PRODUCT_ID			0x1001
++//add Quectel EC20
++#define QUECTEL_VENDOR_ID			0x05C6
++#define QUECTEL_PRODUCT_ID1			0X9090
++#define QUECTEL_PRODUCT_ID2			0X9003
++#define QUECTEL_PRODUCT_ID3			0X9215
++
+ #define OPTION_VENDOR_ID			0x0AF0
+ #define OPTION_PRODUCT_COLT			0x5000
+ #define OPTION_PRODUCT_RICOLA			0x6000
+@@ -669,7 +678,45 @@
+ 	.reserved = BIT(4) | BIT(5),
+ };
+ 
++//add qc9x07 blacklist
++static const struct option_blacklist_info qc9x07_blacklist = {
++	.reserved = BIT(4),
++};
++//add zte 7520
++static const struct option_blacklist_info net_7520_blacklist = {
++	.reserved = BIT(0) | BIT(1) | BIT(5) | BIT(6)  ,
++};
++//add end
++
+ static const struct usb_device_id option_ids[] = {
++//add nodecom nl660
++	{ USB_DEVICE(NODECOM_VENDOR_ID, NODECOM_NL660_PRODUCT_ID),
++	.driver_info = (kernel_ulong_t)&qc9x07_blacklist },
++//add quectel product
++{ USB_DEVICE(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_ID1),
++.driver_info = (kernel_ulong_t)&qc9x07_blacklist },
++{ USB_DEVICE(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_ID2),
++.driver_info = (kernel_ulong_t)&qc9x07_blacklist },
++{ USB_DEVICE(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_ID3),
++.driver_info = (kernel_ulong_t)&qc9x07_blacklist },
++{ USB_DEVICE(0x2c7c, 0x0125),
++.driver_info = (kernel_ulong_t)&qc9x07_blacklist },
++{ USB_DEVICE(0x2c7c, 0x0121),
++.driver_info = (kernel_ulong_t)&qc9x07_blacklist },
++//add xin feng wei ye
++{ USB_DEVICE(0x5c6, 0x5012),
++.driver_info = (kernel_ulong_t)&qc9x07_blacklist },
++//add em8000
++	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0532, 0xff, 0xff, 0xff),/* ZTE 7520 */
++	  .driver_info = (kernel_ulong_t)&net_7520_blacklist },
++//add end
++//add mu709s
++	{ USB_DEVICE(0x12d1, 0x1c25) },
++//add forege 630b
++	{ USB_DEVICE(0x05c6, 0x9025) },
++//add forege 730
++	{ USB_DEVICE(0x05c6, 0xf601) },
++//add end
+ 	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_COLT) },
+ 	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_RICOLA) },
+ 	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_RICOLA_LIGHT) },
