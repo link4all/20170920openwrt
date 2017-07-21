@@ -1,4 +1,3 @@
-20170509openwrt9531.tar.gz
 *.o
 .DS_Store
 .*.swp
@@ -25,3 +24,4 @@ key-build*
 .emacs.desktop*
 TAGS*~
 git-src
+/20170509openwrt9531.tar.gz
