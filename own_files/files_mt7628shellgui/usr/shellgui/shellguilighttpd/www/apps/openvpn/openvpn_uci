@@ -1,0 +1,27 @@
+
+config server 'server'
+	option internal_ip '10.8.0.1'
+	option internal_mask '255.255.255.0'
+	option port '1194'
+	option duplicate_cn 'false'
+	option redirect_gateway 'true'
+	option client_to_client 'true'
+	option subnet_access 'true'
+	option subnet_mask '255.255.255.0'
+	option proto 'udp'
+	option enabled 'true'
+	option subnet_ip '192.168.1.0'
+	option cipher 'BF-CBC'
+	option keysize '256'
+
+config client 'client'
+	option enabled 'false'
+	option id 'client'
+
+config allowed_client 'client1'
+	option id 'client1'
+	option name 'Client1'
+	option ip '10.8.0.2'
+	option remote 'openvpn.myserver.com'
+	option enabled 'true'
+

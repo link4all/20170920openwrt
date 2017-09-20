@@ -1,0 +1,50 @@
+#!/bin/sh
+echo 'Content-type: text/html'
+echo ''
+
+
+scan_dir(){
+    for file in `ls $1`
+    do
+        if [ -d $1"/"$file ] 
+        then
+            scan_dir $1"/"$file
+        else
+            echo $1"/"$file
+        fi
+    done
+}
+
+case $WWW_type in
+"audio" )  
+filelist=`scan_dir /mnt/mmcblk0p1 |grep -i \.mp3`
+filelist+=" `scan_dir /mnt/mmcblk0p1 |grep -i \.wav`"
+;;
+"video" )  
+filelist=`scan_dir /mnt/mmcblk0p1 |grep -i \.mp4`
+filelist+=" `scan_dir /mnt/mmcblk0p1 |grep -i \.mov`"
+filelist+=" `scan_dir /mnt/mmcblk0p1 |grep -i \.avi`"
+filelist+=" `scan_dir /mnt/mmcblk0p1 |grep -i \.rmvb`"
+;;
+"pics" )  
+filelist=`scan_dir /mnt/mmcblk0p1 |grep -i \.jpg`
+filelist+=" `scan_dir /mnt/mmcblk0p1 |grep -i \.jpeg`"
+filelist+=" `scan_dir /mnt/mmcblk0p1 |grep -i \.png`"
+filelist+=" `scan_dir /mnt/mmcblk0p1 |grep -i \.gif`"
+;;
+"docs" )  
+filelist=`scan_dir /mnt/mmcblk0p1 |grep -i \.doc`
+filelist+=" `scan_dir /mnt/mmcblk0p1 |grep -i \.docx`"
+filelist+=" `scan_dir /mnt/mmcblk0p1 |grep -i \.txt`"
+filelist+=" `scan_dir /mnt/mmcblk0p1 |grep -i \.pdf`"
+filelist=`scan_dir /mnt/mmcblk0p1 |grep -i \.xls`
+filelist+=" `scan_dir /mnt/mmcblk0p1 |grep -i \.xlsx`"
+;;
+
+esac
+
+#version=`cat /etc/version`
+echo "{filelist: \"$filelist\"}"
+
+
+

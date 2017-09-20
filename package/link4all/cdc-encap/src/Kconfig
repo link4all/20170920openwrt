@@ -1,0 +1,4 @@
+config CDC_ENCAP
+    tristate "support zte me3760"
+    help
+        it is a driver to support zte 4g module me3760

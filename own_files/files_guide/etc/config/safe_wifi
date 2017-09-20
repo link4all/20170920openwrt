@@ -1,0 +1,6 @@
+config safe_wifi main
+	option useing 0
+	option start_hour 7
+	option start_min 0
+	option stop_hour 23
+	option stop_min 0

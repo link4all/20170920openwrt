@@ -1,0 +1,17 @@
+#!/bin/sh
+echo 'Content-type: text/html'
+echo ''
+
+if [ -f /mnt/mmcblk0p1/firmware/newfirmware.bin ] ; then 
+
+echo "{status:0}"
+cp /mnt/mmcblk0p1/firmware/newfirmware.bin /tmp/firmware.bin
+#mtd write /mnt/mmcblk0p1/firmware/newfirmware.bin /dev/mtd3 && reboot
+#mtd write /tmp/firmware.bin /dev/mtd3 && reboot
+#sysupgrade -n /mnt/mmcblk0p1/firmware/newfirmware.bin
+sysupgrade -n /tmp/firmware.bin
+#echo "Upgrading... Please wait at least 40 seconds!"
+else 
+echo "{status:-1}"
+
+fi

@@ -1,0 +1,43 @@
+#!/bin/sh
+base_dir="/usr/shellgui/shellguilighttpd/www/apps/usb-tethering-modem"
+tmp_script=/tmp/usb-tethering-modem.tmp
+start() {
+enabled=$(jshon -Q -e "enabled" < "$base_dir/usb-tethering-modem.json")
+[ $enabled -gt 0 ] || exit
+port=$(jshon -Q -e "port" < "$base_dir/usb-tethering-modem.json")
+cat <<EOF >${tmp_script}
+#!/bin/sh /etc/rc.common
+USE_PROCD=1
+start_service() {
+	procd_open_instance
+	procd_set_param command "/usr/sbin/usbmuxd" -f
+	procd_close_instance
+}
+EOF
+chmod +x ${tmp_script}
+${tmp_script} start
+rm -f ${tmp_script}
+}
+stop() {
+cat <<EOF >${tmp_script}
+#!/bin/sh /etc/rc.common
+USE_PROCD=1
+stop_service() {
+	/usr/sbin/usbmuxd -X
+}
+EOF
+chmod +x ${tmp_script}
+${tmp_script} stop
+rm -f ${tmp_script}
+}
+case $1 in
+start)
+start
+;;
+stop)
+stop
+;;
+restart)
+stop;start
+;;
+esac

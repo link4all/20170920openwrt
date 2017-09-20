@@ -1,0 +1,22 @@
+{
+  "zh-cn": {
+	"_LANG_App_name": "局域网唤醒",
+	"_LANG_App_type": "网络",
+	"_LANG_App_desc": "局域网唤醒",
+	"_LANG_App_detail": "局域网唤醒",
+
+	"_LANG_Form_Hostname": "主机名",
+	"_LANG_Form_Wake_up_order_has_been_sent": "唤醒指令已发送",
+	"_LANG_Form_Loading": "加载中"
+  },
+  "en": {
+	"_LANG_App_name": "WoL",
+	"_LANG_App_type": "Network",
+	"_LANG_App_desc": "WoL",
+	"_LANG_App_detail": "WoL",
+
+	"_LANG_Form_Hostname": "Hostname",
+	"_LANG_Form_Wake_up_order_has_been_sent": "Wake up order has been sent",
+	"_LANG_Form_Loading": "Loading"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "zh-cn": {
+	"_LANG_App_name": "无线光谱分析",
+	"_LANG_App_type": "网络",
+	"_LANG_App_desc": "无线光谱分析",
+	"_LANG_App_detail": "无线光谱分析",
+
+	"_LANG_Form_Flash": "刷新",
+
+	"_LANG_JsUI_Unknow_device": "未知设备",
+	"_LANG_JsUI_There_does_not_have_any_SSID": "搜索不到当前模式的信号,请切换模式!",
+	"_LANG_JsUI_Wireless_channel__GHz": "无线信道(GHz)",
+	"_LANG_JsUI_Signal_strength__dBm": "信号强度(dBm)"
+  },
+  "en": {
+	"_LANG_App_name": "Wifi Spectrum Analyser",
+	"_LANG_App_type": "Network",
+	"_LANG_App_desc": "Wifi Spectrum Analyser",
+	"_LANG_App_detail": "Wifi Spectrum Analyser",
+
+	"_LANG_Form_Flash": "Flash",
+
+	"_LANG_JsUI_Unknow_device": "Unknow device",
+	"_LANG_JsUI_There_does_not_have_any_SSID": "There does not have any SSID!",
+	"_LANG_JsUI_Wireless_channel__GHz": "Wireless channel (GHz)",
+	"_LANG_JsUI_Signal_strength__dBm": "Signal strength (dBm)"
+  }
+}

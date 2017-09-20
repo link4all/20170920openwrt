@@ -1,0 +1,42 @@
+{
+  "zh-cn": {
+	"_LANG_App_name": "磁盘管理",
+	"_LANG_App_type": "系统",
+	"_LANG_App_desc": "磁盘管理",
+	"_LANG_App_detail": "磁盘管理",
+
+	"_LANG_Form_Device_info": "设备信息",
+	"_LANG_Form_Device": "设备",
+	"_LANG_Form_Type": "格式",
+	"_LANG_Form_Mount_Point": "挂载点",
+	"_LANG_Form_Enabled": "生效",
+	"_LANG_Form_Detail": "详细",
+	"_LANG_Form_Reset": "重置",
+	"_LANG_Form_Apply": "应用",
+	"_LANG_Form_Modify_success": "设置成功",
+
+	"_LANG_JsUI_Size": "大小",
+	"_LANG_JsUI_Used": "已用",
+	"_LANG_JsUI_Available": "可用"
+  },
+  "en": {
+	"_LANG_App_name": "Disk",
+	"_LANG_App_type": "System",
+	"_LANG_App_desc": "Disk",
+	"_LANG_App_detail": "Disk",
+
+	"_LANG_Form_Device_info": "Device info",
+	"_LANG_Form_Device": "Device",
+	"_LANG_Form_Type": "Type",
+	"_LANG_Form_Mount_Point": "Mount Point",
+	"_LANG_Form_Enabled": "Enabled",
+	"_LANG_Form_Detail": "Detail",
+	"_LANG_Form_Reset": "Reset",
+	"_LANG_Form_Apply": "Apply",
+	"_LANG_Form_Modify_success": "Modify success",
+
+	"_LANG_JsUI_Size": "Size",
+	"_LANG_JsUI_Used": "Used",
+	"_LANG_JsUI_Available": "Available"
+  }
+}

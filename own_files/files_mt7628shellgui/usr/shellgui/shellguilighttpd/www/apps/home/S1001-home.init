@@ -1,0 +1,38 @@
+#!/bin/sh
+
+check_db(){
+[ ! -f "$1" ] && return 0;size=$(ls -l "$1" 2>/dev/null | awk '{print $5}');[ ${size:-0} -lt 4096 ] && return 0
+}
+regen_notice_db() {
+try_time=0;while (check_db /usr/shellgui/notice.db);do [ $try_time -gt 10 ] && break;shellgui '{"action": "notice_create_db"}' &>/dev/null;try_time=$(expr $try_time + 1);sleep 1;done
+}
+start() {
+regen_notice_db
+if [ $(shellgui '{"action": "get_uptime"}' | jshon -e "uptime") -le 300 ]; then
+str_temp=$(echo '{
+ "action": "notice_add_new",
+ "Notice": {
+  "Dest_type": "app",
+  "Dest": "status",
+  "Desc": "_LANG_Notice_boot_at_time",
+  "Detail": "_LANG_Notice_boot_at_time_detail",
+  "Variable": {}
+ }
+}' | jshon -e "Notice" -e "Variable" \
+		-s "$(date +"%Y-%m-%d %H:%M:%S")" -i "time" \
+		-p -p -j)
+shellgui "$str_temp" &>/dev/null
+else
+return 0
+fi
+}
+
+case $1 in
+start)
+start
+;;
+regen_notice_db)
+regen_notice_db
+;;
+esac
+

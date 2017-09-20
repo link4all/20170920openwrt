@@ -1,0 +1,26 @@
+#!/bin/sh
+
+apass=''
+ssid=''
+if [ -n "$QUERY_STRING" ]; then
+    echo "Content-Type: application/json"
+    echo ""
+    echo $QUERY_STRING
+ 	ssid=`echo $QUERY_STRING | cut -d'&' -f 1 | cut -d'=' -f 2`
+	apass=`echo $QUERY_STRING | cut -d'&' -f 2 | cut -d'=' -f 2`
+  	
+fi
+if [ `echo "$QUERY_STRING" |grep 5g` ]; then
+uci set wireless.@wifi-iface[0].key=$apass
+uci set wireless.@wifi-iface[0].ssid=$ssid
+uci commit
+else
+uci set wireless.@wifi-iface[1].key=$apass
+uci set wireless.@wifi-iface[1].ssid=$ssid
+uci commit
+fi
+echo "{\"result\"=\"success\",\"message\"=\"operation finished\"}"
+# Restart network service
+/etc/init.d/network restart 1>&- 2>&-
+
+exit 0

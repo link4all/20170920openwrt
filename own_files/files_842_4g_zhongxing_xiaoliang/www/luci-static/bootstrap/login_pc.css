@@ -1,0 +1,68 @@
+@charset "utf-8";
+body{
+	height:auto;
+	margin-top: 0px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	margin-left: auto;
+	background-position: center;
+	background-color: #022857;
+}
+#all {
+	background-image: url(/luci-static/bootstrap/images/allbgz.jpg);
+	background-repeat: no-repeat;
+	height: 900px;
+	width: 1024px;
+	margin-top: 0px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	margin-left: auto;
+	overflow: hidden;
+	}
+#logoing {
+	background-image: url(/luci-static/bootstrap/images/denglu.png);
+	background-repeat: no-repeat;
+	background-position: center;
+	height: 596px;
+	width: 487px;
+	margin-top: 0px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	margin-left: auto;
+	padding-top: 180px;
+	
+}
+
+#neirongmian {
+	height: 243px;
+	width: 480px;
+}
+#neirongmian table {
+	font-size: 14px;
+	font-weight: 500;
+	color: #707070;
+	margin-top: 20px;
+	width:100%;
+	margin-left:0px;
+}
+
+.inputbutt{
+	width:162px;
+	height:23px;
+	border: 1px solid #c5c5c5;
+	line-height: 28px;
+	font-family: "Arial Unicode MS", "微软雅黑";
+	font-size: 12px;
+	color: #707070;
+}
+
+.buttonshezhi{
+
+background:
+	background-image: url(/luci-static/bootstrap/images/buttshezhi.jpg);
+	background-repeat: no-repeat;
+	height: 57px;
+	width: 112px;
+	background-image: url(/luci-static/bootstrap/images/buttshezhi.jpg);
+	border:none;
+}

@@ -1,0 +1,27 @@
+#!/bin/sh
+echo 'Content-type: text/html'
+echo ''
+
+#echo $WWW_oldKey;
+#echo $WWW_newKey;
+#echo $WWW_newSSID;
+#echo $WWW_secMode;
+oldkey=`uci get wireless.@wifi-iface[0].key`
+if [ $WWW_oldKey == $oldkey ];then 
+uci set wireless.@wifi-iface[0].key=$WWW_newKey
+uci set wireless.@wifi-iface[0].ssid=$WWW_newSSID
+uci set wireless.@wifi-iface[0].encryption=${WWW_secMode:=psk2}
+echo {status:0}
+sleep 1
+uci commit wireless
+/etc/init.d/network restart
+else 
+echo {status:-1}
+fi
+
+
+
+
+
+
+

@@ -1,0 +1,16 @@
+
+config wifi-device 'radio0'
+        option type 'mac80211'
+        option channel 'auto'
+        option hwmode '11g'
+        option path 'platform/ar934x_wmac'
+        option htmode 'HT20'
+        option txpower '24'
+        option country 'US'
+
+config wifi-iface
+        option device 'radio0'
+        option network 'lan'
+        option mode 'ap'
+        option ssid 'Wireless_AP'
+        option encryption 'none'

@@ -1,0 +1,11 @@
+#!/bin/sh
+echo 'Content-type: text/html'
+echo ''
+
+total=`df /mnt/mmcblk0p1/ |grep mmcblk | awk '{print $2}'`
+used=`df /mnt/mmcblk0p1/ |grep mmcblk | awk '{print $3}'`
+
+total_g=`awk 'BEGIN{printf "%.2f\n",'$total'/'1000000'}'`
+used_g=`awk 'BEGIN{printf "%.2f\n",'$used'/'1000000'}'`
+
+echo "{total: \"${total_g}G\",used:\"${used_g}G\"}"

@@ -1,0 +1,9 @@
+#!/bin/sh /etc/rc.common
+
+START=10
+
+start(){
+	/etc/feeddog.sh &
+
+}
+

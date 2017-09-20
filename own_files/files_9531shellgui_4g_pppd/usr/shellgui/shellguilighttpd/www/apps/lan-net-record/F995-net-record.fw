@@ -1,0 +1,15 @@
+#!/bin/sh
+case $1 in
+start)
+[ ! -f $(shellgui '{"action":"print_www_root"}' | jshon -e "www_root" -u)/apps/lan-net-record/F995-net-record.fw.enabled ] && return 0
+if ! iptables -L | grep -q net-record; then
+. /lib/functions/network.sh; network_get_device dev wan
+	iptables -t filter -N web_monitor -m comment --comment "net-record-main"
+	iptables -t filter -I FORWARD -o ${dev} -j web_monitor -m comment --comment "net-record-main"
+	iptables -t filter -I web_monitor -m webmon --clear_domain --clear_search -m comment --comment "net-record-main"
+fi
+;;
+stop)
+iptables-save | grep -v "net-record-main" | iptables-restore
+;;
+esac

@@ -1,0 +1,14 @@
+{
+  "zh-cn": {
+	"_LANG_App_name": "交换机VLan",
+	"_LANG_App_type": "网络",
+	"_LANG_App_desc": "交换机VLan",
+	"_LANG_App_detail": "交换机VLan"
+  },
+  "en": {
+	"_LANG_App_name": "VLan Setting",
+	"_LANG_App_type": "Network",
+	"_LANG_App_desc": "VLan Setting",
+	"_LANG_App_detail": "VLan Setting"
+  }
+}

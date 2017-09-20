@@ -1,0 +1,60 @@
+#!/bin/sh
+
+[ "${ACTION}" = "released" ] || exit 0
+
+. /lib/functions.sh
+. /etc/setled.sh
+H_on
+mpath=`cat /etc/play/mpath`
+
+logger "$BUTTON pressed for $SEEN seconds"
+echo "$BUTTON pressed for $SEEN seconds" > /dev/console
+
+if [ "$SEEN" -lt 1 ]
+then
+   case ${mpath} in
+	1|2|3|4|5|6|7|8|9)
+		let mpath-=1
+		echo ${mpath} > /etc/play/mpath
+		write${mpath}
+		;;
+
+	0)
+		echo 0 > /etc/play/mpath
+		write0
+		;;
+	A)	let mpath=9
+		echo 9 > /etc/play/mpath
+		write9
+		;;
+	B)
+		let mpath=\0xA
+		echo A > /etc/play/mpath
+		writeA
+		;;
+	C)
+		let mpath=\0xB
+		echo B > /etc/play/mpath
+		writeB
+		;;
+	D)
+		let mpath=\0xC
+		echo C > /etc/play/mpath
+		writeC
+		;;
+	E)
+		let mpath=\0xD
+		echo D > /etc/play/mpath
+		writeD
+		;;
+	F)
+		let mpath=\0xE
+		echo E > /etc/play/mpath
+		writeE
+		;;
+   esac
+
+fi
+
+
+

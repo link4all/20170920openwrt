@@ -1,0 +1,16 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=99
+
+start() {
+qq_license
+sleep 1
+qqnas
+
+}
+
+stop() {
+	killall qq_license
+	killall qqnas
+}

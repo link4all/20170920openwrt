@@ -1,0 +1,11 @@
+--- a/build/Makefile
++++ b/build/Makefile
+@@ -1,5 +1,6 @@
++CONFIG_SUPPORT_OPENWRT=y
+ ifeq ($(CONFIG_SUPPORT_OPENWRT),y)
+-EXTRA_CFLAGS = -I$(src)/../src/include -I$(src)/../src/ate/include
++EXTRA_CFLAGS = -I$(src)/../src/include -I$(src)/../src/ate/include -DCONFIG_SUPPORT_OPENWRT
+ DRV_NAME = mt76x2e
+ RT_WIFI_DIR = ../src
+ else
+

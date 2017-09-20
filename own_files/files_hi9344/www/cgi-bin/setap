@@ -1,0 +1,31 @@
+#!/bin/sh
+
+echo "Content-Type:text/html"
+echo ""
+echo ""
+#echo $QUERY_STRING
+	ssid=`echo $QUERY_STRING | cut -d'&' -f 1 | cut -d'=' -f 2`
+	passwd=`echo $QUERY_STRING | cut -d'&' -f 2 | cut -d'=' -f 2`
+        enc=`echo $QUERY_STRING | cut -d'&' -f 3 | cut -d'=' -f 2`
+	channel=`echo $QUERY_STRING | cut -d'&' -f 4 | cut -d'=' -f 2`
+  uci set wireless.@wifi-iface[0].ssid=$ssid
+  uci set wireless.@wifi-iface[0].encryption=$enc
+  uci set wireless.@wifi-iface[0].key=$passwd
+  uci set wireless.radio0.channel=$channel
+  uci set wireless.@wifi-iface[0].network=lan
+  uci set wireless.@wifi-iface[0].mode=ap
+  #uci set wireless.@wifi-iface[0].wds=1
+  uci commit wireless
+  uci set network.lan.ipaddr=192.168.2.1
+  uci commit network
+
+  
+  #echo "$ssid"
+  #echo "<br />"
+  #echo "$passwd"
+  #echo "<br />"
+  #echo "$enc"
+  #echo "<br />"
+echo  "Set AP OK!<br />"
+  /etc/init.d/network restart
+

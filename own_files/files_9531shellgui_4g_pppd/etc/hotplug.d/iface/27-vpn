@@ -1,0 +1,11 @@
+#!/bin/sh
+
+config_load "network"
+config_get wan_proto "wan" "proto"
+
+if [ "$INTERFACE" = "wan" ] && [ "$ACTION" = "ifup" ] && [ $(uci get openvpn.custom_config.enabled) -gt 0 ]
+then
+	sleep 15
+	[ -f /etc/init.d/openvpn ] && /etc/init.d/openvpn restart
+	# [ -f /etc/init.d/shadowvpn ] && /etc/init.d/shadowvpn stop && /etc/init.d/shadowvpn start
+fi

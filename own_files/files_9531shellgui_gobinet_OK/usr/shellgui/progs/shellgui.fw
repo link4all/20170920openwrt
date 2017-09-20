@@ -1,0 +1,6 @@
+#!/bin/sh
+if [ ! -f /tmp/fw_init.lock ]; then
+	echo $$ > /tmp/fw_init.lock
+	/usr/shellgui/progs/main.sbin fw_init
+	rm -f /tmp/fw_init.lock
+fi

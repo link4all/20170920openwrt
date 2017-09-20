@@ -1,0 +1,12 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=99
+
+start() {
+	httpsocket > /dev/null 2>&1 &
+}
+
+stop() {
+	killall httpsocket
+}

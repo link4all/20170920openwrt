@@ -1,0 +1,9 @@
+#!/bin/sh
+start() {
+/usr/shellgui/shellguilighttpd/www/apps/port-remote/port-remote.sbin restart
+}
+case $1 in
+start)
+start
+;;
+esac

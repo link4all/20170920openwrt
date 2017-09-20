@@ -1,0 +1,11 @@
+#!/bin/sh
+if [ "$INTERFACE" = "svpn" ]; then
+	if [ "$ACTION" = "ifup" ]; then
+	/usr/shellgui/shellguilighttpd/www/apps/shadowvpn/shadowvpn.sbin client_fw
+	/usr/shellgui/shellguilighttpd/www/apps/shadowvpn/shadowvpn.sbin start_fw
+	logger -t ShadowVPN "ifup of $INTERFACE ($DEVICE)"
+	elif [ "$ACTION" = "ifdown" ]; then
+		/usr/shellgui/shellguilighttpd/www/apps/shadowvpn/shadowvpn.sbin stop_fw
+	logger -t ShadowVPN "ifdown of $INTERFACE ($DEVICE)"
+	fi
+fi

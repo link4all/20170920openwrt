@@ -1,0 +1,14 @@
+#!/bin/sh
+echo 'Content-type: text/html'
+echo ''
+
+echo {status:0}
+
+echo 16 > /sys/class/gpio/export
+echo out > /sys/class/gpio/gpio16/direction
+echo 0 > /sys/class/gpio/gpio16/value
+
+
+
+
+

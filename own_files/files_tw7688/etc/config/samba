@@ -1,0 +1,15 @@
+
+config samba
+	option description 'OpenWrt'
+	option homes '1'
+	option name 'Samba Disk'
+	option workgroup 'wulian'
+
+config sambashare
+	option name 'Admin'
+	option path '/mnt/mmcblk0p1/'
+	option read_only 'no'
+	option create_mask '0777'
+	option dir_mask '0777'
+	option guest_ok 'no'
+

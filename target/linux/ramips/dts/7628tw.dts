@@ -1,0 +1,200 @@
+/dts-v1/;
+
+/include/ "mt7628an.dtsi"
+
+/ {
+	compatible = "mediatek,wifi_audio", "mediatek,mt7628an-soc";
+	model = "wifi_audio";
+
+	chosen {
+		bootargs = "console=ttyS0,57600";
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x8000000>;
+	};
+
+	pinctrl {
+		state_default: pinctrl0 {
+			gpio {
+				ralink,group = "gpio";
+				ralink,function = "gpio";
+			};
+			perst {
+				ralink,group = "perst";
+				ralink,function = "gpio";
+			};
+			refclk {
+				ralink,group = "refclk";
+				ralink,function = "gpio";
+			};
+			i2s {
+				ralink,group = "i2s";
+				ralink,function = "i2s";
+			};
+			spis {
+				ralink,group = "spis";
+				ralink,function = "gpio";
+			};
+			wled_an {
+				ralink,group = "wled_an";
+				ralink,function = "wled_an";
+			};
+			ephy_p0 {
+				ralink,group = "ephy_p0";
+				ralink,function = "gpio";
+			};
+			ephy_p1 {
+				ralink,group = "ephy_p1";
+				ralink,function = "gpio";
+			};
+			ephy_p2 {
+				ralink,group = "ephy_p2";
+				ralink,function = "gpio";
+			};
+			ephy_p3 {
+				ralink,group = "ephy_p3";
+				ralink,function = "gpio";
+			};
+			ephy_p4 {
+				ralink,group = "ephy_p4";
+				ralink,function = "gpio";
+			};
+			wdt {
+				ralink,group = "wdt";
+				ralink,function = "gpio";
+			};
+			i2c {
+				ralink,group = "i2c";
+				ralink,function = "i2c";
+			};
+			pwm0 {
+				ralink,group = "pwm0";
+				ralink,function = "gpio";
+			};
+			pwm1 {
+				ralink,group = "pwm1";
+				ralink,function = "gpio";
+			};
+			uart2 {
+				ralink,group = "uart2";
+				ralink,function = "gpio";
+			};
+		};
+	};
+
+	palmbus@10000000 {
+		spi@b00 {
+			status = "okay";
+
+			pinctrl-names = "default";
+			pinctrl-0 = <&spi_pins>, <&spi_cs1_pins>;
+
+			m25p80@0 {
+				#address-cells = <1>;
+				#size-cells = <1>;
+				compatible = "w25q128";
+				reg = <0 0>;
+				linux,modalias = "m25p80", "w25q128";
+				spi-max-frequency = <40000000>;
+				m25p,chunked-io = <31>;
+
+				partition@0 {
+					label = "u-boot";
+					reg = <0x0 0x30000>;
+					#read-only;
+				};
+
+				partition@30000 {
+					label = "u-boot-env";
+					reg = <0x30000 0x10000>;
+				};
+
+				factory: partition@40000 {
+					label = "factory";
+					reg = <0x40000 0x10000>;
+					#read-only;
+				};
+
+				partition@50000 {
+					label = "firmware";
+					reg = <0x50000 0xfb0000>;
+				};
+			};
+
+			spidev@1 {
+				#address-cells = <1>;
+				#size-cells = <1>;
+				compatible = "spidev";
+				reg = <1 0>;
+				spi-max-frequency = <40000000>;
+			};
+		};
+
+		i2c@900 {
+			status = "okay";
+		};
+
+		uart1@d00 {
+			status = "disabled";
+		};
+
+		uart2@e00 {
+			status = "okay";
+		};
+
+		pwm@5000 {
+			status = "okay";
+		};
+	};
+
+	ethernet@10100000 {
+		mtd-mac-address = <&factory 0x28>;
+	};
+
+	sdhci@10130000 {
+		status = "okay";
+		mediatek,cd-low;
+//		mediatek,cd-poll;
+	};
+
+
+	gpio-keys-polled {
+		compatible = "gpio-keys-polled";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		poll-interval = <20>;
+		vdown {
+			label = "vdown";
+			gpios = <&gpio1 10 1>;//gpio42
+			linux,code = <115>;
+			//linux,input-type = <5>; /* EV_SW */
+		};
+		vup {
+			label = "vup";
+			gpios = <&gpio1 9 1>; //gpio41
+			linux,code = <114>;
+			//linux,input-type = <5>; /* EV_SW */
+		};
+		up {
+			label = "up";
+			gpios = <&gpio1 7 1>;//gpio39
+			linux,code = <103>;
+			//linux,input-type = <5>; /* EV_SW */
+		};
+		down {
+			label = "down";
+			gpios = <&gpio1 8 1>;//gpio40
+			linux,code = <108>;
+			//linux,input-type = <5>; /* EV_SW */
+		};
+		reset {
+			label = "reset";
+			gpios = <&gpio1 13 1>; //gpio45 uart1_tx
+			linux,code = <0x198>;
+			
+		};
+	};
+
+};

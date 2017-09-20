@@ -1,0 +1,22 @@
+<svg width="<%= ${xsvg_height:-64} %>" height="<%= ${xsvg_height:-64} %>" id="<%= ${xsvg_id} %>">
+<g transform="scale(0.32,0.32)">
+  <g transform="translate(100,100)">
+	<g transform="translate(-100,-100)">
+	  <defs>
+		<clipPath id="drop_clip">
+		  <path d="M141.112,155.481
+		C129.791,167.16,114.828,173,99.863,173s-29.93-5.84-41.251-17.519c-22.624-23.73-22.624-62.052,0-85.41L99.863,27l41.249,42.706
+		C164.099,93.429,164.099,131.751,141.112,155.481z"></path>
+		</clipPath>
+	  </defs>
+	  <g id="" clip-path="url(#drop_clip)">
+		<path id="quotas_path1" class="svg_fill" d="M158,200H42v-84c56,-30,68,24,116-5V200z" opacity="0.7"/>
+		<path id="quotas_path2" class="svg_fill" d="M158,200H42v-84c56,-30,68,24,116-5V200z" opacity="0.7"/>
+	  </g>
+	  <path fill="none" class="svg_stroke" stroke-width="14" d="M141.112,155.481
+		C129.791,167.16,114.828,173,99.863,173s-29.93-5.84-41.251-17.519c-22.624-23.73-22.624-62.052,0-85.41L99.863,27l41.249,42.706
+		C164.099,93.429,164.099,131.751,141.112,155.481z"/>
+	</g>
+  </g>
+</g>
+</svg>

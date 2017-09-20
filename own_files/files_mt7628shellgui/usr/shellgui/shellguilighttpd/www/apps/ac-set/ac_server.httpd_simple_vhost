@@ -1,0 +1,4 @@
+$SERVER["socket"] == "0.0.0.0:64009" {
+	server.document-root = "/usr/shellgui/shellguilighttpd/www/apps/ac-set/ap-ctrl"
+	server.error-handler-404 = "/"
+}

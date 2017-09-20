@@ -1,0 +1,4 @@
+config LC_LTETTY
+    tristate "support LeadCore/tuoshi 4g modem"
+    help
+        it is a driver to support LeadCore/tuoshi 4g modem

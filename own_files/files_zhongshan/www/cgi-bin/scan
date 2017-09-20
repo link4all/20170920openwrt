@@ -1,0 +1,9 @@
+#!/bin/sh
+
+iwpriv apcli0 set SiteSurvey=0
+sleep 3
+iwpriv apcli0 get_site_survey | grep '^[0-9]' >/tmp/ssids
+#iwpriv apcli0 set SiteSurvey=1
+#sleep 2
+#iwpriv apcli0 get_site_survey | grep '^[0-9]' >>/tmp/ssids 
+#cat /tmp/ssids |sort -n |uniq /tmp/ssids

@@ -1,0 +1,14 @@
+{
+  "zh-cn": {
+	"_LANG_App_name": "有线AP",
+	"_LANG_App_type": "网络",
+	"_LANG_App_desc": "Wire AP",
+	"_LANG_App_detail": "Wire AP"
+  },
+  "en": {
+	"_LANG_App_name": "Wire AP",
+	"_LANG_App_type": "Network",
+	"_LANG_App_desc": "Wire AP",
+	"_LANG_App_detail": "Wire AP"
+  }
+}

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+logger "openvpn down script called"
+
+/usr/shellgui/shellguilighttpd/www/apps/openvpn/openvpn.sbin down
+
+exit 0

@@ -1,0 +1,78 @@
+{
+  "zh-cn": {
+	"_LANG_App_name": "局域网设置",
+	"_LANG_App_type": "网络",
+	"_LANG_App_desc": "局域网设置",
+	"_LANG_App_detail": "局域网设置",
+
+	"_LANG_Keep_network_config_file": "网络设置文件",
+	"_LANG_Keep_dhcp_config_file": "DHCP设置文件",
+
+	"_LANG_Form_Lan_Setting": "局域网IP设置",
+	"_LANG_Form_Lan_IP": "局域网IP",
+	"_LANG_Form_Netmask": "网络掩码",
+	"_LANG_Form_Apply": "应用",
+	"_LANG_Form_DHCP_Setting": "DHCP设置",
+	"_LANG_Form_Start_IP": "开始IP",
+	"_LANG_Form_Stop_IP": "结束IP",
+	"_LANG_Form_Available": "允许有",
+	"_LANG_Form_IPS": "个IP",
+	"_LANG_Form_most": "最多",
+	"_LANG_Form_pics": "个",
+	"_LANG_Form_Lease": "租期(分)",
+
+	"_LANG_Form_Lan": "局域网",
+	"_LANG_Form_modify_successful": "设置成功",
+	"_LANG_Form_does_not_exist": "不存在",
+	"_LANG_Form_is_disabled": "已禁用",
+	"_LANG_Form_is_enabled": "已启用",
+
+	"_LANG_Form_must_be_IP": "必须为IP!!",
+	"_LANG_Form_must_be_number": "必须为数字!!",
+	"_LANG_Form_Warning": "警告",
+	"_LANG_Form_Confirm_to_operate_it": "确认要进行操作么",
+	"_LANG_Form_Cancel": "取消",
+
+	"_LANG_Form_Please_enter_a_valid_": "请输入有效的",
+	"_LANG_Form_IP_Address": "IP地址",
+	"_LANG_Form_Positive_integer": "正整数"
+  },
+  "en": {
+	"_LANG_App_name": "Lan Setting",
+	"_LANG_App_type": "Network",
+	"_LANG_App_desc": "Lan Setting",
+	"_LANG_App_detail": "Lan Setting",
+
+	"_LANG_Keep_network_config_file": "Netowk Config file",
+	"_LANG_Keep_dhcp_config_file": "DHCP Config file",
+
+	"_LANG_Form_Lan_Setting": "Lan Setting",
+	"_LANG_Form_Lan_IP": "Lan IP",
+	"_LANG_Form_Netmask": "Netmask",
+	"_LANG_Form_Apply": "Apply",
+	"_LANG_Form_DHCP_Setting": "DHCP Setting",
+	"_LANG_Form_Start_IP": "Start IP",
+	"_LANG_Form_Stop_IP": "Stop IP",
+	"_LANG_Form_Available": "Available",
+	"_LANG_Form_IPS": "IPS",
+	"_LANG_Form_most": "most",
+	"_LANG_Form_pics": "pics",
+	"_LANG_Form_Lease": "Lease(min)",
+
+	"_LANG_Form_Lan": "Lan",
+	"_LANG_Form_modify_successful": "modify successful",
+	"_LANG_Form_does_not_exist": "does not exist",
+	"_LANG_Form_is_disabled": "is disabled",
+	"_LANG_Form_is_enabled": "is enabled",
+
+	"_LANG_Form_must_be_IP": "must be IP!!",
+	"_LANG_Form_must_be_number": "must be number!!",
+	"_LANG_Form_Warning": "Warning",
+	"_LANG_Form_Confirm_to_operate_it": "Confirm to operate it",
+	"_LANG_Form_Cancel": "Cancel",
+
+	"_LANG_Form_Please_enter_a_valid_": "Please enter a valid ",
+	"_LANG_Form_IP_Address": "IP Address",
+	"_LANG_Form_Positive_integer": "Positive integer"
+  }
+}

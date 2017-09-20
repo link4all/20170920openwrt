@@ -1,0 +1,10 @@
+{
+	"uid":[0],
+	"name": "telnetd",
+	"type": "System",
+	"active": 1,
+	"hidden": 0,
+	"version": "0.1",
+	"uninstall": 1,
+	"keep_files": [{"file": "/usr/shellgui/shellguilighttpd/www/apps/telnetd/telnetd.json", "note":"_LANG_Keep_telnetd_config_file", "priority_keep": 1}]
+}

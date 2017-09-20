@@ -1,0 +1,30 @@
+<% if [ "$style_type" = "nav" ]; then
+circle_class1="dis-theme-fill"
+circle_class2="svg_fill"
+else
+circle_class1="svg_fill"
+circle_class2="dis-theme-fill"
+fi
+%><svg width="<%= ${xsvg_height:-64} %>" height="<%= ${xsvg_height:-64} %>" id="<%= ${xsvg_id} %>">
+<g transform="scale(0.07,0.07)">
+	<g id="" transform="translate(100,120)">
+  <defs>
+	<mask id="gear-mask">
+	  <rect x="-100" y="-100" width="200" height="200" fill="white"></rect>
+	  <g fill="black">
+		<polygon points="60,-6 60,6 85,24 85,-24"></polygon>
+		<polygon points="60,-6 60,6 85,24 85,-24" transform="rotate(45)"></polygon>
+		<polygon points="60,-6 60,6 85,24 85,-24" transform="rotate(90)"></polygon>
+		<polygon points="60,-6 60,6 85,24 85,-24" transform="rotate(135)"></polygon>
+		<polygon points="60,-6 60,6 85,24 85,-24" transform="rotate(180)"></polygon>
+		<polygon points="60,-6 60,6 85,24 85,-24" transform="rotate(225)"></polygon>
+		<polygon points="60,-6 60,6 85,24 85,-24" transform="rotate(270)"></polygon>
+		<polygon points="60,-6 60,6 85,24 85,-24" transform="rotate(315)"></polygon>
+	  </g>
+	</mask>
+  </defs>
+  <circle cx="0" cy="0" r="80" class="<%= ${circle_class1} %>" stroke="none" mask="url(#gear-mask)"></circle>
+  <circle id="" cx="0" cy="0" r="30" class="<%= ${circle_class2} %>" stroke="none"></circle>
+</g>
+</g>
+</svg>

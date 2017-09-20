@@ -1,0 +1,23 @@
+#!/bin/sh /etc/rc.common
+
+START=98
+STOP=90
+
+boot()
+{
+	sleep 10
+	start
+}
+
+start()
+{
+	slattach -s 115200 -p slip ttyACM0 & sleep 1
+	ifconfig sl0 172.16.0.1 netmask 255.255.0.0 mtu 110 up
+	whsnbg
+}
+
+stop()
+{
+	killall whsnbg
+	killall slattach
+}

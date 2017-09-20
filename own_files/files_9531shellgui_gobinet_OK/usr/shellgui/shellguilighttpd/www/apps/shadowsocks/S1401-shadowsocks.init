@@ -1,0 +1,37 @@
+#!/bin/sh
+base_dir="/usr/shellgui/shellguilighttpd/www/apps/shadowsocks"
+config_str=$(cat $base_dir/shadowsocks.json)
+start_server() {
+shellgui '{"action":"exec_command","cmd": "/etc/init.d/ss-server","arg":"restart","is_daemon":1,"timeout":50000}'
+}
+start_local() {
+shellgui '{"action":"exec_command","cmd":"/etc/init.d/ss-local","arg":"restart","is_daemon":1,"timeout":50000}'
+}
+start_redir() {
+shellgui '{"action":"exec_command","cmd":"/etc/init.d/ss-redir","arg":"restart","is_daemon":1,"timeout":50000}'
+}
+start() {
+sed -i '/_bw_backup.sh/d' $base_dir/root.cron
+server_enabled=$(echo "$config_str" | jshon -e "server" -e "enabled" -u)
+local_enabled=$(echo "$config_str" | jshon -e "local" -e "enabled" -u)
+redir_enabled=$(echo "$config_str" | jshon -e "redir" -e "enabled" -u)
+[ ${server_enabled:-0} -gt 0 ] && start_server
+[ ${local_enabled:-0} -gt 0 ] && start_local
+[ ${redir_enabled:-0} -gt 0 ] && start_redir
+}
+stop() {
+/etc/init.d/ss-server &>/dev/null
+/etc/init.d/ss-local &>/dev/null
+/etc/init.d/ss-redir &>/dev/null
+}
+case $1 in
+start)
+start
+;;
+stop)
+stop
+;;
+restart)
+stop;start
+;;
+esac

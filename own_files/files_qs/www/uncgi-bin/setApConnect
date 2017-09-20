@@ -1,0 +1,46 @@
+#!/bin/sh
+echo 'Content-type: text/html'
+echo ''
+
+#echo $WWW_SSID;
+#echo $WWW_type;
+#echo $WWW_passwd;
+#echo $WWW_channel;
+case $WWW_type in
+0 )  
+authmode=NONE
+;;
+1 )  
+authmode=WEP
+;;
+2 )  
+authmode=WPAPSK
+;;
+3 )  
+authmode=WPA2PSK
+;;
+esac
+
+
+
+uci set wireless.@wifi-iface[0].ApCliSsid=$WWW_SSID
+uci set wireless.@wifi-iface[0].ApCliAuthMode=$authmode
+uci set wireless.@wifi-iface[0].ApCliWPAPSK=$WWW_passwd
+uci set wireless.@wifi-iface[0].ApCliEnable=1
+uci set wireless.mt7628.channel=$WWW_channel
+uci commit wireless
+
+uci set network.wwan=interface
+uci set network.wwan.proto=dhcp
+uci set network.wwan.ifname=apcli0
+
+uci set firewall.@zone[1].network="wan wan6 wwan"
+uci commit firewall
+
+echo {status:0}
+sleep 1
+/etc/init.d/network restart
+
+
+
+

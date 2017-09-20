@@ -1,0 +1,63 @@
+#!/bin/sh
+
+echo "Content-Type:text/html"
+echo ""
+echo ""
+#echo $QUERY_STRING
+	ssid=`echo $QUERY_STRING | cut -d'&' -f 1 | cut -d'=' -f 2`
+	passwd=`echo $QUERY_STRING | cut -d'&' -f 2 | cut -d'=' -f 2`
+  enc=`echo $QUERY_STRING | cut -d'&' -f 3 | cut -d'=' -f 2`
+	channel=`echo $QUERY_STRING | cut -d'&' -f 4 | cut -d'=' -f 2`
+	if [ ! `uci get wireless.@wifi-iface[1]` ] ; then
+	{
+	uci add wireless wifi-iface
+  }
+  else
+  {
+  echo 'modify wifi sta info'
+  }
+  fi
+  uci set wireless.@wifi-iface[1].ssid=$ssid
+  uci set wireless.@wifi-iface[1].encryption=$enc
+  uci set wireless.@wifi-iface[1].key=$passwd
+  uci set wireless.radio0.channel=$channel
+  uci set wireless.@wifi-iface[1].network=wwan
+  uci set wireless.@wifi-iface[1].device=radio0
+  uci set wireless.@wifi-iface[1].mode=sta
+  #uci set wireless.@wifi-iface[1].wds=1
+  uci commit wireless
+  
+  uci set network.wwan=interface
+  uci set network.wwan.proto=dhcp
+#uci set network.wwan.proto=static
+#uci set network.wwan.ipaddr=192.168.2.250
+  uci set network.wwan.netmask=255.255.255.0
+  uci set network.wwan.gateway=192.168.2.1
+  uci set network.lan.ipaddr=192.168.1.1
+  uci commit network
+  uci set firewall.@defaults[0].forward=ACCEPT
+  uci commit firewall
+cat >/etc/setaponly <<EOF
+#!/bin/sh
+if [ "\`ifconfig ath01 |grep 192.168\`" ];then
+/etc/set.sh &
+else
+{
+ uci delete wireless.@wifi-iface[1]
+ /etc/init.d/network restart
+ echo "" > /etc/setaponly
+}
+fi
+EOF
+
+  
+  #echo "$ssid"
+  #echo "<br />"
+  #echo "$passwd"
+  #echo "<br />"
+  #echo "$enc"
+  #echo "<br />"
+echo  "Set STA OK!<br />"
+  /etc/init.d/network restart
+
+

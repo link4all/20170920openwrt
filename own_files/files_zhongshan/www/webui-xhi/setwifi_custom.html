@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="assets/ico/favicon.ico">
+
+    <title>Repeater Setting</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css">
+    <link type="text/css" href="css/style.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+     <script type="text/javascript">
+      function setwifi() {
+        $.ajax({
+          type: "GET", 
+          url: "/cgi-bin/apcli?ssid="+$('#ssid').val()+"&password="+$('#password').val()+"&security="+$('#security').val()+"&channel="+$('#channel').val(),
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          success: function(json) {
+              if (json.result == "error") {
+                $('#alertMsg').innerHTML="<div class='alert alert-danger'>" + json.message + "</div>"
+              }
+          },
+          error: function(error) {
+            //alert("调用出错" + error.responseText);
+          }
+        });
+        document.getElementById('alertMsg').innerHTML="<div class='alert alert-info'>Setting 2.4G WIFI Password，Please wait a minute, then try to refresh the page...</div>"
+
+        setTimeout("check_wifi();",30000);
+
+        return false;
+        
+              }
+    </script>
+    </head>
+   <body>
+     <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-body" id="status">
+              On processing,Please wait...
+            </div>
+          </div>
+        <nav class="navbar navbar-default" role="navigation">
+          <ul class="nav .nav-tabs">
+            <li class="active col-lg-6 col-md-6 col-sm-6  col-xs-6"><a href="/webui-xhi/setwifi_custom.html">Repeater Setting</a></li>
+            <li class="inactive col-lg-6 col-md-6 col-sm-6  col-xs-6"><a href="/webui-xhi/setadm.html">AP Setting</a></li>
+          </ul>
+        </nav>
+        </div>
+        <div class="container">
+            <div id="alertMsg"></div>
+            <form action="#" method="post" onsubmit="return setwifi();" class="well">
+            <fieldset>
+              <legend>Repeater Setting</legend>
+              <div class="form-group">
+                <label for="ssid">AP SSID:</label>
+                <input id="ssid" type="text" name="ssid" class="form-control"/>
+              </div>
+              <div class="form-group">
+                <label for="password">AP Password：</label>
+                <input id="password" type="text" name="password" class="form-control"/>
+              </div>
+               <div class="form-group">
+                <label for="Encrypt Type">AP Encrypt Mode:：</label>
+     <select  id='security' name='security' class="selectpicker form-control" data-live-search="true">
+     <option value="WPA1PSKWPA2PSK/AES">WPA1PSKWPA2PSK/AES</option>
+     <option value="WPA1PSKWPA2PSK/TKIPAES">WPA1PSKWPA2PSK/TKIPAES</option>
+     <option value="WPA2PSK/AES">WPA2PSK/AES</option>
+     <option value="WPA2PSK/TKIP">WPA2PSK/TKIP</option>
+     <option value="WPAPSK/TKIPAES">WPAPSK/TKIPAES</option>
+     <option value="WPAPSK/AES">WPAPSK/AES</option>
+     <option value="WPA2PSK/TKIP">WPAPSK/TKIP</option>
+     <option value="WPAPSK/WEP">WEP</option>
+     </select>
+              </div>
+               <div class="form-group">
+                <label for="channel">AP Channel:</label>
+                <input id="channel" type="text" name="channel" class="form-control" value=11 />
+              </div>
+              <div style="margin: 20px 0;">
+                <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+      <hr>
+    </div>
+  </body>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/docs.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap-select.min.js"></script>
+  
+ <script type="text/javascript">
+function check_wifi(){
+  $.ajax({
+          type: "GET", 
+          url: "/cgi-bin/checkwifi",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          success: function(json) {
+              if (json.result=="success") {
+                $("#status").text("Connected!，WAN  IP is:" + json.ip1 )
+              }
+              else {
+                $('#status').text("Not connect to AP")
+              }
+          },
+          error: function(error) {
+            //alert("调用出错" + error.responseText);
+          }
+        });
+}
+  </script>
+  <script type="text/javascript">
+
+      $(window).on('load', function () {
+        check_wifi();
+      });
+  </script>
+</html>
+
+

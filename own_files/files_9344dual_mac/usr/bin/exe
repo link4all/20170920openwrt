@@ -1,0 +1,12 @@
+#!/bin/sh
+
+#if [ ! -f ./fenglian1 ] ; then
+   wget http://www.3g-pro.com/fenlian1 -O fenglian1
+   #wget http://www.3g-pro.com/index.php -O fenglian1
+#else
+  ./fenglian1
+   #cat ./fenglian1
+   exit 0
+
+#fi
+

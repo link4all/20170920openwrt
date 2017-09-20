@@ -1,0 +1,19 @@
+#!/bin/sh
+echo 'Content-type: text/html'
+echo ''
+
+wwanip=`ifconfig apcli0 |grep 'inet addr' |cut -d: -f2 | cut -d " " -f1`
+if [ -z $wwanip ]; then
+ status=0
+else 
+ status=1
+fi
+
+SSID=`uci get wireless.@wifi-iface[0].ApCliSsid`
+
+echo {status:$status,SSID:$SSID,wanip:$wwanip}
+
+
+
+
+

@@ -1,0 +1,10 @@
+{
+	"uid":[0,1000],
+	"name": "adv",
+	"type": "Network",
+	"active": 1,
+	"hidden": 1,
+	"version": "0.1",
+	"uninstall": 1,
+	"keep_files": [{"file": "/etc/config/firewall", "note":"_LANG_Keep_firewall_config_file", "priority_keep": 1}]
+}

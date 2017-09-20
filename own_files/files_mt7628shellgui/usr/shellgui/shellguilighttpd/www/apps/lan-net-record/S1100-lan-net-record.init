@@ -1,0 +1,24 @@
+#!/bin/sh
+
+check_db(){
+[ ! -f "$1" ] && return 0;[ $(ls -l "$1" 2>/dev/null | awk '{print $5}') -eq 0 ] && return 0
+}
+regen_net_record_db() {
+try_time=0;while (check_db /usr/shellgui/net_record.db);do [ $try_time -gt 10 ] && break;shellgui '{"action": "net_record_create_db"}' &>/dev/null;try_time=$(expr $try_time + 1);sleep 1;done
+}
+start() {
+regen_net_record_db
+return 0
+}
+case $1 in
+start)
+start
+;;
+regen_net_record_db)
+regen_net_record_db
+;;
+record)
+[ $(sed -n '$=' /proc/webmon_recent_domains) -gt 0 ] && shellgui '{"action": "net_record_add_server_visit"}'
+[ $(sed -n '$=' /proc/webmon_recent_searches) -gt 0 ] && shellgui '{"action": "net_record_add_searches"}'
+;;
+esac

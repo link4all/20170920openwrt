@@ -5,6 +5,17 @@
 # See /LICENSE for more information.
 #
 
+define KernelPackage/rdm
+  CATEGORY:=MTK Properties
+  SUBMENU:=Drivers
+  TITLE:=Register Debug Module
+  KCONFIG:=CONFIG_RALINK_RDM=m
+  FILES:=$(LINUX_DIR)/drivers/net/rt_rdm/rt_rdm.ko
+  AUTOLOAD:=$(call AutoProbe,rt_rdm)
+endef
+
+$(eval $(call KernelPackage,rdm))
+
 OTHER_MENU:=Other modules
 define KernelPackage/sdhci-mt7620
   SUBMENU:=Other modules

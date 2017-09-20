@@ -1,0 +1,65 @@
+# whsnbg config
+
+menu  "Configuration"
+    depends on PACKAGE_whsnbg
+	
+	config WHSNBG_DAEMON
+		bool "Daemon version"
+		default y
+		help
+			Builds the daemon version
+
+	config WHSNBG_DPRINTF
+		bool "Detailed log"
+		default n
+		help
+			Enables detailed debug log
+
+	config WHSNBG_RULES_ENGINE
+		bool "Rules engine"
+		default n
+		help
+			Enables rules engine thread
+
+	choice
+		prompt "TLS support"
+		default WHSNBG_NOTLS_LIBRARY
+		help
+			The library to enable TLS support
+		config WHSNBG_NOTLS_LIBRARY
+			bool "None"
+		config WHSNBG_AXTLS_LIBRARY
+			bool "axTLS"
+			select PACKAGE_libaxtls
+		config WHSNBG_OPENSSL_LIBRARY
+			bool "OpenSSL"
+			select PACKAGE_libopenssl
+	endchoice
+
+	menuconfig WHSNBG_SENSOR_DATA
+		bool "HomeWSN.com sensors support"
+		default n
+		help
+			Automatic decoding of the MQTT-SN message payload from the sensors
+
+		config WHSNBG_SENSOR_DATA_MYSQL
+			bool "Storing decoded data from the sensors in the MySQL database" if WHSNBG_SENSOR_DATA
+			default n
+			select PACKAGE_libmysqlclient
+			help
+				Storing decoded data from the sensors in the MySQL database
+
+		config WHSNBG_MQTT_DATA_MYSQL
+			bool "Storing payload from the specific MQTT topics in the MySQL database" if WHSNBG_SENSOR_DATA
+			default n
+			select PACKAGE_libmysqlclient
+			help
+				Storing payload from the specific MQTT topics in the MySQL database
+
+	config WHSNBG_STATIC
+		bool "Static link"
+		default n
+		help
+			Builds the static link version
+
+endmenu

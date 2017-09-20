@@ -1,0 +1,10 @@
+#!/bin/sh
+start() {
+/usr/shellgui/shellguilighttpd/www/apps/jimai/jimai.sbin check
+}
+case $1 in
+start)
+start
+;;
+esac
+

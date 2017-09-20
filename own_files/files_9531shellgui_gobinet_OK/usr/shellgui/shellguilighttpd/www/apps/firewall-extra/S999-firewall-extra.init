@@ -1,0 +1,14 @@
+#!/bin/sh
+start() {
+endianness=$(shellgui '{"action":"get_endianness"}' | jshon -e "endianness" -u)
+iv4_count=$(ls /usr/share/xt_geoip/${endianness}/ | grep -c iv4)
+[ ${iv4_count} -lt 200 ] && /usr/shellgui/progs/main.sbin geoip_update
+lsmod | grep -q xt_geoip || (if [ ! -f /tmp/firewall.lock ]; then
+touch /tmp/firewall.lock;/etc/init.d/firewall stop;rmmod xt_geoip;insmod xt_geoip;/etc/init.d/firewall restart;rm -f /tmp/firewall.lock
+fi) &>/dev/null
+}
+case $1 in
+start)
+start
+;;
+esac

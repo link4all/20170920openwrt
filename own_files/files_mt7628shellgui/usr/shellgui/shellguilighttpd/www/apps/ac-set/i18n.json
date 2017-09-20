@@ -1,0 +1,22 @@
+{
+  "zh-cn": {
+	"_LANG_App_name": "AC设置",
+	"_LANG_App_type": "网络",
+	"_LANG_App_desc": "AC 设置",
+	"_LANG_App_detail": "AC 设置",
+
+	"_LANG_Form_AP_list_control": "AP 列表设置",
+
+	"_LANG_Keep_ac_db_file": "AC 数据库文件"
+  },
+  "en": {
+	"_LANG_App_name": "AC Setting",
+	"_LANG_App_type": "Network",
+	"_LANG_App_desc": "AC Setting",
+	"_LANG_App_detail": "AC Setting",
+
+	"_LANG_Form_AP_list_control": "AP list control",
+
+	"_LANG_Keep_ac_db_file": "AC database file"
+  }
+}

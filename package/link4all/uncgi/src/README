@@ -1,0 +1,598 @@
+
+                            Un-CGI version 1.10
+
+Contents
+
+     * Introduction
+     * Installation
+     * Usage
+          + Special Processing
+     * Other Features
+     * Bugs
+     * If you want to report a problem...
+     * Frequently Asked Questions
+     * Change log
+
+   This documentation, along with the most recent version of the
+   software, is available via the World-Wide Web at
+   <http://www.midwinter.com/~koreth/uncgi.html>.
+
+Introduction
+
+   This is uncgi, a frontend for processing queries and forms from the
+   Web on UNIX systems. (It can also be run under Windows in some cases;
+   see below.) You can get it via anonymous ftp from
+   ftp.midwinter.com or, depending on your browser, by following
+   this link.
+
+   Without this program, if you wanted to process a form, you'd have to
+   either write or dig up routines to translate the values of the form's
+   fields from "URL encoding" to whatever your program required. This was
+   a hassle in C, and a real pain in the shell, and you had do things
+   differently for GET and POST queries.
+
+   Which is where uncgi comes in. It decodes all the form fields and
+   sticks them into environment variables for easy perusal by a shell
+   script, a C program, a Perl script, or whatever you like, then
+   executes whatever other program you specify.
+
+   (Actually, "uncgi" is something of a misnomer, as the weird URL syntax
+   is from the HTML forms specification, not from CGI itself.)
+
+Installation
+
+   This section assumes you have at least a passing familiarity with
+   compiling and installing programs from the net (e.g., that you know
+   how to unpack a compressed tarfile and use "make") and with the
+   operation of your HTTP server. If you don't, you're probably not the
+   right person to install Un-CGI; point your system administrators to
+   this page and ask them to set it up for you.
+
+   To install, edit the Makefile. Change the following settings:
+
+   CC
+          The name of your system's C compiler. Typically "cc" or "gcc".
+
+   SCRIPT_BIN
+          The directory where you want Un-CGI to look for your programs.
+          This doesn't have to be the same as your server's CGI
+          directory, if any. Note that you cannot use "~" here to signify
+          a home directory; you have to use the entire path, beginning
+          with "/". You can put your programs in subdirectories of
+          SCRIPT_BIN if you like.
+
+   DESTDIR
+          The directory where you want the Un-CGI executable to be
+          installed. If your server has a "cgi-bin" directory, that's
+          generally what you'll need to put here, since the server needs
+          to know to run Un-CGI as a CGI program, and often that can only
+          happen for programs that are located in the server's cgi-bin
+          directory.
+
+          Note that you cannot just make a directory called "cgi-bin" in
+          your account and expect uncgi to be run from it. The HTTP
+          server needs to be configured to know where to look for
+          executable programs. If you don't manage the HTTP server on
+          your system, you probably cannot install uncgi in the right
+          place. (On some servers, you can put CGI programs anywhere if
+          you give them a certain file extension; talk to your system
+          administrator to find out if this is the case on your system,
+          and if so, see the next item.)
+
+   EXTENSION
+          If your server allows CGI programs to be run from anywhere as
+          long as they have a particular filename extension (typically
+          .cgi,) you should set this to that extension, including the
+          ".". In that case you can set DESTDIR to point into any
+          directory that the server has access to (e.g. your public_html
+          directory.)
+
+          You don't need to follow any particular naming rules for the
+          programs you're going to ask Un-CGI to run; as long as they're
+          in the SCRIPT_BIN directory, you can name them any way you see
+          fit.
+
+   SECURITY
+          Security-related options may be set at compile time:
+
+          + EXECUTABLES_ONLY - If set, Un-CGI's ability to execute shell
+            scripts that begin with "#!" but don't have execute
+            permission set in the filesystem is disabled. Ordinarily
+            Un-CGI will look at non-executable files to see if they're
+            shell scripts, and will automatically invoke the appropriate
+            shell if so. Some sites find this capability convenient,
+            others may decide it's a security hole.
+
+   Once you're done editing the Makefile, run "make install" and your
+   system will build and install Un-CGI into whatever directory you
+   specified as DESTDIR. If you get an error message like "make: Command
+   not found" or "cc: Command not found," talk to your system
+   administrator. I have no way of magically knowing where your system
+   happens to put its compiler tools, so asking me where to look will do
+   you no good.
+
+   Also, make sure the file permissions on Un-CGI (and the directory it's
+   in) are set so the HTTP server can execute it. On most systems the
+   HTTP server runs as user "nobody" or "www". You may want to make
+   Un-CGI a setuid program if you want to manipulate private files with
+   your backend scripts, since they will ordinarily be run under the same
+   user ID as the HTTP server. Consult your system administrator to find
+   out your site's policy on setuid programs; they are frowned on in some
+   places.
+
+Usage
+
+   An example is the easiest way to demonstrate uncgi's use. Suppose you
+   have the following in an HTML file:
+
+<form method=POST action="/cgi-bin/uncgi/myscript">
+What's your name?
+<input type=text size=30 name=name>
+<p>
+Type some comments.
+<br>
+<textarea name=_comments rows=10 cols=60></textarea>
+What problem are you having? <select name=problem multiple>
+<option> Sleeplessness
+<option> Unruly goat
+<option> Limousine overcrowding
+</select>
+<p>
+<input type=submit value="  Send 'em in!  ">
+</form>
+
+   When the user selects the "Send 'em in!" button, the HTTP server will
+   run uncgi. Uncgi will set three environment variables, WWW_name,
+   WWW_comments and WWW_problem, to the values of the "name", "comments",
+   and "problem" fields in the form, respectively. Then it will execute
+   myscript in the SCRIPT_BIN directory.
+
+   All the usual CGI environment variables (PATH_INFO, QUERY_STRING,
+   etc.) are available to the script or program you tell uncgi to run. A
+   couple of them (PATH_INFO and PATH_TRANSLATED) are tweaked by uncgi to
+   the values they'd have if your program were being executed directly by
+   the server. PATH_INFO is, in case you haven't read up on CGI, set to
+   all the path elements after the script name in your URL, if any. This
+   is an easy way to specify additional parameters to your script without
+   resorting to hidden fields.
+
+   Myscript might be as simple as this:
+
+#!/bin/sh
+echo 'Content-type: text/html'
+echo ''
+cat /my/home/directory/htmlfiles/thanks.html
+
+(
+        echo "$WWW_name is having $WWW_problem problems and said:"
+        echo "$WWW_comments"
+) | mail webmaster
+
+   With uncgi, that's all you need to do to write a script to send you
+   mail from a form and print a prewritten file as a response. And it's
+   the same whether you want to use GET or POST queries.
+
+   If you're using Perl, $ENV{"WWW_xyz"} will look up the value of the
+   "xyz" form field. (You're on your own beyond that; Perl isn't my
+   native language.)
+
+   If more than one "problem" is selected in the example above, the
+   values will all be placed in WWW_problem, separated by hash marks
+   ('#'). You can use the library function strtok() to separate the
+   values in a C program; in a shell script, your best bet is probably to
+   replace the hash marks with newlines using "tr", something like:
+echo $WWW_problem | tr '#' \\012 | while read value; do
+        echo $value 'selected.'
+done
+
+   A useful learning tool is to point your form at a script that just
+   prints the contents of the environment. On most systems there is a
+   program to do that, called either env or printenv; you can write a
+   little script that runs it:
+
+#!/bin/sh
+echo 'Content-type: text/plain'
+echo ''
+env
+
+   That'll show you exactly what your script can expect from a form.
+
+  Special Processing
+
+   Eagle-eyed readers noticed that the text area in the above example had
+   an underscore ("_") at the beginning of its name. When Un-CGI sees a
+   form field whose name begins with an underscore, it strips whitespace
+   from the beginning and end of the value and makes sure that all
+   end-of-line characters in the value are UNIX-style newlines (as
+   opposed to DOS-style CR-LF pairs, or Macintosh-style CRs, both of
+   which are sent by some browsers.) This makes processing text easier,
+   since your program doesn't have to worry about the browser's
+   end-of-line conventions. Note that if a form field is named _xyz, you
+   still get an environment variable called WWW_xyz (i.e., the extra
+   underscore doesn't show up in the environment variable name.)
+
+   Un-CGI also modifies variable names containing periods, the major
+   source of which is <input type=image>. Shell scripts have trouble
+   coping with periods in environment variable names, so Un-CGI converts
+   periods to underscores. This is only done to variable names -- periods
+   in values will remain untouched.
+
+Other Features
+
+   Extra feature: If you compile with -DLIBRARY, you can use uncgi as a
+   library function in a C program of your own. Just call uncgi() at the
+   start of your program. See this example.
+
+   Uncgi will handle hybrid GET/POST requests. Specify a method of POST
+   in the form, and add a GET-style query string to the action, for
+   example <form method=POST
+   action="/cgi-bin/uncgi/myscript?form_id=feedback">. When your script
+   is run, WWW_form_id will be set to "feedback". This will only work if
+   your HTTP server supports it (NCSA's does, for now anyway.)
+
+   Un-CGI is freeware; if you want to include it in a commercial product,
+   please send me mail. I'll probably just ask you to include a pointer
+   to this page with your product.
+
+Bugs
+
+   There should be a way to specify a list of directories that uncgi will
+   search for backend scripts.
+
+If you want to report a problem...
+
+   If you find problems with Un-CGI, I'll take a look at them. Since
+   Un-CGI is getting fairly popular, though, I have to lay down a few
+   rules:
+     * I'm not in the business of providing free Web consulting. If you
+       can't get your form to look right, or you don't know how to
+       configure your server to run CGI programs, I'm not going to help
+       you. There are now thousands of qualified consultants who can come
+       to you and set up your site and write your forms. Post a message
+       to comp.infosystems.www.authoring.cgi if you need help in that
+       area.
+     * Along similar lines, I won't debug your shell scripts for you. If
+       your script doesn't work, replace it with the small example
+       script elsewhere on this page. If that works, then your script,
+       not Un-CGI, is at fault, and you're on your own.
+     * Look through the FAQ in the next section before you send me mail.
+       If you ask a question that's answered there, I won't reply.
+
+   If you think you've found a genuine problem with Un-CGI, I'll most
+   effectively be able to help you if you give me the following
+   information. The more of this you leave out, the less likely I'll be
+   able to do anything useful.
+     * Your form. Either include it in your mail or include a URL so I
+       can fetch it.
+     * The exact input, including any checkbox settings, that you enter
+       into the form to cause the problem you're seeing.
+     * Your Makefile.
+     * The results of submitting your form through Un-CGI after you
+       recompile with the debugging option turned on. See the Makefile
+       for details about activating it. The debugging option often tells
+       you enough about what's going on that you'll see what the problem
+       is.
+     * If possible, your script or program.
+
+   I won't guarantee to fix every problem, but if you give me a complete
+   report, I'll often be able to help.
+
+Frequently Asked Questions
+
+    1. I get an error about strerror when I compile.
+    2. How do I put forms in my documents?
+    3. I'm having trouble getting my output to look right.
+    4. Where do I put everything?
+    5. Why does uncgi tell me it can't run my script?
+    6. What do I do in my forms?
+    7. I get an error 403 when I submit my form.
+    8. I get an error code 500 from the server.
+    9. My script doesn't see the form variables.
+   10. The browser just sits there when I submit my form.
+   11. How do I parse checkbox results?
+   12. Do I need to make a directory called "uncgi"?
+   13. Does uncgi strip out special shell characters that might cause
+       security problems?
+   14. Do you have a Windows version?
+   15. What about security?
+
+  I get an error about sys_errlist when I compile.
+
+   Some UNIX variants' standard include files contain a declaration for
+   the list of system error codes, and some don't; for the latter, I need
+   to include the declaration in uncgi.c. If you get an error about the
+   "strerror" function not being defined, edit the Makefile, search for
+   "SYS_ERRLIST", and remove the "#" from the beginning of the line.
+
+  How do I put forms in my documents?
+
+   See the NCSA documentation on forms. It includes several examples.
+
+  I'm having trouble getting my output to look right.
+
+   I'm afraid I don't have the time to help people with HTML. Pick up any
+   of the numerous HTML books on the market. Many of them discuss putting
+   together forms as well as regular documents.
+
+  Where do I put everything?
+
+   Short answer: Look in the Makefile.
+
+   Long answer: When you edit uncgi's Makefile, you'll see two macro
+   definitions relating to paths. The first, SCRIPT_BIN, tells uncgi
+   where to look for your scripts or programs. It must be set to the name
+   of an existing directory; you can set it to any directory you like.
+   Sometimes it's set to the location of your server's cgi-bin directory,
+   though that's not necessary.
+
+   The second, DESTDIR, tells the Makefile where to install uncgi. It
+   must point to your server's cgi-bin directory, if your server has one.
+
+   Note that you can't just create a directory called "cgi-bin" in your
+   account and expect it to work. The server has configuration files that
+   tell it where to look for scripts and programs. Talk to your system
+   administrator if you aren't the person in charge of the server on your
+   machine.
+
+   An additional Makefile setting, EXTENSION, should be of help if your
+   server allows you to put CGI programs anywhere on the system. Again,
+   consult your system administrator to see if this is the case.
+
+  Why does uncgi tell me it can't run my script?
+
+   First, make sure your script is in the right place; see the preceding
+   section.
+
+   Second, make sure your script can be executed by the server. Remember,
+   Un-CGI is run by the server, which is probably using a system user ID,
+   not your user ID. You need to set the permissions on your script such
+   that it can be run by any user. Usually, you can say "chmod 755
+   scriptname" (replacing scriptname with the name of your script) to set
+   the permissions properly.
+
+   If you're still having trouble, edit the Makefile, uncomment the
+   DEBUG_PATH line, and rebuild. This will instruct Un-CGI to include the
+   full path to where it thinks your script should be in its error
+   message.
+
+  What do I do in my forms?
+
+   The <form> tag has two attributes, METHOD and ACTION. METHOD must be
+   set to either GET or POST; uncgi will handle either one, but POST is
+   preferred if you have textarea fields or are expecting a lot of
+   information from the client. Note that the attribute name (METHOD) can
+   be upper or lower case, but the value must be all caps.
+
+   ACTION should have the following components:
+     * The alias for your server's cgi-bin directory (usually just
+       /cgi-bin/)
+     * uncgi/ to tell the server which program to execute.
+     * The name of your script as it appears in the directory where you
+       told uncgi to find your scripts and programs (the CGI_BIN macro in
+       the Makefile.) Example: myscript
+     * Optionally, a forward slash followed by additional parameters,
+       often the path to another file you want your script to print. This
+       path information will be available to your script in the PATH_INFO
+       and PATH_TRANSLATED environment variables (the latter contains the
+       full path to the document, including the path to the server root
+       directory.) Note that you can't use tilde notation. Example:
+       /form_output/acknowledge.html
+
+   So, if you wanted to tell uncgi to run sendmemail with no additional
+   parameters, you'd put sendmemail in the directory you specified as the
+   value of CGI_BIN in uncgi's makefile, and use the following tag to
+   begin your form:
+
+     <form method=POST action="/cgi-bin/uncgi/sendmemail">
+
+  I get an error 403 when I submit my form.
+
+   The usual cause of this is that your server requires a special
+   filename extension on CGI programs. (Most often it's ".cgi".) You need
+   to give uncgi a name that will identify it as a CGI program to the Web
+   server. There is nothing special about uncgi from the Web server's
+   point of view; it's just another program that gets run like any other,
+   and your installation of it has to obey the same rules as other
+   programs'.
+
+  I get an error code 500 from the server.
+
+   That code almost always results from a CGI script spitting out
+   something invalid when the server is expecting an HTTP header. There
+   are a few common reasons that can happen.
+     * Your script isn't specifying a content type to the server. The
+       first thing your script needs to output is:
+
+     Content-type: text/html
+       followed by a blank line. Note that the blank line is not
+       optional, and it has to be completely empty -- no whitespace. If
+       you're writing a shell script, for instance, you'll need:
+
+     echo Content-type: text/html
+     echo ""
+       The empty quotes on the second line are necessary in some shells,
+       e.g. csh; without them echo won't print anything, not even a blank
+       line. (Of course, if your script is outputting something other
+       than HTML, adjust the content type accordingly.)
+       In many shells you can achieve the same effect with a command like
+
+     cat << EOF
+     Content-type: text/html
+     EOF
+     * Your form has fields whose names contain special characters that
+       confuse the shell you're using, if any, causing it to spit out a
+       warning message which the Web server tries (and fails) to
+       interpret as an HTTP header line. Some shells, notably /bin/sh,
+       won't allow you to have certain characters in environment variable
+       names, and will often refuse to run a script if they're present.
+       If you stick to alphanumeric characters in your form's field
+       names, you should be safe.
+     * You compiled Un-CGI or the backend program it's running on a
+       machine other than your Web server. If the host you used to
+       compile Un-CGI had a different version of the C compiler, or
+       different versions of shared libraries, than your Web server, in
+       many cases the OS will output a warning message (e.g. "Shared
+       library xyz is an unexpected version") when the program is run.
+       Unfortunately, in the case of a CGI program, that warning is
+       picked up by the Web server, which is expecting an HTTP header
+       line and doesn't know what to make of the message. Compiling on
+       the Web server is usually enough to stop this kind of error.
+
+   In general, if your HTTP server outputs CGI scripts' standard error
+   streams to a logfile (often called "error_log") you should look there
+   to see if your script, or its shell, is outputting any diagnostic
+   information. Most Web servers will log any illegal header lines they
+   get from CGI programs, and once you see what it is that's confusing
+   your server, it should be straightforward to fix.
+
+   If that's no help, try removing the # from the start of the "DEBUG"
+   line in the Makefile and rebuilding Un-CGI. It will spit out
+   diagnostic information that might help.
+
+  My script doesn't see the form variables.
+
+   There are a few common causes for this:
+     * Make sure you're actually running Un-CGI. If you install uncgi but
+       your form's ACTION attribute still points to something like
+       /cgi-bin/myscript, Un-CGI isn't being executed by the Web server
+       when the user submits the form. See the example forms above.
+     * Put another way: If your <form> tag doesn't contain the string
+       "uncgi" somewhere in its "action" attribute, you're not using
+       Un-CGI. Simply installing Un-CGI on your system doesn't cause your
+       Web server to know when to execute it.
+     * Environment variables are case sensitive. That means that if you
+       have a field in your form named "revision", Un-CGI will create an
+       environment variable named "WWW_revision", not "WWW_REVISION" or
+       "WWW_Revision".
+     * Many shells restrict the characters you can use in variable names.
+       In particular, spaces and punctuation are usually illegal.
+       Underscores and numbers are all right.
+
+  The browser just sits there when I submit my form.
+
+   The most common cause of hangs like that is trying to convert an old
+   CGI-compliant program or script to run under Un-CGI. Your script is
+   detecting that the form was submitted with the POST method, and is
+   trying to read form results from the browser. Unfortunately, by the
+   time your script is run, Un-CGI has already read the results, so your
+   program sits there waiting forever for bytes that've already been
+   consumed.
+
+   Remove the part of your code that reads a query from the standard
+   input -- it'll generally be located somewhere around the word "POST",
+   which is easy to search for -- and replace it with code that fills
+   your program's internal variables via getenv() calls (assuming your
+   program is in C) on the WWW_ variables defined by Un-CGI.
+
+  How do I parse checkbox results?
+
+   Un-CGI puts hash marks ("#") between checkbox selections if there are
+   several of them. How you parse that depends entirely on what language
+   you're using. In C, use strtok(). In Python, use string.splitfields().
+   In Perl, use split(). In Bourne shell, do something like
+echo $WWW_whatever | tr \# \\012 | while read result; do
+        echo User picked $result
+done
+
+  Do I need to make a directory called "uncgi"?
+
+   No. You're probably assuming that since your form has an ACTION like
+   /cgi-bin/uncgi/xyz, there must be an uncgi directory under cgi-bin.
+   That's not how it works.
+
+   The parts of a URL between the slashes are not directory names. They
+   are symbols to tell the server where to find a particular document. In
+   most cases, the server will look for a directory of the same name as
+   the symbol in question, and if there is one, go into that directory
+   and proceed to the next symbol. But that isn't always what happens. If
+   the server sees that a particular symbol matches the name of a
+   program, it will typically run that program and pass the rest of the
+   URL to the program as an argument. And that's exactly what's happening
+   here.
+
+   There's no uncgi directory. You can think of /cgi-bin/uncgi/xyz as
+   /cgi-bin/uncgi xyz if that helps (it's not strictly speaking accurate,
+   but that's the concept.) Uncgi sees the "xyz" argument and looks in
+   its SCRIPT_BIN directory to find a program by that name.
+
+   If you're still not sure what all this means, just try it out and see
+   what happens!
+
+  Does uncgi strip out special shell characters that might cause security
+  problems?
+
+   No, for the simple reason that uncgi isn't tied to any one shell, or
+   any shell at all, for that matter. It sits in front of C programs just
+   as easily as Bourne shell scripts, just as easily as Perl scripts or
+   Python scripts. (All of which are used in conjunction with uncgi at
+   Midwinter, incidentally.)
+
+   In most of those languages, there aren't any special characters that'd
+   inherently be security problems, so having uncgi strip characters that
+   cause problems for a particular shell would just end up pointlessly
+   mangling the input to other kinds of scripts and programs. And people
+   using shells with different special characters would still have to
+   specially handle them anyway.
+
+   On most UNIXes, you can use the "tr -d" command to strip out
+   characters your shell processes specially. For example, to strip out
+   dollar signs from a Bourne shell variable, you'd do:
+
+     WWW_puppycount="`echo $WWW_puppy | tr -d \$`"
+
+  Do you have a Windows version?
+
+   Thanks to a couple of contributors who prefer to remain anonymous,
+   Un-CGI will compile under Borland's Turbo C.
+
+   I do not support Un-CGI under Windows. If you're having trouble
+   getting Un-CGI to work under Windows, I will not help you. I know
+   almost nothing about Windows programming and I know even less about
+   Windows HTTP servers. It is probable that Un-CGI will work with some
+   HTTP servers and not others. It's known to work on:
+     * SAIC's freeware httpd.
+     * OmniHTTPD.
+
+   If you know of another one under which it works, send me mail and I'll
+   list it here. There is currently a Win-CGI port underway, which should
+   help Un-CGI work on a wider range of servers. The port will be folded
+   into the main source base when it's available. I don't know, even
+   roughly, when that will be.
+
+   I have no plans to make binaries available for any platform, Windows
+   or otherwise.
+
+   If the above sounds obstructionist, that's not the intent; I want to
+   make Un-CGI useful to a wide audience, but I'd really rather not raise
+   people's expectations and then not be able to help them in the
+   slightest. It's frustrating for all concerned when people send me
+   questions I can't answer.
+
+  What about security?
+
+   Un-CGI is as secure as the SCRIPT_BIN directory. That is, if a
+   malicious user can add files to SCRIPT_BIN, he or she can use Un-CGI
+   to execute them under the Web server's user ID. In that sense the
+   security level is no different than that of a typical Web server's
+   cgi-bin directory.
+
+   Some specific security concerns:
+
+   Scripts can be setuid
+          If Un-CGI didn't allow setuid scripts/programs to be executed,
+          a malicious user could simply create a trivial wrapper script
+          to run a setuid program somewhere else. Disallowing setuid
+          scripts would be at worst a slight inconvenience to intruders.
+
+   Symbolic links can point from SCRIPT_BIN to anywhere on the server
+          As is the case with setuid scripts, if Un-CGI disallowed
+          symbolic links, a malicious user would replace a symlink with a
+          script to run a program from somewhere else on the server.
+          Again, disabling symlinks would prove nothing more than a
+          slight bump in the road, meanwhile making it less convenient
+          for a system administrator to allow specific user-supplied
+          programs to be run using Un-CGI.
+     _________________________________________________________________
+
+      Maintained by Steven Grimm <koreth@midwinter.com>.
+      Send mail if you have comments or suggestions.

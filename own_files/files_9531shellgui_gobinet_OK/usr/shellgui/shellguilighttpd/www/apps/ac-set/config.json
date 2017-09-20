@@ -1,0 +1,10 @@
+{
+	"uid":[0],
+	"name": "ac-set",
+	"type": "Netowrk",
+	"active": 0,
+	"hidden": 0,
+	"version": "0.1",
+	"uninstall": 1,
+	"keep_files": [{"file": "/usr/shellgui/ac.db", "note":"_LANG_Keep_ac_db_file", "priority_keep": 0, "regen": "/usr/shellgui/shellguilighttpd/www/apps/ac-set/S1200-ac.init regen_ac_db"}]
+}

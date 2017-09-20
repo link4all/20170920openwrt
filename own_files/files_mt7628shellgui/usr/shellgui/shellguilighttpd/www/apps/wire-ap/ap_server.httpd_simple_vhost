@@ -1,0 +1,8 @@
+$SERVER["socket"] == "0.0.0.0:64010" {
+	server.document-root = "/usr/shellgui/shellguilighttpd/www/apps/wire-ap/ap-be-ctrld"
+	server.error-handler-404 = "/"
+}
+$SERVER["socket"] == "0.0.0.0:64011" {
+	server.document-root = "/usr/shellgui/shellguilighttpd/www/apps/wire-ap/hotplug"
+	server.error-handler-404 = "/"
+}

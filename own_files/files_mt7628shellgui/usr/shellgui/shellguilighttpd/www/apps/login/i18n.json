@@ -1,0 +1,46 @@
+{
+  "zh-cn": {
+	"_LANG_App_name": "登录",
+	"_LANG_App_type": "系统",
+	"_LANG_App_desc": "系统登录",
+	"_LANG_App_detail": "系统登录",
+
+	"_LANG_Form_Wlelecome": "欢迎使用路由器",
+	"_LANG_Form_Username": "请输入路由器账户",
+	"_LANG_Form_Password": "请输入路由器密码",
+	"_LANG_Form_Login": "登录",
+	"_LANG_Form_Login_success": "登录成功!",
+	"_LANG_Form_Login_fail": "登录失败!",
+
+	"_LANG_JsUI_You_Bandwidth_Quotation_total_is": "本机的总流量限制设置为",
+	"_LANG_JsUI_You_Bandwidth_Quotation_Download_is": "本机的下载流量限制设置为",
+	"_LANG_JsUI_You_Bandwidth_Quotation_Upload_is": "本机的上传流量限制设置为",
+	"_LANG_JsUI_has_been_used": "其中已使用",
+	"_LANG_JsUI_Bandwidth_Quotation_Notice": "流量通知",
+
+	"_LANG_Notice_User_login_from": "{username} 从 {ip} 登录",
+	"_LANG_Notice_User_login_from_detail": "{username} 从 {ip} 登录,浏览器信息:<br/> {HTTP_USER_AGENT}"
+  },
+  "en": {
+	"_LANG_App_name": "Login",
+	"_LANG_App_type": "System",
+	"_LANG_App_desc": "System Login",
+	"_LANG_App_detail": "System Login",
+
+	"_LANG_Form_Wlelecome": "Wlelecome",
+	"_LANG_Form_Username": "Username",
+	"_LANG_Form_Password": "Password",
+	"_LANG_Form_Login": "Login",
+	"_LANG_Form_Login_success": "Login success!",
+	"_LANG_Form_Login_fail": "Login fail!",
+
+	"_LANG_JsUI_You_Bandwidth_Quotation_total_is": "You Bandwidth Quotation total is",
+	"_LANG_JsUI_You_Bandwidth_Quotation_Download_is": "You Bandwidth Quotation Download is",
+	"_LANG_JsUI_You_Bandwidth_Quotation_Upload_is": "You Bandwidth Quotation Upload is",
+	"_LANG_JsUI_has_been_used": "has been used",
+	"_LANG_JsUI_Bandwidth_Quotation_Notice": "Bandwidth Quotation Notice",
+
+	"_LANG_Notice_User_login_from": "{username} login from {ip}",
+	"_LANG_Notice_User_login_from_detail": "{username} login from {ip},Browser User Agent:<br/> {HTTP_USER_AGENT}"
+  }
+}

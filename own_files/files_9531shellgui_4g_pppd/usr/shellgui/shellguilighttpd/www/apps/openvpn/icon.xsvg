@@ -1,0 +1,24 @@
+<svg width="<%= ${xsvg_height:-64} %>" height="<%= ${xsvg_height:-64} %>" id="<%= ${xsvg_id} %>">
+<g transform="scale(0.32,0.32)">
+  <g transform="translate(100,100)">
+	<defs>
+	  <mask id="vpn_mask">
+		<circle cx="0" cy="0" r="90" fill="white"></circle>
+		<polygon points="0,0 0,90 90,90" fill="black" transform="rotate(22.5)"></polygon>
+	  </mask>
+	  <mask id="vpn_mask2">
+		<circle cx="0" cy="0" r="90" fill="white"></circle>
+		<rect x="-100" y="-100" width="100" height="200" fill="black" transform="rotate(12)"></rect>
+		<rect x="0" y="-100" width="100" height="200" fill="black" transform="rotate(-12)"></rect>
+	  </mask>
+	</defs>
+	<g mask="url(#vpn_mask)" id="vpn_back">
+	  <circle cx="0" cy="0" r="80" stroke="none" class="svg_fill" opacity="0.6"></circle>
+	  <circle cx="0" cy="0" r="50" stroke="none" fill="white"></circle>
+	</g>
+	<g id="vpn_front">
+	  <circle cx="0" cy="0" r="80" stroke="none" class="svg_fill" mask="url(#vpn_mask2)"></circle>
+	  <circle cx="0" cy="0" r="30" stroke="none" class="svg_fill"></circle>
+	</g>
+  </g>
+</g>

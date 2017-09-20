@@ -1,0 +1,161 @@
+#!/bin/sh
+[ $(uci get mwan3.default.enabled) -gt 0 ] || exit 0
+/usr/shellgui/progs/mwan3 stop
+/usr/shellgui/progs/mwan3 start
+# set -x
+# if_action="ifdown"
+if_action="ifup"
+(
+export USER=root
+export ACTION=$if_action
+export SHLVL=2
+export HOME=/
+export HOTPLUG_TYPE=iface
+export DEVICENAME=
+export LOGNAME=root
+export TERM=linux
+export BOOT_IMAGE=/boot/vmlinuz
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export INTERFACE=lan
+export PWD=/
+/usr/shellgui/progs/mwan3_add
+)
+# exit
+(
+export USER=root
+export ACTION=$if_action
+export SHLVL=2
+export HOME=/
+export HOTPLUG_TYPE=iface
+export DEVICENAME=
+export LOGNAME=root
+export TERM=linux
+export BOOT_IMAGE=/boot/vmlinuz
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export INTERFACE=loopback
+export PWD=/
+/usr/shellgui/progs/mwan3_add
+)
+
+
+(
+export USER=root
+export ACTION=$if_action
+export SHLVL=2
+export HOME=/
+export HOTPLUG_TYPE=iface
+export DEVICENAME=
+export LOGNAME=root
+export TERM=linux
+export BOOT_IMAGE=/boot/vmlinuz
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export INTERFACE=vwan_1
+export PWD=/
+export DEVICE=pppoe-vwan_1
+/usr/shellgui/progs/mwan3_add
+)
+
+
+(
+export USER=root
+export ACTION=$if_action
+export SHLVL=2
+export HOME=/
+export HOTPLUG_TYPE=iface
+export DEVICENAME=
+export LOGNAME=root
+export TERM=linux
+export BOOT_IMAGE=/boot/vmlinuz
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export INTERFACE=vwan_2
+export PWD=/
+export DEVICE=pppoe-vwan_2
+/usr/shellgui/progs/mwan3_add
+)
+
+
+(
+export USER=root
+export ACTION=$if_action
+export SHLVL=2
+export HOME=/
+export HOTPLUG_TYPE=iface
+export DEVICENAME=
+export LOGNAME=root
+export TERM=linux
+export BOOT_IMAGE=/boot/vmlinuz
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export INTERFACE=wan
+export PWD=/
+export DEVICE=pppoe-wan
+/usr/shellgui/progs/mwan3_add
+)
+
+
+(
+export USER=root
+export ACTION=$if_action
+export SHLVL=2
+export HOME=/
+export HOTPLUG_TYPE=iface
+export DEVICENAME=
+export LOGNAME=root
+export TERM=linux
+export BOOT_IMAGE=/boot/vmlinuz
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export INTERFACE=wanx
+export PWD=/
+/usr/shellgui/progs/mwan3_add
+)
+
+(
+export USER=root
+export ACTION=ifup
+export SHLVL=2
+export HOME=/
+export HOTPLUG_TYPE=iface
+export DEVICENAME=
+export LOGNAME=root
+export TERM=linux
+export BOOT_IMAGE=/boot/vmlinuz
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export INTERFACE=lan
+export PWD=/
+export DEVICE=br-lan
+/usr/shellgui/progs/mwan3_add
+)
+
+(
+export USER=root
+export ACTION=ifup
+export SHLVL=2
+export HOME=/
+export HOTPLUG_TYPE=iface
+export DEVICENAME=
+export LOGNAME=root
+export TERM=linux
+export BOOT_IMAGE=/boot/vmlinuz
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export INTERFACE=loopback
+export PWD=/
+export DEVICE=lo
+/usr/shellgui/progs/mwan3_add
+)
+
+
+(
+export USER=root
+export ACTION=ifup
+export SHLVL=2
+export HOME=/
+export HOTPLUG_TYPE=iface
+export DEVICENAME=
+export LOGNAME=root
+export TERM=linux
+export BOOT_IMAGE=/boot/vmlinuz
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export INTERFACE=wanx
+export PWD=/
+export DEVICE=eth2
+/usr/shellgui/progs/mwan3_add
+)

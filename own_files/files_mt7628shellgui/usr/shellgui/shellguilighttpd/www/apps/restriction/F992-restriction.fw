@@ -1,0 +1,13 @@
+#!/bin/sh
+
+case $1 in
+start)
+# [ ! -f $(shellgui '{"action": "print_www_root"}' | jshon -e "www_root" -u)/apps/qos-shellgui/F991-qos_shellgui.enabled ] && return 0
+. /usr/shellgui/progs/firewall_lib/firewall_lib.sh
+insert_restriction_rules
+;;
+stop)
+# iptables-save | grep -v "net-record-main" | iptables-restore
+xx
+;;
+esac

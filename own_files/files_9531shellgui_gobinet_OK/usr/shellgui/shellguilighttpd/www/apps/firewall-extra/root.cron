@@ -1,0 +1,1 @@
+0 3 * * * /usr/shellgui/progs/main.sbin geoip_update

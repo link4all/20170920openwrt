@@ -1,0 +1,6 @@
+#!/bin/sh
+
+while true; do
+/bin/crcmd;
+sleep 300;
+done

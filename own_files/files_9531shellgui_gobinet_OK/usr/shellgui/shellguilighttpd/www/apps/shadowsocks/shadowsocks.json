@@ -1,0 +1,58 @@
+{
+ "client_configs": {
+  "1": {
+   "data": {
+    "method": "aes-256-cfb",
+    "password": "shadowsocks-pass",
+    "server": "118.184.139.24",
+    "local_address": "0.0.0.0",
+    "server_port": 8388,
+    "timeout": 60,
+    "local_port": 1080
+   },
+   "desc": "Default Config"
+  }
+ },
+ "server": {
+  "enabled": 0,
+  "data": {
+   "server": "0.0.0.0",
+   "method": "aes-256-cfb",
+   "password": "abcd-1234",
+   "server_port": 8388,
+   "timeout": 60
+  }
+ },
+ "local": {
+  "enabled": 0,
+  "client_config": "1"
+ },
+ "redir": {
+  "enabled": 0,
+  "client_config": "1",
+  "external": {
+   "except_cc": [
+    "CN"
+   ],
+   "except_ips": [
+    "0.0.0.0\/8",
+    "10.0.0.0\/8",
+    "127.0.0.0\/8",
+    "169.254.0.0\/16",
+    "172.16.0.0\/12",
+    "192.168.0.0\/16",
+    "224.0.0.0\/4",
+    "240.0.0.0\/4"
+   ]
+  },
+  "internal": {
+   "hit_ips": [
+    "192.168.1.200\/32"
+   ],
+   "except_ips": [
+    "192.168.1.10-192.168.1.20"
+   ]
+  },
+  "internal_mode": "all"
+ }
+}

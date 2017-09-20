@@ -1,0 +1,42 @@
+#!/bin/sh
+base_dir="/usr/shellgui/shellguilighttpd/www/apps/shadowsocks"
+config_str=$(cat $base_dir/shadowsocks.json)
+bin_fw="$base_dir/shadowsocks.sbin"
+start_server() {
+$bin_fw server_start
+}
+start_local() {
+$bin_fw local_start
+}
+start_redir() {
+$bin_fw redir_start
+}
+start() {
+stop
+server_enabled=$(echo "$config_str" | jshon -e "server" -e "enabled" -u)
+local_enabled=$(echo "$config_str" | jshon -e "local" -e "enabled" -u)
+redir_enabled=$(echo "$config_str" | jshon -e "redir" -e "enabled" -u)
+[ ${server_enabled:-0} -gt 0 ] && start_server
+[ ${local_enabled:-0} -gt 0 ] && start_local
+[ ${redir_enabled:-0} -gt 0 ] && start_redir
+grep -qE 'do_ss[a-z]*_bw_backup.sh' /usr/shellgui/shellguilighttpd/www/apps/shadowsocks/root.cron && \
+[ ! grep -qE 'do_ss[a-z]*_bw_backup.sh' /tmp/spool/cron/crontabs/root ] && \
+/etc/init.d/cron restart &>/dev/null
+return 0
+}
+stop() {
+$bin_fw server_stop
+$bin_fw local_stop
+$bin_fw redir_stop
+}
+case $1 in
+start)
+start
+;;
+stop)
+stop
+;;
+restart)
+start
+;;
+esac

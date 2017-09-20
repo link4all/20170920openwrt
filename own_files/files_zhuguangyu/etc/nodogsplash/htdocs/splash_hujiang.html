@@ -1,0 +1,54 @@
+﻿<html>
+<head>
+    <title>$gatewayname Entry</title>
+    <meta HTTP-EQUIV="Pragma" CONTENT="no-cache" CHARSET="utf-8">
+    <style  type="text/css">
+        #bg_img {
+            z-index:-1;
+            filter: alpha(opacity = 85);
+            width:100%;
+            height:100%;
+            position: absolute;
+            left:0px;
+            top:0px;
+        }
+        </style>
+</head>
+
+<body bgcolor="#DDDDDD" text="#000000" style="color:#ffffff">
+<img alt="" src="$imagesdir/$imagename" id="bg_img">
+<!--<embed id="bg_img" src="$imagesdir/$imagename"></embed>-->
+<table border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+        <td align="center">
+            <div style="margin-left:15px;margin-top:15px; width:350px;height:105px;background-color:rgba(0,0,0,0.35);border-radius:25px;position:absolute;z-index: 5">
+                <span id="show1" style="height:100px; line-height:100px; display:block;text-align:center; font-family:'Microsoft YaHei'; font-size:64px; font-weight: bold">
+                </span>
+            </div>
+            <div style="margin-left:15px;margin-top:15px; width:350px;height:105px;background-color:rgba(0,0,0,0.35);border-radius:25px;position:absolute;z-index: 5">
+                <span style="height:100px; line-height:100px; display:block;text-align:center; font-family:'Microsoft YaHei'; font-size:64px; font-weight: bold">
+                <a id="show2" href="$authtarget" style="text-decoration:none"></a>
+                </span>
+            </div>
+        </td>
+    </tr>
+</table>
+<script type="text/javascript">   
+    var time = 15;
+    function closeWindow() {
+        if (time > 0) {
+            window.setTimeout('closeWindow()',1000);
+            document.getElementById("show1").innerHTML = "等待"+time;
+            document.getElementById("show2").innerHTML = "";
+            time--;
+        } else {
+            document.getElementById("show1").innerHTML = "";
+            document.getElementById("show2").innerHTML = "确定上网";
+        }
+    }
+    
+    closeWindow();
+</script> 
+</body>
+</html>
+

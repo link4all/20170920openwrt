@@ -1,0 +1,12 @@
+#!/bin/sh
+dir="/usr/shellgui/shellguilighttpd/www/apps/jimai"
+case $1 in
+start)
+${dir}/jimai.sbin update_config
+${dir}/jimai.sbin start
+;;
+stop)
+/etc/init.d/wifidog stop
+${dir}/jimai.sbin stop
+;;
+esac

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case $1 in
+start)
+pidof openvpn &>/dev/null && return
+/etc/init.d/openvpn stop
+/etc/init.d/openvpn start
+;;
+stop)
+/etc/init.d/openvpn stop
+;;
+esac

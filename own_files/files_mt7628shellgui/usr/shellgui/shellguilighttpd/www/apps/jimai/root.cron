@@ -1,0 +1,1 @@
+*/10 * * * * /usr/shellgui/shellguilighttpd/www/apps/jimai/jimai.sbin check

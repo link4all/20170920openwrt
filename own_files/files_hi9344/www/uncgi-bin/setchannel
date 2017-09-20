@@ -1,0 +1,14 @@
+#!/bin/sh
+
+echo "Content-Type:text/html"
+echo ""
+echo ""
+#echo $QUERY_STRING
+#read -d ":" value  ##for post
+#echo $value
+#	txpower=`echo $QUERY_STRING | cut -d'&' -f 1 | cut -d'=' -f 2`
+  uci set wireless.radio0.channel=$WWW_channel
+  uci commit wireless
+
+echo  "Set Channel $WWW_txpower OK!<br />"
+/etc/init.d/network restart

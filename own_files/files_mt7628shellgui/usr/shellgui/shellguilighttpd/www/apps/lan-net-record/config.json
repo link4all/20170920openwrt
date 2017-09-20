@@ -1,0 +1,10 @@
+{
+	"uid":[0,1000],
+	"name": "lan-net-record",
+	"type": "Firewall",
+	"active": 1,
+	"hidden": 0,
+	"version": "0.1",
+	"uninstall": 1,
+	"keep_files": [{"file": "/usr/shellgui/net_record.db", "note":"_LANG_Keep_Net_record_db_file", "priority_keep": 0, "regen": "/usr/shellgui/shellguilighttpd/www/apps/lan-net-record/S1100-lan-net-record.init regen_net_record_db"}]
+}

@@ -1,0 +1,16 @@
+# Put your custom commands here that should be executed once
+# the system init finished. By default this file does nothing.
+sleep 5
+#grep -q mon0 /proc/net/dev || /usr/sbin/iw phy phy0 interface add mon0 type monitor
+#ifconfig mon0 up
+
+#ifconfig wlan0 down
+#ifconfig wlan0-1 down
+iw phy phy0 interface add mon0 type monitor
+ifconfig mon0 up
+ifconfig wlan0 up
+export TERM=vt100
+export TERMINFO=/usr/share/terminfo
+
+#mon_loop.sh &
+exit 0

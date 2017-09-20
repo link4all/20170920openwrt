@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case $1 in
+start)
+. /usr/shellgui/progs/firewall_lib/firewall_lib.sh
+initialize_quotas
+;;
+stop)
+# iptables-save | grep -v "net-record-main" | iptables-restore
+xx
+;;
+esac

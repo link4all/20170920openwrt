@@ -1,0 +1,30 @@
+{
+  "zh-cn": {
+	"_LANG_App_name": "安全版Adbyby",
+	"_LANG_App_type": "网络",
+	"_LANG_App_desc": "安全版Adbyby",
+	"_LANG_App_detail": "安全版Adbyby",
+
+	"_LANG_Form_Enable_Security_Adbyby": "启用安全版Adbyby",
+	"_LANG_Form_Status": "状态",
+	"_LANG_Form_Apply": "应用",
+	"_LANG_Form_Cancel": "取消",
+	"_LANG_Form_Do_you_want_to_enable": "是否启用",
+	"_LANG_Form_Do_you_want_to_disable": "是否禁用",
+	"_LANG_Form_Modify_success": "编辑成功"
+  },
+  "en": {
+	"_LANG_App_name": "Security Adbyby",
+	"_LANG_App_type": "Network",
+	"_LANG_App_desc": "Security Adbyby",
+	"_LANG_App_detail": "Security Adbyby",
+
+	"_LANG_Form_Enable_Security_Adbyby": "Enable Security Adbyby",
+	"_LANG_Form_Status": "Status",
+	"_LANG_Form_Apply": "Apply",
+	"_LANG_Form_Cancel": "Cancel",
+	"_LANG_Form_Do_you_want_to_enable": "Do you want to enable",
+	"_LANG_Form_Do_you_want_to_disable": "Do you want to disable",
+	"_LANG_Form_Modify_success": "Modify success"
+  }
+}

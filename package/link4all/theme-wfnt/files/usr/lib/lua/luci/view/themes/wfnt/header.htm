@@ -1,0 +1,281 @@
+<%#
+LuCI - Lua Configuration Interface
+Copyright 2008 Steven Barth <steven@midlink.org>
+Copyright 2008-2010 Jo-Philipp Wich <xm@subsignal.org>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id: header.htm 9558 2012-12-18 13:58:22Z jow $
+
+-%>
+<%
+	local sys  = require "luci.sys"
+	local http = require "luci.http"
+	local disp = require "luci.dispatcher"
+
+	local hostname = sys.hostname()
+	local load1, load5, load15 = sys.loadavg()
+
+	local request  = disp.context.path
+	local request2 = disp.context.request
+
+	local category = request[1]
+	local cattree  = category and disp.node(category)
+
+	local leaf = request2[#request2]
+
+	local tree = disp.node()
+	local node = disp.context.dispatched
+
+	local categories = disp.node_childs(tree)
+
+	local c = tree
+	local i, r
+
+	-- tag all nodes leading to this page
+	for i, r in ipairs(request) do
+		if c.nodes and c.nodes[r] then
+			c = c.nodes[r]
+			c._menu_selected = true
+		end
+	end
+
+	http.prepare_content("application/xhtml+xml")
+
+	local function nodeurl(prefix, name, query)
+		local url = controller .. prefix .. name .. "/"
+		if query then
+			url = url .. http.build_querystring(query)
+		end
+		return pcdata(url)
+	end
+
+	local function subtree(prefix, node, level)
+		if not level then
+			level = 1
+		end
+
+		local childs = disp.node_childs(node)
+		if #childs > 0 then
+%>
+	<div class="tabmenu<%=level%>">
+	<ul class="tabmenu l<%=level%>">
+		<%
+			local selected_node
+			local selected_name
+			local i, v
+
+			for i, v in ipairs(childs) do
+				local nnode = node.nodes[v]
+				if nnode._menu_selected then
+					selected_node = nnode
+					selected_name = v
+				end
+		%>
+			<li class="tabmenu-item-<%=v%><% if nnode._menu_selected or (node.leaf and v == leaf) then %> active<% end %>">
+				<a href="<%=nodeurl(prefix, v, nnode.query)%>"><%=striptags(translate(nnode.title))%></a>
+			</li>
+		<%
+			end
+		%>
+	</ul>
+	<br style="clear:both" />
+<%
+			if selected_node then
+				subtree(prefix .. selected_name .. "/", selected_node, level + 1)
+			end
+%>
+	</div>
+<%
+		end
+	end
+-%>
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=luci.i18n.context.lang%>" lang="<%=luci.i18n.context.lang%>">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<link rel="stylesheet" type="text/css" media="screen" href="<%=media%>/cascade.css" />
+<link rel="icon" href="<%=media%>/wfnt/wifi_favicon.ico" type="image/x-icon"/> 
+<!--[if IE 6]><link rel="stylesheet" type="text/css" media="screen" href="<%=media%>/ie6.css" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" type="text/css" media="screen" href="<%=media%>/ie7.css" /><![endif]-->
+<!--[if IE 8]><link rel="stylesheet" type="text/css" media="screen" href="<%=media%>/ie8.css" /><![endif]-->
+<% if node and node.css then %><link rel="stylesheet" type="text/css" media="screen" href="<%=resource%>/<%=node.css%>" />
+<% end -%>
+<% if css then %><style title="text/css">
+<%= css %>
+</style>
+<% end -%>
+<script type="text/javascript" src="<%=resource%>/xhr.js"></script>
+<script type="text/javascript" src="<%=resource%>/jquery.js"></script>
+<link href="<%=media%>/wfnt/wfnt.css" rel="stylesheet" type="text/css" />
+<title><%=striptags( hostname .. ( (node and node.title) and ' - ' .. translate(node.title) or '')) %> - SmartCloudAp</title>
+</head>
+<body class="lang_<%=luci.i18n.context.lang%> wfnt_mui">
+
+<p class="skiplink">1
+<span id="skiplink1"><a href="#navigation"><%:Skip to navigation%></a></span>
+<span id="skiplink2"><a href="#content"><%:Skip to content%></a></span>
+</p>
+<div class="wfnt_cols_layout <% if not category then %> wfnt_single_col <% end %>" id="maincontainer">
+    <div class="wfnt_head">
+        <div class="main">
+            <div class="logo_wrap">
+                <img src="<%=media%>/wfnt/logo.png" border="0" />
+            </div>
+            <div class="user_bar">
+            	<% if category then %>
+                <a class="btn" id="logoutBtn" href="###"><img src="<%=media%>/wfnt/icon_exit.gif" align="absmiddle" /> <%= translate("Logout") %></a>
+                <% end %>
+            </div>
+        </div>
+        <div class="sep_line"></div>
+    </div>
+    <div class="wfnt_side">
+        <div id="tabmenu" style="display:none;">
+            <% if category then subtree("/" .. category .. "/", cattree) end %>
+        </div>
+        <div class="wfnt_menu" id="mainMenu"></div>
+        <script type="text/javascript">//<![CDATA[
+        //gen menu
+        (function(){
+			/**
+             * Read openwrt menu data from the element of menu.
+             * @param {HTMLElement} topMenuEle Top level (level = 1) element of menu.
+             * @return {Array} Menu data. Data struct:
+                [
+                    {
+                        active : true,
+                        subMenu : [
+                            {
+                                   
+                            },
+                            ...
+                        ],
+                        name : "status",
+                        css : "tabmenu-item-status",
+                        href : "/.. admin/status/",
+                        text : "Status"
+                    },
+                    ...
+                ]
+             */
+            function readOpenwrtMenu(topMenuEle, options){
+                options = options || {};
+                var menu = [],
+                    activeSubMenu = null,
+                    itemNamePrefix = (options.itemNamePrefix || "tabmenu-item-");
+                
+                $("ul", topMenuEle).each(function(){
+                    var currentMenu = activeSubMenu || menu;
+                    $("li", this).each(function(){
+                        var item = {},
+                            nodeJQ = $(this),
+                            nodeLinkJQ = nodeJQ.find("a"),
+                            active = nodeJQ.hasClass("active"),
+                            css = nodeJQ.prop("className"),
+                            nameCss = (css || "").split(" ")[0],
+                            name = (nameCss || "").replace(itemNamePrefix, "");
+                        
+                        if(active){
+                            activeSubMenu = item.subMenu = [];
+                            item.active = true;
+                        }
+                        
+                        $.extend(item, {
+                            name : name,
+                            css : css,
+                            href : nodeLinkJQ.attr("href"),
+                            text : nodeLinkJQ.text()
+                        });
+                        currentMenu.push(item);
+                    });
+                });
+                
+                return menu;
+            }
+            
+            function genMenuHtml(menuData, options){
+                options = options || {};
+                var html = ['<ul>'],
+					catCssList = options.catCssList,
+                    ignoreCats = (catCssList && options.ignoreCats) ? 
+                        new RegExp(options.ignoreCats) :
+                        null;
+                
+                $.each(menuData, function(i, item){
+                    if(ignoreCats && ignoreCats.test(item.name)) return;
+                    var catCss = catCssList ? ('ctg ' + catCssList[item.name] || catCssList["default"]) : "";
+                    
+                    html.push('<li>' + 
+                            '<a href="' + item.href + '"' + 
+                            ' class="' + catCss + (item.active ? ' active' : '') + '"' +
+                            '><div class="text">' + item.text + '</div></a>');
+                    
+                    if($.isArray(item.subMenu) && item.subMenu.length > 0){
+                        html.push(genMenuHtml(item.subMenu));
+                    }
+                    html.push('</li>');
+                });
+                
+                html.push('</ul>');
+                
+                return html.join("");
+            }
+            
+            function getLogoutUrl(menuData){
+                var url = "";
+				$.each(menuData, function(i, item){
+                    if(item.name == "logout"){
+						url = item.href;
+						return false;
+					}
+                });
+                return url;
+            }
+            
+            var catCssList = {
+                "default" : "icon_server",
+				"status" : "icon_wifi_device",
+                "system" : "icon_server",
+                "services" : "icon_setting",
+                "network" : "icon_network"
+            };
+			
+			$(function(){
+				var openwrtMenuData = readOpenwrtMenu(jQuery("#tabmenu>div"));
+				window.openwrtMenuData = openwrtMenuData;
+				var mainMenuHtml = genMenuHtml(openwrtMenuData, {
+					catCssList : catCssList,
+					ignoreCats : "logout"
+				});
+				window.mainMenuHtml = mainMenuHtml;
+				$("#mainMenu").html(mainMenuHtml);
+				$("#logoutBtn").attr("href", getLogoutUrl(openwrtMenuData));
+			});
+            
+        })();
+        //]]></script>
+    </div>
+
+	<div id="maincontent" class="wfnt_main">
+		<noscript>
+			<div class="errorbox">
+				<strong><%:Java Script required!%></strong><br />
+				<%:You must enable Java Script in your browser or LuCI will not work properly.%>
+			</div>
+		</noscript>
+
+		<%- if luci.sys.process.info("uid") == 0 and luci.sys.user.getuser("root") and not luci.sys.user.getpasswd("root") and category ~= "failsafe" then -%>
+		<div class="errorbox">
+			<strong><%:No password set!%></strong><br />
+			<%:There is no password set on this router. Please configure a root password to protect the web interface and enable SSH.%><br />
+			<a href="<%=pcdata(luci.dispatcher.build_url("admin/system/admin"))%>"><%:Go to password configuration...%></a>
+		</div>
+		<%- end -%>

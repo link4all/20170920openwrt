@@ -1,0 +1,2 @@
+0 2 * * * reboot
+*/5 * * * * /etc/rsync.sh

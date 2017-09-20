@@ -1,0 +1,397 @@
+#!/bin/sh
+get_shadowsocks_json() {
+shadowsocks_json=$(cat /usr/shellgui/shellguilighttpd/www/apps/shadowsocks/shadowsocks.json)
+}
+ssredir_extra_fw_start() {
+iptables -t nat -N shadowsocks
+
+iptables -t nat -A shadowsocks -d ${server_ip} -j RETURN
+
+echo "$shadowsocks_json" | jshon -e "redir" -e "external" -e "except_ips" -a -u | while read ips; do
+	if echo ${ips} | grep -q '\-'; then
+		iptables -t nat -A shadowsocks -m iprange --dst-range ${ips} -j RETURN
+	else
+		iptables -t nat -A shadowsocks -d ${ips} -j RETURN
+	fi
+done
+
+for cc in $(echo "$shadowsocks_json" | jshon -e "redir" -e "external" -e "except_cc" -a -u); do
+	except_cc_str="${except_cc},"${cc}
+done
+except_cc_str=$(echo "${except_cc_str}" | sed 's/^,//')
+
+	if [ -n "${except_cc_str}" ]; then
+		lsmod | grep -q xt_geoip || (rmmod xt_geoip;insmod xt_geoip) &>/dev/null
+		iptables -t nat -A shadowsocks -m geoip --destination-country ${except_cc_str} -j RETURN
+	fi
+
+if [ "$internal_mode" = "all" ]; then
+	iptables -t nat -A zone_lan_prerouting -p tcp -j shadowsocks
+else
+	internal_except_ips=$(echo "$shadowsocks_json" | jshon -e "redir" -e "internal" -e "except_ips" -a -u)
+	internal_hit_ips=$(echo "$shadowsocks_json" | jshon -e "redir" -e "internal" -e "hit_ips" -a -u)
+	if [ -n "internal_except_ips" ] || [ -n "internal_hit_ips" ]; then
+		echo "$internal_except_ips" | while read ips; do
+			if echo ${ips} | grep -q '\-'; then
+				iptables -t nat -A shadowsocks -m iprange --src-range ${ips} -j RETURN
+			else
+				iptables -t nat -A shadowsocks -s ${ips} -j RETURN
+			fi
+		done
+
+		if [ -n "$internal_hit_ips" ]; then
+			echo "$internal_hit_ips" | while read ips;do
+				if echo ${ips} | grep -q '\-'; then
+					iptables -t nat -A zone_lan_prerouting -m iprange --src-range ${ips} -p tcp -j shadowsocks
+					# iptables -t nat -A zone_lan_prerouting -m iprange --dst-range ${ips} -p tcp -j shadowsocks
+				else
+					# iptables -t nat -A zone_lan_prerouting -d ${ips} -j shadowsocks
+					iptables -t nat -A zone_lan_prerouting -s ${ips} -j shadowsocks
+				fi
+			done
+		else
+			iptables -t nat -A zone_lan_prerouting -p tcp -j shadowsocks
+		fi
+	else
+		iptables -t nat -A zone_lan_prerouting -p tcp -j shadowsocks
+	fi
+fi
+for file in $(find /usr/shellgui/shellguilighttpd/www/apps -type f -maxdepth 2 -regex '.*\.socks5tproxy'); do
+username=$(basename ${file} | cut -d '.' -f1)
+[ -n "${username}" ] && iptables -t nat -A OUTPUT -p tcp -m owner --uid-owner ${username} -j shadowsocks
+done
+iptables -t nat -A shadowsocks -p tcp -j REDIRECT --to-ports ${local_port}
+}
+
+cron_file="/usr/shellgui/shellguilighttpd/www/apps/shadowsocks/root.cron"
+backup_script_dir="/tmp/bw_backup"
+backup_script_ssserver="$backup_script_dir/do_ssserver_bw_backup.sh"
+backup_script_sslocal="$backup_script_dir/do_sslocal_bw_backup.sh"
+backup_script_ssredir="$backup_script_dir/do_ssredir_bw_backup.sh"
+
+minute_s=60
+hour_s=3600
+day_s=86400
+
+#high res intervals
+hr1_interval=2
+hr1_num_intervals=449
+hr1_reset_time=2
+	
+hr2_interval="minute"
+hr2_num_intervals=359
+	
+hr3_interval=$((3*$minute_s))
+hr3_num_intervals=479
+hr3_reset_time=$((3*$minute_s))
+	
+hr4_interval=$((2*$hour_s))
+hr4_num_intervals=359
+hr4_reset_time=$((2*$hour_s))
+
+hr5_interval="day"
+hr5_num_intervals=365
+
+#low res intervals
+lr1_interval="minute"
+lr1_num_intervals=15
+
+lr2_interval=$((15*$minute_s))
+lr2_num_intervals=24
+lr2_reset_time=$((15*$minute_s))
+	
+lr3_interval="hour"
+lr3_num_intervals=24
+
+lr4_interval="day"
+lr4_num_intervals=31
+
+lr5_interval="month"
+lr5_num_intervals=12
+
+
+mon_nums="1 2 3 4 5"
+bw_ids=""
+
+set_shadowsocks_cron_watchdog()
+{
+	# enabled=1 #$( uci get shadowsocks.@shadowsocks[0].enable 2>/dev/null )
+	have_watchdog=1 #$( grep "pidof ${bin_name}" "${cron_file}" )
+	sed -i "/pidof ${bin_name}/d" "${cron_file}"
+	[ $enabled -gt 0 ] && cat <<EOF >> "${cron_file}"
+* * * * * pidof ${bin_name} || /usr/shellgui/shellguilighttpd/www/apps/S1401-shadowsocks.init restart
+EOF
+
+}
+
+shutdown()
+{
+	if [ -e "$backup_script" ] ; then
+		sh "$backup_script" 2>/dev/null
+		rm -rf "$backup_script"
+	fi
+
+	clear_chains
+}
+
+clear_chains()
+{
+	dcft mangle ${bw_name}_down_bw
+	dcft mangle ${bw_name}_up_bw
+}
+
+bw_restore() {
+	bw_id="$1"
+	backup_to_tmp="$2"
+	
+	if [ -e "/usr/data/bwmon/$bw_id.bw" ] ; then
+		bw-padding -i "$bw_id" -h -f /usr/data/bwmon/$bw_id.bw >/dev/null 2>&1
+	elif [ -e "/tmp/data/bwmon/$bw_id.bw" ] ; then
+		bw-padding -i "$bw_id" -h -f /tmp/data/bwmon/$bw_id.bw >/dev/null 2>&1
+	elif [ -e "/usr/data/bwmon/$bw_id" ] ; then
+		bw_trans "/usr/data/bwmon/$bw_id" "/usr/data/bwmon/$bw_id.bw"
+		rm "/usr/data/bwmon/$bw_id"
+		bw-padding -i "$bw_id" -h -f /usr/data/bwmon/$bw_id.bw >/dev/null 2>&1
+	elif [ -e "/tmp/data/bwmon/$bw_id" ] ; then
+		bw_trans "/tmp/data/bwmon/$bw_id" "/usr/data/bwmon/$bw_id.bw"
+		rm "/tmp/data/bwmon/$bw_id"
+		bw-padding -i "$bw_id" -h -f /tmp/data/bwmon/$bw_id.bw >/dev/null 2>&1
+	fi
+
+	if [ "$backup_to_tmp" = "1" ] ; then
+		echo "bw-gain -i \"$bw_id\" -h -f \"/tmp/data/bwmon/$bw_id.bw\" >/dev/null 2>&1" >> "$backup_script"
+	else
+		echo "bw-gain -i \"$bw_id\" -h -f \"/usr/data/bwmon/$bw_id.bw\" >/dev/null 2>&1" >> "$backup_script"
+	fi
+}
+
+initialize() {
+	enabled=1 # $( uci get shadowsocks.@shadowsocks[0].enable 2>/dev/null )
+	if [ $enabled -eq 1 ] ; then
+		# for i in $(seq 1 50); do
+		# local_port=$(netstat -u -t -p -a -e -n 2>/dev/null | awk ' $0 ~/ss-redir/ { gsub(/^.*:/, "", $4) ; print $4 ; } ')
+		# [ -n "${local_port}" ] && break || sleep 1
+		# done
+		# if [ -z "${local_port}" ]; then
+			# touch /tmp/shadowsocks.restart
+			# rm -f /tmp/shadowsocks.firewall.running
+			# exit
+		# else
+			# rm -f /tmp/shadowsocks.restart
+		# fi
+		wan_if=$(uci -P /var/state get network.wan.ifname 2>/dev/null)
+		# vpn_if=$(uci -P /var/state get network.shadowsocks.ifname 2>/dev/null)
+		# vpn_if="ss0"
+		if [ -n "$local_port" ] && [ -n "$wan_if" ] ; then
+			# create shadowsocks bandwidth monitor chains
+# cat <<EOF >/tmp/2
+			iptables -t mangle -N ${bw_name}_down_bw
+			iptables -t mangle -N ${bw_name}_up_bw
+# EOF
+			# first, test if traffic is shadowsocks, otherwise return
+			# traffic is shadowsocks if it's to/from the router itself AND
+			# either to the ORPort/obfsproxy port OR to/from an IP that is a known relay
+			# an ipset of known relays, "shadowsocks_relays" is built by the /usr/sbin/shadowsocks_ipset command
+			# /usr/sbin/update_shadowsocks_ipset
+			# relay_port=1180  #$(uci get shadowsocks.relay.relay_port)
+			# obfsproxy_port=$(uci get shadowsocks.relay.obfsproxy_port)
+			# oport=""
+			# rport=""
+			# if [ "$relay_mode" != "0" ] ; then rport="$relay_port" ; fi
+			# if [ "$relay_mode" = "1" ] && [ -n "$obfsproxy_port" ] && [ "$obfsproxy_port" != "0" ] ; then oport="$obfsproxy_port" ; fi
+
+			# for p in $rport $oport ; do
+# cat <<EOF >>/tmp/2
+				iptables -t mangle -A ${bw_name}_down_bw -p tcp --dport ${local_port} -j CONNMARK --set-mark 0xF0000000/0xF0000000
+				iptables -t mangle -A ${bw_name}_up_bw   -p tcp --sport ${local_port} -j CONNMARK --set-mark 0xF0000000/0xF0000000
+# EOF
+			# done
+# cat <<EOF >>/tmp/2
+			# iptables -t mangle -A ${bw_name}_down_bw -m set --match-set shadowsocks_relays src -j CONNMARK --set-mark 0xF0000000/0xF0000000
+			# iptables -t mangle -A ${bw_name}_up_bw   -m set --match-set shadowsocks_relays dst -j CONNMARK --set-mark 0xF0000000/0xF0000000
+			# iptables -t mangle -A ${bw_name}_down_bw -s 192.168.1.0/24 -j CONNMARK --set-mark 0xF0000000/0xF0000000
+			# iptables -t mangle -A ${bw_name}_up_bw   -d 0.0.0.0/0 -j CONNMARK --set-mark 0xF0000000/0xF0000000
+# EOF
+
+			# add monitoring rules
+			for n in $mon_nums ; do
+				for res in "hr" "lr" ; do
+					interval=$(eval "echo \$$res"$n"_interval")
+					num_intervals=$(eval "echo \$$res"$n"_num_intervals")
+					reset_time=$(eval "echo \$$res"$n"_reset_time")
+					if [ -n "$reset_time" ] ; then reset_time="--reset_time $reset_time" ; fi
+# cat <<EOF >>/tmp/2
+					iptables -t mangle -A ${bw_name}_down_bw  -m bandwidth --id "${bw_name}-$res$n-download-$interval-$num_intervals" --reset_interval $interval --intervals_to_save $num_intervals $reset_time
+					iptables -t mangle -A ${bw_name}_up_bw    -m bandwidth --id "${bw_name}-$res$n-upload-$interval-$num_intervals"   --reset_interval $interval --intervals_to_save $num_intervals $reset_time
+# EOF
+					next_ids="${bw_name}-$res$n-download-$interval-$num_intervals ${bw_name}-$res$n-upload-$interval-$num_intervals"
+					if [ -z "$bw_ids" ] ; then bw_ids="$next_ids" ; else bw_ids="$bw_ids $next_ids" ; fi
+				done
+			done
+
+			#clear connmark we set
+# cat <<EOF >>/tmp/2
+			iptables -t mangle -A ${bw_name}_down_bw -j CONNMARK --set-mark 0x0/0xF0000000
+			iptables -t mangle -A ${bw_name}_up_bw   -j CONNMARK --set-mark 0x0/0xF0000000
+			iptables -t mangle -A ${bw_name}_down_bw -m connmark ! --mark 0xF0000000/0xF0000000 -j RETURN
+			iptables -t mangle -A ${bw_name}_up_bw   -m connmark ! --mark 0xF0000000/0xF0000000 -j RETURN
+# EOF
+
+			# create rules to jump to shadowsocks bandwidth chain
+# cat <<EOF >>/tmp/2
+			iptables -t mangle -A INPUT   -i $wan_if -p tcp -j ${bw_name}_down_bw
+			iptables -t mangle -A OUTPUT  -o $wan_if -p tcp -j ${bw_name}_up_bw
+# EOF
+			# enable backups of bandwidth data 
+			# sed -i "/do_${bw_name}_bw_backup.sh/d" "${cron_file}"
+			cat <<EOF >> "${cron_file}"
+0 0,4,8,12,16,20 * * * $backup_script
+EOF
+
+			mkdir -p "$backup_script_dir"
+			echo "#!/bin/sh" > "$backup_script"
+			chmod 700 "$backup_script"
+
+			for i in $bw_ids ; do
+				is_hr123=$(echo "$i" | egrep "\-hr\-[123]")
+				is_lr123=$(echo "$i" | egrep "\-lr\-[123]")
+				if [ -n "$is_hr123" ] || [ -n "$is_lr123" ]   ; then
+					bw_restore "$i" 1
+				else
+					bw_restore "$i" 0
+				fi
+			done
+		fi
+	fi
+}
+
+set_block_nonovpn() {
+	enabled=$( uci get shadowsocks.@shadowsocks[0].enable 2>/dev/null )
+	client_enabled="false"
+	if [ "$enabled" = "1" ] ; then
+		client_enabled=$(uci get shadowsocks.@shadowsocks[0].mode 2>/dev/null)
+	fi
+	dcft filter block_non_shadowsocks
+	
+	if [ "$client_enabled" = "client" ] ; then
+		do_block=$(uci get shadowsocks.@shadowsocks[0].block_non_shadowsocks 2>/dev/null)
+		
+		
+		if [ "$do_block" = "1" ] || [ "$do_block" = "true" ] ; then
+			iptables -t filter -N block_non_shadowsocks
+			iptables -t filter -A block_non_shadowsocks -d 10.0.0.0/8     -j ACCEPT
+			iptables -t filter -A block_non_shadowsocks -d 172.16.0.0/12  -j ACCEPT
+			iptables -t filter -A block_non_shadowsocks -d 192.168.0.0/16 -j ACCEPT
+			iptables -t filter -A block_non_shadowsocks -j REJECT
+			iptables -t filter -I zone_lan_forward  -i br-lan -o "$wan_if" -j block_non_shadowsocks
+		fi
+	fi
+}
+
+redir_start() {
+echo $$ > /tmp/ss-redir.firewall.running
+	shutdown
+	initialize
+	# set_block_nonovpn
+	# set_shadowsocks_cron_watchdog
+	
+	ssredir_extra_fw_start
+rm /tmp/ss-redir.firewall.running
+}
+
+redir_stop() {
+shutdown
+dcft nat shadowsocks
+}
+
+server_start() {
+echo $$ > /tmp/ss-server.firewall.running
+	shutdown
+	initialize
+	# set_block_nonovpn
+	# set_shadowsocks_cron_watchdog
+rm /tmp/ss-server.firewall.running
+}
+
+server_stop() {
+shutdown
+}
+
+local_start() {
+echo $$ > /tmp/ss-local.firewall.running
+	shutdown
+	initialize
+	# set_block_nonovpn
+	# set_shadowsocks_cron_watchdog
+rm /tmp/ss-local.firewall.running
+}
+
+local_stop() {
+shutdown
+}
+
+int_env () {
+export bw_name=$(echo ${bin_name} | tr -d '-')
+export backup_script=$(eval echo '$'backup_script_${bw_name})
+
+if [ -f /tmp/${bin_name}.firewall.running ] ; then
+	exit
+fi
+}
+case $1 in
+redir_start)
+get_shadowsocks_json
+export bin_name='ss-redir'
+internal_mode=$(echo "$shadowsocks_json" | jshon -e "redir" -e "client_config" -u)
+config_json=$(echo "$shadowsocks_json" | jshon -e "client_configs" -e "$internal_mode" -e "data")
+server_ip=$(echo "$config_json" | jshon -e "server" -u)
+local_port=$(echo "$config_json" | jshon -e "local_port" -u)
+internal_mode=$(echo "$shadowsocks_json" | jshon -e "redir" -e "internal_mode" -u)
+
+int_env
+redir_start
+;;
+redir_stop)
+export bin_name='ss-redir'
+int_env
+redir_stop
+;;
+server_start)
+get_shadowsocks_json
+export bin_name='ss-server'
+config_json=$(echo "$shadowsocks_json" | jshon -e "server" -e "data")
+local_port=$(echo "$config_json" | jshon -e "server_port" -u)
+int_env
+server_start
+;;
+server_stop)
+export bin_name='ss-server'
+int_env
+server_stop
+;;
+local_start)
+get_shadowsocks_json
+export bin_name='ss-local'
+internal_mode=$(echo "$shadowsocks_json" | jshon -e "redir" -e "client_config" -u)
+config_json=$(echo "$shadowsocks_json" | jshon -e "client_configs" -e "$internal_mode" -e "data")
+local_port=$(echo "$config_json" | jshon -e "local_port" -u)
+int_env
+local_start
+;;
+local_stop)
+export bin_name='ss-local'
+int_env
+local_stop
+;;
+set_shadowsocks_cron_watchdog)
+export bin_name='ss-server'
+enabled=$(echo "$shadowsocks_json" | jshon -e "server" -e "enabled" -u)
+set_shadowsocks_cron_watchdog
+export bin_name='ss-local'
+enabled=$(echo "$shadowsocks_json" | jshon -e "local" -e "enabled" -u)
+set_shadowsocks_cron_watchdog
+export bin_name='ss-redir'
+enabled=$(echo "$shadowsocks_json" | jshon -e "redir" -e "enabled" -u)
+set_shadowsocks_cron_watchdog
+;;
+esac

@@ -1,0 +1,129 @@
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <sys/ioctl.h>
+#define PORT 1111
+//#define SERVER_IP "127.0.0.1"
+#define MAXLEN 64
+/*字符串替换start*/ 
+//替换第一处 
+/*void replaceFirst(char *str1,char *str2,char *str3)  
+{  
+    char str4[strlen(str1)+1];  
+    char *p;  
+    strcpy(str4,str1);  
+    if((p=strstr(str1,str2))!=NULL) 
+    {  
+        while(str1!=p&&str1!=NULL)
+        {  
+            str1++;  
+        }  
+        str1[0]='\0';
+        strcat(str1,str3);
+        strcat(str1,strstr(str4,str2)+strlen(str2));
+    }  
+} 
+//替换所有 
+void replace(char *str1,char *str2,char *str3)  
+{  
+    while(strstr(str1,str2)!=NULL)  
+    {  
+        replaceFirst(str1,str2,str3);  
+    }  
+}  */
+/*字符串替换end*/
+int read_file(const char *filename, char *dest, int maxlen)  
+{  
+ FILE *file;  
+ int pos, temp, i; 
+
+ //打开文件  
+ file = fopen(filename, "r");  
+ if( NULL == file )  
+ {  
+  fprintf(stderr, "open %s error\n", filename);  
+  return -1;  
+ } 
+
+ pos = 0;  
+ //循环读取文件中的内容  
+ for(i=0; i<MAXLEN-1; i++)  
+ {  
+  temp = fgetc(file);  
+  if( EOF == temp )  
+   break;  
+  dest[pos++] = temp;  
+ }  
+ //关闭文件
+ fclose(file);
+ //在数组末尾加0  
+ dest[pos] = 0; 
+
+ return pos;  
+} 
+
+main()
+{
+	int s,len;
+	struct sockaddr_in addr;
+	int addr_len =sizeof(struct sockaddr_in);
+	//char buffer[20];
+	/* 建立socket*/
+	if((s = socket(AF_INET,SOCK_DGRAM,0))<0){
+		perror("socket");
+		exit(1);
+	}
+
+   const int opt=1;
+   int nb=0;
+   nb = setsockopt(s, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt));
+   if(nb == -1){
+    printf("set broadcast socket error!\n");
+    return -9;
+}
+	/* 填写sockaddr_in*/
+	bzero(&addr,sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(PORT);
+	//addr.sin_addr.s_addr = inet_addr(SERVER_IP);
+	addr.sin_addr.s_addr=htonl(INADDR_BROADCAST); 
+
+    char buffer1[20];  
+    char buffer2[18];
+    char buffer3[MAXLEN];
+    char buffer4[64];
+
+    //set as non_block mode
+    unsigned long ul=1;
+    ioctl(s,FIONBIO,(unsigned long *)&ul);
+
+	while(1){
+		
+		system("/etc/set.sh");
+ 		int len1 = read_file("/tmp/wwanip", buffer1, MAXLEN);
+		int len2 = read_file("/sys/class/net/wifi0/address",buffer2,18);
+		//replace(buffer2,":","");
+		sprintf(buffer3,"%d@%s@%s\r\n",1,buffer1,buffer2);
+		//bzero(buffer,sizeof(buffer));
+		/* 从标准输入设备取得字符串*/
+		//len =read(STDIN_FILENO,buffer,sizeof(buffer));
+		/* 将字符串传送给server端*/
+		sendto(s,buffer3,strlen(buffer3),0,(struct sockaddr *)&addr,addr_len);
+		/* 接收server端返回的字符串*/
+		len = recvfrom(s,buffer4,sizeof(buffer4),0,(struct sockaddr *)&addr,&addr_len);
+		if(strstr(buffer4,"6@")){
+			sleep(3);
+		system("echo in > /sys/class/gpio/gpio15/direction");		
+		}
+		//printf("receive: %s",buffer);
+		sleep(5);
+		
+	}
+  //return 0;
+}
+

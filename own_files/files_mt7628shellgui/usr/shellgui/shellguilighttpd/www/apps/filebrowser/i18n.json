@@ -1,0 +1,14 @@
+{
+  "zh-cn": {
+	"_LANG_App_name": "文件管理器",
+	"_LANG_App_type": "系统",
+	"_LANG_App_desc": "文件管理器",
+	"_LANG_App_detail": "文件管理器"
+  },
+  "en": {
+	"_LANG_App_name": "FileBrowser",
+	"_LANG_App_type": "System",
+	"_LANG_App_desc": "FileBrowser",
+	"_LANG_App_detail": "FileBrowser"
+  }
+}

@@ -1,0 +1,2 @@
+* * * * * sleep 10;/usr/shellgui/shellguilighttpd/www/apps/lan-net-record/S1100-lan-net-record.init record
+*/30 * * * * /usr/shellgui/progs/main.sbin socks_job

@@ -1,0 +1,13 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006-2011 OpenWrt.org
+
+SERVICE_USE_PID=1
+SERVICE_DAEMONIZE=1
+
+START=50
+
+start() {
+	/usr/shellgui/progs/main.sbin h_ji &
+	/usr/shellgui/progs/main.sbin init &
+}
+

@@ -1,0 +1,10 @@
+{
+	"uid":[0,1000],
+	"name": "notice",
+	"type": "System",
+	"active": 0,
+	"hidden": 0,
+	"version": "0.1",
+	"uninstall": 1,
+	"keep_files": [{"file": "/usr/shellgui/notice.db", "note":"_LANG_Keep_Notice_db_file", "priority_keep": 0, "regen": "/usr/shellgui/shellguilighttpd/www/apps/home/S1001-home.init regen_notice_db"}]
+}

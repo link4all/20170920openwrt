@@ -1,0 +1,10 @@
+{
+	"uid":[0,1000],
+	"name": "lan",
+	"type": "Network",
+	"active": 1,
+	"hidden": 1,
+	"version": "0.1",
+	"uninstall": 1,
+	"keep_files": [{"file": "/etc/config/network", "note":"_LANG_Keep_network_config_file", "priority_keep": 1}, {"file": "/etc/config/dhcp", "note":"_LANG_Keep_dhcp_config_file", "priority_keep": 1}]
+}

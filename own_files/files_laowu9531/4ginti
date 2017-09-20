@@ -1,0 +1,36 @@
+#!/bin/sh /etc/rc.common  
+#!/bin/sh /etc/rc.common  
+# Copyright (C) 2008 OpenWrt.org      
+  
+START=98  
+#执行的顺序，按照字符串顺序排序并不是数字排序  
+  
+USE_PROCD=1  
+#使用procd启动
+APN="3gnet"  
+  
+CM="/bin/quectel-CM"  
+  
+start_service() {  
+    procd_open_instance  
+    #创建一个实例， 在procd看来一个应用程序可以多个实例  
+    #ubus call service list 可以查看实例  
+    #定义respawn参数，告知procd当binloader程序退出后尝试进行重启  
+    procd_set_param command $CM -s $APN -f /tmp/4g.log  
+    procd_set_param respawn 
+    #CM执行的命令是"/bin/quectel-CM"， 若后面有参数可以直接在后面加上  
+  
+    procd_close_instance  
+    #关闭实例  
+}  
+#start_service 函数必须要重新定义  
+  
+stop_service() {  
+    rm -f /var/run/quectel-CM.pid  
+}  
+#stop_service重新定义，退出服务器后需要做的操作  
+  
+restart() {  
+    stop  
+    start  
+}   

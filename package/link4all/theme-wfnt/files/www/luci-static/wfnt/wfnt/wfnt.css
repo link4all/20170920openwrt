@@ -1,0 +1,240 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+body{
+	margin:0;
+	padding:0;
+}
+p{
+	margin:0;
+}
+ul, li{
+	margin:0;
+	padding:0;
+}
+/* wfnt : abbr for wifiant */
+.wfnt_mui{
+	height:100%;
+	background-color:#fff;
+}
+.wfnt_head .main{
+	position:relative;
+	left:0;
+	height:60px;
+	font-size: 12px;
+	background-color:#4CA9D8;
+}
+.wfnt_head .scale_bg{
+	position:absolute;
+	left:0;
+	top:0;
+	z-index:1;
+	height:100%;
+	width:100%;
+	border:none;
+}
+.wfnt_head .logo_wrap{
+	width:200px; 
+	padding-top:16px;
+	margin-left:25px;
+}
+.wfnt_head .logo{
+	position:absolute;
+	left:40px;
+	top:18px;
+	z-index:2;
+}
+.wfnt_head .user_bar{
+	position:absolute;
+	right:12px;
+	top:36px;
+	z-index:2;
+}
+.wfnt_head .user_bar a.btn{
+	margin-left:24px;
+	color:white;
+	text-decoration:none;
+}
+.wfnt_head .user_bar a.btn:hover{
+	color:#FC0;
+}
+
+.wfnt_head .sep_line{
+	height:1px;
+	font-size:1px;
+	background-color:#999;
+}
+
+.wfnt_cols_layout{
+	min-height:100%;
+	background:url(menu_bg.jpg) repeat-y 0 top;
+}
+.wfnt_cols_layout .wfnt_side{
+	float:left;
+	width:205px;
+	font-size: 12px;
+	min-height:100%;
+}
+.wfnt_cols_layout .wfnt_main{
+	margin-left:205px;
+	min-height:100%;
+}
+/* wfnt_single_col : just main col */
+.wfnt_single_col{
+	background:none;
+}
+.wfnt_single_col .wfnt_side{
+	display:none;
+}
+.wfnt_single_col .wfnt_main{
+	margin:2em auto;
+}
+
+.wfnt_menu{
+	height:100%;
+	width:204px;
+	overflow:hidden;
+	vertical-align:top;
+}
+.wfnt_menu ul{
+	list-style:none;
+}
+.wfnt_menu>ul{
+	margin-bottom:50px;
+	padding-top:6px;
+	list-style:none;
+}
+.wfnt_menu li{
+	display:block;
+	clear:both;
+}
+.wfnt_menu > ul > li{
+	border-top:solid 1px #f8f8f8;
+	border-bottom:solid 1px #ddd;
+	padding:8px 12px 8px 18px;
+}
+.wfnt_menu > ul > li:first-child{
+	border-top:none;
+}
+.wfnt_menu li a{
+	display:block;
+	margin-top:3px;
+	padding-left:36px;
+	width:200px;
+	height:24px;
+	line-height:24px;
+	overflow:hidden;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	text-decoration:none;
+	color:#000;
+}
+.wfnt_menu li a:hover{
+	color:#F90;
+}
+.wfnt_menu li a.ctg{
+	line-height:20px;
+	font-size:16px;
+	background:0 0 no-repeat;
+	background-image:url(menu_icons.gif);
+}
+.wfnt_menu li a.ctg .text{
+	padding-top:3px;
+}
+.wfnt_menu li a.active{
+	font-weight:bold;
+	color:#069;
+}
+.wfnt_menu li .indent_icon,
+.wfnt_menu li .fold_icon{
+	float:left;
+	width:14px;
+	height:14px;
+	margin-top:24px;
+	margin-right:6px;
+}
+.wfnt_menu li .fold_icon{
+	cursor:pointer;
+	background:url(triangles.gif) no-repeat 0 0;
+}
+.wfnt_menu li .fold_icon_collapsed{
+	background-position:0px -14px;
+}
+/* sublist*/
+.wfnt_menu > ul > li ul{
+	padding-left:20px;
+}
+.wfnt_menu > ul > li ul li a{
+	padding-left:17px;
+}
+.wfnt_menu > ul > li ul li ul a{
+	padding-left:10px;
+}
+
+.wfnt_menu li a.icon_home{
+	background-position:0 -1px;
+}
+.wfnt_menu li a.icon_server{
+	background-position:0 -24px;
+}
+.wfnt_menu li a.icon_msite{
+	background-position:0 -48px;
+}
+.wfnt_menu li a.icon_wifi_device{
+	background-position:0 -72px;
+}
+.wfnt_menu li a.icon_wifi_user{
+	background-position:0 -96px;
+}
+.wfnt_menu li a.icon_stat{
+	background-position:0 -120px;
+}
+.wfnt_menu li a.icon_setting{
+	background-position:0 -144px;
+}
+.wfnt_menu li a.icon_wifi_pos{
+	background-position:0 -168px;
+}
+.wfnt_menu li a.icon_wifi_camera{
+	background-position:0 -192px;
+}
+.wfnt_menu li a.icon_appcenter{
+	background-position:0 -216px;
+}
+.wfnt_menu li a.icon_bizmgmt{
+	background-position:0 -240px;
+}
+.wfnt_menu li a.icon_network{
+	background-position:0 -264px;
+}
+.wfnt_mui .clearer{
+	clear:both;
+	height:0;
+	overflow:hidden;
+}
+
+/* overrides openwrt defaults */
+.wfnt_mui #maincontainer{
+	width:100%;
+}
+.wfnt_mui #maincontent{
+	padding:2em 3em;
+	border:none;
+	background-color:#fff;
+}
+.wfnt_mui #maincontent .cbi-section{
+	margin:2em 0;
+}
+/* luci copyright */
+.wfnt_mui .luci{
+	margin-top:50px;
+	padding:2em 0;
+	border-top:solid 1px #ddd;
+	position:static;
+	text-align:center;
+}
+
+.wfnt_mui table.cbi-section-table .cbi-section-table-cell{
+	white-space:normal;
+}

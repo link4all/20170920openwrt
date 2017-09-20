@@ -1,0 +1,69 @@
+#!/bin/sh
+#
+# Copyright (C) 2011 OpenWrt.org
+#
+device_modem=/dev/ttyUSB3
+device_at=/dev/ttyUSB2
+
+uci set network.4g=interface
+uci set network.4g.device=${device_modem}
+uci set network.4g.proto='3g'
+uci set network.4g.service='umts'
+uci set network.4g.apn='3gnet'
+uci set network.4g.pincode=''
+uci set network.4g.username=''
+uci set network.4g.password=''
+uci set network.4g.dialnumber='*99#'
+
+uci set network.pptp=interface
+uci set network.pptp.proto=pptp
+uci set network.l2tp=interface
+uci set network.l2tp.proto=l2tp
+
+uci commit network
+
+uci set luci.main.mediaurlbase='/luci-static/wfnt'
+uci commit luci
+uci set firewall.@zone[1].network="wan wan6 wwan 4g pptp l2tp"
+uci commit firewall
+
+uci set system.@system[0].zonename='Asia/Shanghai'
+uci set system.@system[0].timezone='CST-8'
+uci commit system
+
+
+#mac=`cat /sys/class/net/ra0/address |tr -d  ':'`
+. /lib/functions.sh
+. /lib/functions/system.sh
+mac=`mtd_get_mac_binary factory 46 |tr -d ':'`
+#4g modem info：
+a=$(gcom -d ${device_at} -s /etc/gcom/getstrength.gcom  |grep  "," |cut -d: -f2|cut -d, -f1)
+rssi_percent=$(printf "%d%%\n" $((a*100/31)))
+sim_status=$(gcom -d ${device_at} -s /etc/gcom/getsimstatus.gcom )
+model=$(gcom -d ${device_at} -s /etc/gcom/getcardinfo.gcom |head -n3|tail -n1|tr -d '\r')
+rev=$(gcom -d ${device_at} -s /etc/gcom/getcardinfo.gcom |grep -i rev |cut -d: -f2-|tr -d '\r')
+imei=$(gcom -d ${device_at} -s /etc/gcom/getimei.gcom)
+imsi=$(gcom -d ${device_at} -s /etc/gcom/getimsi.gcom)
+iccid=$(gcom -d ${device_at} -s /etc/gcom/iccid_forge.gcom|cut -d: -f2)
+roam=$(gcom -d ${device_at} -s /etc/gcom/checkregister.gcom )
+lac=$(gcom -d ${device_at} -s /etc/gcom/getlaccellid.gcom )
+reg_net=$(gcom -d ${device_at} -s /etc/gcom/getregisterednetwork.gcom |cut -d: -f2- )
+
+uci set 4g.server.name='router.link-4all.com'
+uci set 4g.server.sn="${mac}"
+uci set 4g.modem.device="${device_at}"
+uci set 4g.modem.rssi="$rssi_percent"
+uci set 4g.modem.sim_status="$sim_status"
+uci set 4g.modem.model="$model"
+uci set 4g.modem.rev="$rev"
+uci set 4g.modem.imei="$imei"
+uci set 4g.modem.imsi="$imsi"
+uci set 4g.modem.iccid="$iccid"
+uci set 4g.modem.roam="$roam"
+uci set 4g.modem.lac="$lac"
+uci set 4g.modem.reg_net="$reg_net"
+uci commit 4g
+
+
+
+

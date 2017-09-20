@@ -1,0 +1,11 @@
+<svg width="<%= ${xsvg_height:-64} %>" height="<%= ${xsvg_height:-64} %>" id="<%= ${xsvg_id} %>">
+<g transform="scale(0.32,0.32)">
+  <g transform="translate(100,100) scale(0.8,0.8)" class="svg_fill" stroke="none" stroke-width="8">
+	<rect x="-100" y="-100" id="telnetdWindow" width="200" height="200" rx="100"></rect>
+	<g transform="translate(-120,-100)" fill="white" stroke="none">
+	  <polygon points="102.083,100 87.5,100 87.5,114.285 72.917,114.285 72.917,128.571 58.333,128.571 58.333,114.285  72.917,114.285 72.917,100 87.5,100 87.5,85.714 72.917,85.714 72.917,71.428 58.333,71.428 58.333,57.143 72.917,57.143 72.917,71.428 87.5,71.428 87.5,85.714 102.083,85.714 102.083,100 "/>
+	  <polygon id="inputIcon" points="160.416,128.571 116.667,128.571 116.667,114.285 160.416,114.285 160.416,128.571 "/>
+	</g>
+  </g>
+</g>
+</svg>

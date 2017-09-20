@@ -1,0 +1,7 @@
+setenv.add-environment = ( "PATH" => "/usr/bin:/usr/sbin:/bin:/sbin" )
+server.breakagelog = "/tmp/cgierror.log"
+static-file.exclude-extensions = ( ".cgi" )
+
+cgi.assign      = (
+        ".cgi"  => ""
+)

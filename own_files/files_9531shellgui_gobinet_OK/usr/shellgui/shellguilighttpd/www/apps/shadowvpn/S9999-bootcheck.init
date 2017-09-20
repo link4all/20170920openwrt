@@ -1,0 +1,13 @@
+#!/bin/sh
+start() {
+if [ $(uci get shadowvpn.@shadowvpn[0].enable) -gt 0 ]; then
+	if uci get shadowvpn.@shadowvpn[0].mode | grep -q client; then
+	ping -c 1 -W 2 $(uci get shadowvpn.@shadowvpn[0].server_iner_ip) | grep  -q ttl || /etc/init.d/shadowvpn stop &>/dev/null;/etc/init.d/shadowvpn start &>/dev/null
+	fi
+fi
+}
+case $1 in
+start)
+start
+;;
+esac

@@ -1,0 +1,71 @@
+#!/bin/sh
+
+ussid=''
+upass=''
+if [ -n "$QUERY_STRING" ]; then
+    echo "Content-Type: application/json"
+    echo ""
+    #echo $QUERY_STRING
+fi
+ 	ssid=`echo $QUERY_STRING | cut -d'&' -f 1 | cut -d'=' -f 2`
+	passwd=`echo $QUERY_STRING | cut -d'&' -f 2 | cut -d'=' -f 2`
+
+security=`echo $QUERY_STRING | cut -d'&' -f 3 | cut -d'=' -f 2`
+channel=`echo $QUERY_STRING | cut -d'&' -f 4 | cut -d'=' -f 2`
+if [ -z $channel ]; then 
+   if [ `echo "$QUERY_STRING" |grep 5g` ]; then
+	channel=`cat /tmp/ssids5 |grep $ssid |cut -f 1 -d" "`
+	security=`cat /tmp/ssids5 |grep $ssid | cut  -b 58-80 |sed s/[[:space:]]//g`
+	  #channel=`echo $QUERY_STRING | cut -d'&' -f 3 | cut -d'=' -f 2`
+	  #security=`echo $QUERY_STRING | cut -d'&' -f 4 | cut -d'=' -f 2`
+	  #enctype=`echo $QUERY_STRING | cut -d'&' -f 5 | cut -d'=' -f 2`
+      else
+      	channel=`cat /tmp/ssids |grep $ssid |cut -f 1 -d" "`
+	security=`cat /tmp/ssids |grep $ssid | cut  -b 58-80 |sed s/[[:space:]]//g`
+   fi
+  fi
+	echo $ssid
+	echo $passwd
+	echo $security
+	echo $channel
+	#echo $enctype
+		if [ "$security"x = "WPA1PSKWPA2PSK/TKIPAES"x ]; then
+			      umode="WPA2PSK"
+        		uencryp="AES"
+		elif [ "$security"x = "WPA1PSKWPA2PSK/AES"x ]; then
+			      umode="WPA2PSK"
+        		uencryp="AES"
+		elif [ "$security"x = "WPA2PSK/AES"x ]; then
+        		umode="WPA2PSK"
+        		uencryp="AES"
+  	  	elif [ "$security"x = "WPA2PSK/TKIP"x ]; then
+        		umode="WPA2PSK"
+	        	uencryp="TKIP"
+   		elif [ "$security"x = "WPAPSK/TKIPAES"x ]; then
+        		umode="WPAPSK"
+	        	uencryp="TKIP"
+		elif [ "$security"x = "WPAPSK/AES"x ]; then
+   			umode="WPAPSK"
+        	uencryp="AES"
+		elif [ "$security"x = "WPAPSK/TKIP"x ]; then
+    		umode="WPAPSK"
+        	uencryp="TKIP"
+		elif [ "$security"x = "WEP"x ]; then
+    		umode="WEP"
+        	uencryp="WEP"
+   		fi
+
+
+		uci set wireless.mt7628.channel=$channel
+		uci set wireless.@wifi-iface[0].ApCliSsid=$ssid
+		uci set wireless.@wifi-iface[0].ApCliEnable=1
+		uci set wireless.@wifi-iface[0].ApCliWPAPSK=$passwd
+		uci set wireless.@wifi-iface[0].ApCliAuthMode=$umode	
+		uci set wireless.@wifi-iface[0].ApCliEncrypType=$uencryp
+		uci delete wireless.mt7628.htmode
+		uci commit
+		
+
+		echo "network will be restarted in 1 minute!"
+		/etc/init.d/network restart 1>&- 2>&-
+		

@@ -1,0 +1,174 @@
+#!/bin/sh
+
+auth() {
+[ -f /usr/shellgui/shellguilighttpd/www/apps/wire-ap/ap-conf.txt ] && . /usr/shellgui/shellguilighttpd/www/apps/wire-ap/ap-conf.txt
+	if [ -n "${REMOTE_ADDR}" ]; then
+	gateway="${REMOTE_ADDR}"
+	else
+	gateway=$(echo "$status_str" | jshon -e "route" -e 0 -e "nexthop" -u)
+	[ "$gateway" = "0.0.0.0" ] && gateway=$(echo "$status_str" | jshon -e "route" -e 1 -e "nexthop" -u)
+	[ -z "${gateway}" ] && return 1
+	fi
+# status_str=$(ubus call network.interface.wan status)
+gateway=$(echo "$status_str" | jshon -e "route" -e 0 -e "nexthop" -u)
+[ "$gateway" = "0.0.0.0" ] && gateway=$(echo "$status_str" | jshon -e "route" -e 1 -e "nexthop" -u)
+[ -z "${gateway}" ] && return 1
+echo '{"action":"login_ap","ip": "'"$gateway"'", "port":64009, "username":"apctrl", "password": "apctrl"}' | /usr/shellgui/progs/main.sbin login_ap
+}
+stop() {
+cat <<'EOF' >/tmp/shellguid.tmp
+#!/bin/sh /etc/rc.common
+START=99
+USE_PROCD=1
+stop_service() {
+killall shellguid
+}
+EOF
+chmod +x /tmp/shellguid.tmp;/tmp/shellguid.tmp stop
+}
+start() {
+cat <<'EOF'>/tmp/shellguid.tmp
+#!/bin/sh /etc/rc.common
+START=99
+USE_PROCD=1
+start_service() {
+procd_open_instance
+procd_set_param command  /bin/shellguid
+procd_set_param respawn ${respawn_retry:-0}
+procd_close_instance
+}
+EOF
+chmod +x /tmp/shellguid.tmp;/tmp/shellguid.tmp start
+auth
+}
+suckhim() {
+[ -f /usr/shellgui/shellguilighttpd/www/apps/wire-ap/ap-conf.txt ] && . /usr/shellgui/shellguilighttpd/www/apps/wire-ap/ap-conf.txt
+	if [ -n "${REMOTE_ADDR}" ]; then
+	gateway="${REMOTE_ADDR}"
+	else
+	gateway=$(echo "$status_str" | jshon -e "route" -e 0 -e "nexthop" -u)
+	[ "$gateway" = "0.0.0.0" ] && gateway=$(echo "$status_str" | jshon -e "route" -e 1 -e "nexthop" -u)
+	[ -z "${gateway}" ] && return 1
+	fi
+
+# status_str=$(ubus call network.interface.wan status)
+# gateway=$(echo "$status_str" | jshon -e "route" -e 0 -e "nexthop" -u)
+# [ "$gateway" = "0.0.0.0" ] && gateway=$(echo "$status_str" | jshon -e "route" -e 1 -e "nexthop" -u)
+# [ -z "${gateway}" ] && return 1
+cpu_usage=$(shellgui '{"action": "get_cpu_usage"}' | jshon -e "avg" -u | tr -d '%')
+mem_usage=$(shellgui '{"action": "get_mem_status"}' | jshon -e "mem" -e "usage" -u | tr -d '%')
+
+# wan_ip=$(echo "$status_str" | jshon -e "ipv4-address" -e 0 -e "address" -u)
+wan_dev=$(ubus call network.interface.wan status | jshon -e "device" -u)
+mac=$(shellgui '{"action": "get_ifces_status"}' | jshon -e "${wan_dev}" -e "mac" -u)
+
+eval $(uci show wireless.@wifi-iface[0] | sed -e 's/wireless\.[a-z0-9]*\.//g' -e '/=wifi-iface/d')
+
+post_data='{"Enc": "'"${encryption}"'","Key": "'"${key}"'","Uptimes": '$(shellgui '{"action": "get_uptime"}' | jshon -e "uptime")',"Loads_pmem": '"${mem_usage}"',"Loads_pcpu": '"${cpu_usage}"',"Clients": '$(/usr/shellgui/progs/main.sbin  get_ap_clients wlan0 | jshon -l)',"Version": "'$(jshon -e "version" -u < /usr/shellgui/shellguilighttpd/www/apps/wire-ap/config.json)'", "IP": "'"${wan_ip}"'", "Mac": "'"${mac}"'","SSID":"'$(uci get wireless.@wifi-iface[0].ssid)'"}'
+
+wget -q -T 3 -t 1 --header="Content-Type: application/json" --post-data="${post_data}" "http://${gateway}:64009/suckme.cgi" -O /dev/null
+}
+
+update() {
+[ -f /usr/shellgui/shellguilighttpd/www/apps/wire-ap/ap-conf.txt ] && . /usr/shellgui/shellguilighttpd/www/apps/wire-ap/ap-conf.txt
+
+# status_str=$(ubus call network.interface.wan status)
+wan_ip=$(echo "$status_str" | jshon -e "ipv4-address" -e 0 -e "address" -u)
+
+if [ "${wan_ip}" != "${apip}" ]; then
+suckhim
+else
+	if [ -n "${REMOTE_ADDR}" ]; then
+	gateway="${REMOTE_ADDR}"
+	else
+	gateway=$(echo "$status_str" | jshon -e "route" -e 0 -e "nexthop" -u)
+	[ "$gateway" = "0.0.0.0" ] && gateway=$(echo "$status_str" | jshon -e "route" -e 1 -e "nexthop" -u)
+	[ -z "${gateway}" ] && return 1
+	fi
+
+wan_origin=$(uci get network.wan.bak_ap_ifname)
+
+wan_dev=$(ubus call network.interface.wan status | jshon -e "device" -u)
+mac=$(shellgui '{"action": "get_ifces_status"}' | jshon -e "${wan_dev}" -e "mac" -u)
+
+cpu_usage=$(shellgui '{"action": "get_cpu_usage"}' | jshon -e "avg" -u | grep -Eo '^[0-9]*')
+mem_usage=$(shellgui '{"action": "get_mem_status"}' | jshon -e "mem" -e "usage" -u | grep -Eo '^[0-9]*')
+uptime=$(shellgui '{"action": "get_uptime"}' | jshon -e "uptime")
+clients_str=$(/usr/shellgui/progs/main.sbin  get_ap_clients wlan0)
+clients=$(echo "${clients_str}" | jshon -l)
+version=$(jshon -e "version" -u < /usr/shellgui/shellguilighttpd/www/apps/wire-ap/config.json)
+bw_status=$(shellgui '{"action": "ifces_bw_status", "session": "ac-ap"}')
+diff_rx=$(echo "${bw_status}" | jshon -e "${wan_origin}" -e "diff_rx")
+diff_tx=$(echo "${bw_status}" | jshon -e "${wan_origin}" -e "diff_tx")
+
+post_data='{
+"action": "ac_update_ap",
+"ap_update": {"Mac":"'"${mac}"'",
+"Clients":'${clients}',
+"Uptimes":'${uptime}',
+"Loads_pmem":'${mem_usage}',
+"Loads_pcpu":'${cpu_usage}',
+"BW_up":'${diff_tx}',
+"BW_down":'${diff_rx}'
+},"clientrecord": '"${clients_str}"'
+}'
+wget -q -T 3 -t 1 --load-cookies=/tmp/ac_ap.cookie --header="Content-Type: application/json" --post-data="${post_data}" "http://${gateway}:64009/" -O /tmp/ap_work.out
+fi
+}
+
+status_str=$(ubus call network.interface.wan status)
+case $1 in
+update)
+[ -f /usr/shellgui/shellguilighttpd/www/apps/wire-ap/S1100-wire-ap.init.enabled ] || exit
+update
+status=$(jshon -e "status" < /tmp/ap_work.out)
+if [ $status -eq 0 ]; then
+aplan_type=$(uci get network.aplan.type 2>/dev/null  | tr -d '\n')
+	if [ "$aplan_type" != "bridge" ]; then
+		cat /usr/shellgui/shellguilighttpd/www/apps/wire-ap/ap_set.txt | /usr/shellgui/progs/main.sbin edit_ap_set
+		cat <<EOF > /usr/shellgui/shellguilighttpd/www/apps/wire-ap/hotplug/index.html
+Works
+EOF
+		/etc/init.d/network restart &>/dev/null
+	fi
+exit
+elif [ -z "$status" ]; then
+/usr/shellgui/progs/main.sbin wan_reconn wan
+update
+status=$(jshon -e "status" < /tmp/ap_work.out)
+fi
+if [ $status -eq 255 ]; then
+auth && update
+elif [ $status -eq 254 ]; then
+# /usr/shellgui/progs/main.sbin disable_ap_set
+suckhim
+elif [ $status -eq 253 ]; then
+# 禁用
+aplan_type=$(uci get network.aplan.type 2>/dev/null | tr -d '\n')
+	if [ "$aplan_type" = "bridge" ]; then
+		/usr/shellgui/progs/main.sbin disable_ap_set
+		cat <<EOF > /usr/shellgui/shellguilighttpd/www/apps/wire-ap/hotplug/index.html
+Disabled
+EOF
+		/etc/init.d/network restart &>/dev/null
+	fi
+elif [ $status -eq 252 ]; then
+# 流量超
+aplan_type=$(uci get network.aplan.type 2>/dev/null  | tr -d '\n')
+	if [ "$aplan_type" = "bridge" ]; then
+		/usr/shellgui/progs/main.sbin disable_ap_set
+		cat <<EOF > /usr/shellgui/shellguilighttpd/www/apps/wire-ap/hotplug/index.html
+Over BW
+EOF
+		/etc/init.d/network restart &>/dev/null
+	fi
+fi
+
+;;
+start)
+start
+;;
+auth)
+auth
+;;
+esac

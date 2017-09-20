@@ -1,0 +1,10 @@
+{
+	"uid":[0,1000],
+	"name": "usb-tethering-modem",
+	"type": "Netowrk",
+	"active": 1,
+	"hidden": 0,
+	"version": "0.1",
+	"uninstall": 1,
+	"keep_files": []
+}

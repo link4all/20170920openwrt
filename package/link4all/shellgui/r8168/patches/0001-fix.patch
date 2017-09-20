@@ -1,0 +1,22 @@
+--- a/src/r8168_n.c
++++ b/src/r8168_n.c
+@@ -17542,7 +17542,8 @@
+ 
+     RTL_NET_DEVICE_OPS(rtl8168_netdev_ops);
+ 
+-    SET_ETHTOOL_OPS(dev, &rtl8168_ethtool_ops);
++    // SET_ETHTOOL_OPS(dev, &rtl8168_ethtool_ops);
++    dev->ethtool_ops = &rtl8168_ethtool_ops;
+ 
+     dev->watchdog_timeo = RTL8168_TX_TIMEOUT;
+     dev->irq = pdev->irq;
+@@ -19119,7 +19120,8 @@
+ {
+     struct rtl8168_private *tp = netdev_priv(dev);
+ 
+-    PREPARE_DELAYED_WORK(&tp->task, task);
++    // PREPARE_DELAYED_WORK(&tp->task, task);
++    INIT_DELAYED_WORK(&tp->task, task);
+     schedule_delayed_work(&tp->task, 4);
+ }
+ #endif

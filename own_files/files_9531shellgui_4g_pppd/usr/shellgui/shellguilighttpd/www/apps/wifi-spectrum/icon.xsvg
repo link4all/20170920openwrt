@@ -1,0 +1,13 @@
+<svg width="<%= ${xsvg_height:-64} %>" height="<%= ${xsvg_height:-64} %>" id="<%= ${xsvg_id} %>">
+<g transform="scale(0.32,0.32)">
+  <g transform="translate(100,100)">
+	<g transform="translate(-100,-100)">
+	  <polyline fill="none" class="svg_stroke" stroke-width="10" points="35,40 35,160 175,160 "/>
+	  <path id="spec_back_dash" d="M 40,160 q 50,-250 100,0l100,0" stroke="none" class="svg_fill" opacity="0"></path>
+	  <path id="spec_back_solid" d="M 60,160 q 55,-150 110,0l110,0" stroke="none" class="svg_fill" opacity="0"/>
+	  <path id="spec_line_dash" d="M 40,160 q 50,-250 100,0" class="svg_stroke" stroke-width="6" fill="none" stroke-dasharray="15"></path>
+	  <path id="spec_line_solid" d="M 60,160 q 55,-150 110,0" class="svg_stroke" stroke-width="6" fill="none" />
+	</g>
+  </g>
+</g>
+</svg>

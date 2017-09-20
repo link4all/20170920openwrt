@@ -1,0 +1,1 @@
+0 */2 * * * sleep 35; /usr/shellgui/progs/main.sbin sent_backup 1

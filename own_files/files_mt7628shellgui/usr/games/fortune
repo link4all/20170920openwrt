@@ -1,0 +1,7 @@
+#!/bin/sh
+mac=$(shellgui '{"action": "get_ifce", "dev": "eth0"}' | jshon -e "mac" -u)
+uptimes=$(shellgui '{"action": "get_uptime"}' | jshon -e "formatted" -j)
+release_info=$(shellgui '{"action": "get_release_info"}')
+cat <<EOF
+{"mac": "$mac", "uptimes": $uptimes, "release_info": $release_info}
+EOF

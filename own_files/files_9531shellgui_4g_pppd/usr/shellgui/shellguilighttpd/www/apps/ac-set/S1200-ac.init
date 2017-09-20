@@ -1,0 +1,124 @@
+#!/bin/sh
+stop(){
+cat <<'EOF' >/tmp/whsnbg.tmp
+#!/bin/sh /etc/rc.common
+START=99
+USE_PROCD=1
+stop_service() {
+killall whsnbg
+}
+EOF
+chmod +x /tmp/whsnbg.tmp;/tmp/whsnbg.tmp stop
+rm -f /tmp/whsnbg.tmp
+cat <<'EOF' >/tmp/shellguisd.tmp
+#!/bin/sh /etc/rc.common
+START=99
+USE_PROCD=1
+stop_service() {
+pidof shellguisd | xargs kill -9
+}
+EOF
+chmod +x /tmp/shellguisd.tmp;/tmp/shellguisd.tmp stop
+rm -f /tmp/shellguisd.tmp
+}
+check_db(){
+[ ! -f "$1" ] && return 0;[ $(ls -l "$1" 2>/dev/null | awk '{print $5}') -eq 0 ] && return 0
+}
+regen_ac_db() {
+try_time=0;while (check_db /usr/shellgui/ac.db);do [ $try_time -gt 10 ] && break;shellgui '{"action":"ac_create_db"}' &>/dev/null;try_time=$(expr $try_time + 1);sleep 1;done
+}
+start() {
+regen_ac_db
+[ -f /usr/shellgui/shellguilighttpd/www/apps/ac-set/ac.enabled ] || return
+cat <<'EOF'>/tmp/whsnbg.tmp
+#!/bin/sh /etc/rc.common
+START=99
+USE_PROCD=1
+start_service() {
+cd /
+procd_open_instance
+procd_set_param command  /bin/whsnbg
+procd_set_param respawn ${respawn_retry:-0}
+procd_close_instance
+}
+EOF
+chmod +x /tmp/whsnbg.tmp;/tmp/whsnbg.tmp start
+rm -f /tmp/whsnbg.tmp
+cat <<'EOF'>/tmp/shellguisd.tmp
+#!/bin/sh /etc/rc.common
+START=99
+USE_PROCD=1
+start_service() {
+procd_open_instance
+procd_set_param command  /bin/shellguisd
+procd_set_param respawn ${respawn_retry:-0}
+procd_close_instance
+}
+EOF
+chmod +x /tmp/shellguisd.tmp;/tmp/shellguisd.tmp start
+rm -f /tmp/shellguisd.tmp
+return 0
+}
+bw_total_record() {
+wan_dev=$(uci get network.wan.ifname)
+ifces_status=$(shellgui '{"action": "get_ifces_status"}' | jshon -e "${wan_dev}")
+tx=$(echo "${ifces_status}" | jshon -e "tx")
+rx=$(echo "${ifces_status}" | jshon -e "rx")
+[ ${tx} -gt 0 ] || exit 1
+[ ${rx} -gt 0 ] || exit 1
+bw_total_str=$(cat /usr/shellgui/bw_total.json 2>/dev/null)
+[ -z "${bw_total_str}" ] && bw_total_str='{}'
+tx_over=$(echo "${bw_total_str}" | jshon -e "tx_over" 2>/dev/null)
+rx_over=$(echo "${bw_total_str}" | jshon -e "rx_over" 2>/dev/null)
+old_tx=$(echo "${bw_total_str}" | jshon -e "total_tx" 2>/dev/null)
+old_rx=$(echo "${bw_total_str}" | jshon -e "total_rx" 2>/dev/null)
+last_tx=$(echo "${bw_total_str}" | jshon -e "last_tx" 2>/dev/null)
+last_rx=$(echo "${bw_total_str}" | jshon -e "last_rx" 2>/dev/null)
+last_tx=$(echo "${bw_total_str}" | jshon -e "last_tx" 2>/dev/null)
+[ ${tx_over} -gt 0 ] 2>/dev/null || tx_over=0
+[ ${rx_over} -gt 0 ] 2>/dev/null || rx_over=0
+[ ${old_tx} -gt 0 ] 2>/dev/null || old_tx=0
+[ ${old_rx} -gt 0 ] 2>/dev/null || old_rx=0
+[ ${last_tx} -gt 0 ] 2>/dev/null || last_tx=0
+[ ${last_rx} -gt 0 ] 2>/dev/null || last_rx=0
+
+if [ ${rx} -ge ${last_rx} ]; then
+tx_new=$(expr $(expr $tx - $last_tx) + $old_tx)
+rx_new=$(expr $(expr $rx - $last_rx) + $old_rx)
+else
+tx_new=$(expr $old_tx + $tx)
+rx_new=$(expr $old_rx + $rx)
+fi
+if [ ${tx_new} -ge 9000000000000000000 ]; then
+tx_new=0
+tx_over=$(expr $tx_over + 1)
+elif [ ${rx_new} -ge 9000000000000000000 ]; then
+rx_new=0
+rx_over=$(expr $rx_over + 1)
+fi
+cat <<EOF >/usr/shellgui/bw_total.json
+{"total_tx":${tx_new},"total_rx":${rx_new},"last_tx":${tx},"last_rx":${rx},"tx_over":${tx_over},"rx_over":${rx_over}}
+EOF
+}
+case $1 in
+start)
+start
+;;
+stop)
+stop
+;;
+restart)
+stop
+start
+;;
+regen_ac_db)
+regen_ac_db
+;;
+bw_total_record)
+bw_total_record
+;;
+keep_file)
+str=$(tail -n 30 /tmp/avable_ap.txt)
+echo "$str" > /tmp/avable_ap.txt
+;;
+esac

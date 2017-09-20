@@ -1,0 +1,15 @@
+<svg width="<%= ${xsvg_height:-64} %>" height="<%= ${xsvg_height:-64} %>" id="<%= ${xsvg_id} %>">
+<g id="" transform="translate(100,180) scale(0.8,0.9)">
+<defs>
+  <clipPath id="rect-clip">
+	<rect x="0" y="-200" rx="20" width="200" height="200"></rect>
+  </clipPath>
+</defs>
+<g class="svg_stroke" stroke-width="20" clip-path="url(#rect-clip)" transform="rotate(-45)">
+  <circle id="" cx="0" cy="0" r="40" class="svg_fill"></circle>
+  <circle id="" cx="0" cy="0" r="80" fill="none"></circle>
+  <circle id="" cx="0" cy="0" r="120" fill="none"></circle>
+  <circle id="" cx="0" cy="0" r="160" fill="none"></circle>
+</g>
+</g>
+</svg>

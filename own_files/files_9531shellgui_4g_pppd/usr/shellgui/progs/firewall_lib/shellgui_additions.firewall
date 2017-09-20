@@ -1,0 +1,2 @@
+. /usr/shellgui/progs/firewall_lib/firewall_lib.sh
+init_fw

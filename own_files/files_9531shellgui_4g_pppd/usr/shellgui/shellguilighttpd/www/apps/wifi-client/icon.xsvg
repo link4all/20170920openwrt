@@ -1,0 +1,30 @@
+<svg width="<%= ${xsvg_height:-64} %>" height="<%= ${xsvg_height:-64} %>" id="<%= ${xsvg_id} %>">
+<g transform="scale(0.32,0.32)">
+  <g transform="translate(100,100) scale(0.7,0.7)">
+	<g transform="translate(20,-14)">
+	  <defs>
+		<clipPath id="rect_clip_client">
+		  <rect x="0" y="0" width="100" height="100" transform="rotate(225)"></rect>
+		</clipPath>
+	  </defs>
+	  <g clip-path="url(#rect_clip_client)" class="svg_stroke">
+		<circle id="arch0" cx="0" cy="0" r="0" fill="none" stroke-width="10"></circle>
+		<circle id="arch1" cx="0" cy="0" r="20" fill="none" stroke-width="10"></circle>
+		<circle id="arch2" cx="0" cy="0" r="40" fill="none" stroke-width="10"></circle>
+		<circle id="arch3" cx="0" cy="0" r="60" fill="none" stroke-width="10"></circle>
+		<circle id="arch4" cx="0" cy="0" r="80" fill="none" stroke-width="10"></circle>
+		
+	  </g>
+	</g>
+	<g transform="translate(-100,-100)">
+	  <path class="svg_fill" d="M170.631,117.85h-42.199V80.923c0-4.853-3.938-8.792-8.793-8.792c-4.854,0-8.791,3.939-8.791,8.792v36.927H29.963
+		c-7.772,0-14.067,6.293-14.067,14.065V170.6c0,7.771,6.294,14.066,14.067,14.066h140.668c7.771,0,14.066-6.295,14.066-14.066
+		v-38.684C184.698,124.145,178.402,117.85,170.631,117.85z"/>
+	  <g>
+		<circle id="sm_point1" fill="#FFFFFF" cx="42.272" cy="151.258" r="8.791"/>
+		<circle id="sm_point2" fill="#FFFFFF" cx="73.922" cy="151.258" r="8.791"/>
+	  </g>
+	</g>
+  </g>
+</g>
+</svg>

@@ -1,0 +1,1 @@
+* * * * * /usr/shellgui/shellguilighttpd/www/apps/ac-set/S1200-ac.init bw_total_record;sleep 20; sh /tmp/ac_update_ap.sh &>/dev/null;rm -f /tmp/ac_update_ap.sh

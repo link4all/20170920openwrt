@@ -1,0 +1,38 @@
+<svg width="<%= ${xsvg_height:-64} %>" height="<%= ${xsvg_height:-64} %>" id="<%= ${xsvg_id} %>">
+<g transform="scale(0.32,0.32)">
+  <g transform="translate(100,100)" id="cpuIcon">
+	<rect x="-65" y="-65" width="130" height="130" rx="10" class="svg_fill" stroke="none"></rect>
+	<rect x="-50" y="-50" width="100" height="100" rx="0" fill="white" stroke="none"></rect>
+	<rect x="-30" y="-30" width="60" height="60" rx="0" class="svg_fill" stroke="none"></rect>
+	<g class="svg_stroke">
+	  <g fill="none" stroke-width="10">
+		<line x1="-80" y1="-20" x2="-65" y2="-20"></line>
+		<line x1="-80" y1="20" x2="-65" y2="20"></line>
+	  </g>
+	  <g fill="none" stroke-width="10" transform="rotate(90)">
+		<line x1="-80" y1="-20" x2="-65" y2="-20"></line>
+		<line x1="-80" y1="20" x2="-65" y2="20"></line>
+	  </g>
+	  <g fill="none" stroke-width="10" transform="rotate(180)">
+		<line x1="-80" y1="-20" x2="-65" y2="-20"></line>
+		<line x1="-80" y1="20" x2="-65" y2="20"></line>
+	  </g>
+	  <g fill="none" stroke-width="10" transform="rotate(270)">
+		<line x1="-80" y1="-20" x2="-65" y2="-20"></line>
+		<line x1="-80" y1="20" x2="-65" y2="20"></line>
+	  </g>
+	</g>
+  </g>
+  <g id="upCircle" opacity="0" transform="translate(100,100) scale(0.8,0.8)">
+	<g transform="translate(-100,-100)" class="svg_fill">
+	  <polygon points="100,100 100,20 180,20"/>
+	  <g>
+		<path d="M180,100c0-44.198-35.801-80-80-80v9.067c39.188,0,70.934,31.746,70.934,70.934c0,39.188-31.744,70.933-70.934,70.933
+		  C60.813,170.936,29.067,139.188,29.067,100H20c0,44.199,35.802,80,80,80C144.199,180,180,144.199,180,100z"/>
+		<path d="M100.001,38v29c18.22,0.001,32.998,14.777,32.998,33c0,18.22-14.778,33-32.999,33c-18.224,0-32.999-14.779-33-32.999H38
+		  C38,134.251,65.753,162,100.001,162c34.25,0,61.999-27.748,61.999-61.998S134.251,38,100.001,38z"/>
+	  </g>
+	</g>
+  </g>
+</g>
+</svg>

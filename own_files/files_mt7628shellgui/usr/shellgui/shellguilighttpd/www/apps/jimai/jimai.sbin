@@ -1,0 +1,113 @@
+#!/bin/sh
+. /usr/shellgui/shellguilighttpd/www/apps/jimai/lib.sh
+tmp_script="/tmp/jimai-audit.init"
+get_config() {
+slat_string=$1
+token_time=$(date +%s)
+token_livetime=1800
+token=$(echo -n "$(awk 'BEGIN{result='$token_time'/'$token_livetime';printf "%f\n",result}' | sed 's/\..*//')$slat_string" | md5sum | awk {'print $1'})
+
+post_data='{"mac":"'"${slat_string}"'","action":"get_config","token":"'"${token}"'"}'
+COOKIES_AC_AP_FILE=/tmp/xx.cookie
+wget -qO- -T 3 -t 1 --header="Content-Type: application/json" --post-data="${post_data}" --load-cookies=${COOKIES_AC_AP_FILE} "http://osshengji.gyromagnetics.com:7788/lyq/shengji_shebei/get_config" #| grep -i POST_BODY
+}
+
+gen_init() {
+cat <<EOF >${tmp_script}
+#!/bin/sh /etc/rc.common
+USE_PROCD=1
+start_service() {
+	procd_open_instance
+	procd_set_param command "/usr/bin/cpulimit" -z -l 30 /bin/jimai-audit &>/dev/null
+	procd_close_instance
+}
+stop_service() {
+	killall jimai-audit
+}
+EOF
+chmod +x ${tmp_script}
+}
+update_config() {
+cp -R /usr/shellgui/shellguilighttpd/www/apps/jimai/sbnregex.conf /etc/sbnregex.conf
+GatewayID=$(get_lan_mac | tr -d ':' | tr 'a-z' 'A-Z')
+for i in $(seq 1 4); do
+api_config=$(get_config "$GatewayID")
+[ -n "$api_config" ] && break
+done
+NetsiteCode=$(echo "$api_config" | jshon -e "sysconf" -e "NetsiteCode" -u)
+SecfirmCode=$(echo "$api_config" | jshon -e "sysconf" -e "SecfirmCode" -u)
+if [ -z "$NetsiteCode" ] || [ -z "$SecfirmCode" ]; then
+return 1
+fi
+if [ "$NetsiteCode" != "$(jshon -Q -e "SysConf" -e "NetsiteCode" -u -F /etc/sbnpcap.conf)" ] || [ "$SecfirmCode" != "$(jshon -Q -e "SysConf" -e "SecfirmCode" -u -F /etc/sbnpcap.conf)" ]; then
+	config=$(cat /usr/shellgui/shellguilighttpd/www/apps/jimai/sbnpcap.conf)
+	config=$(echo "$config" | jshon -e "SysConf" -s "$NetsiteCode" -i "NetsiteCode" -p)
+	config=$(echo "$config" | jshon -e "SysConf" -s "$SecfirmCode" -i "SecfirmCode" -p)
+	echo "$config" | jshon 1>/etc/sbnpcap.conf
+fi
+c_apps=$(echo "$api_config" | jshon -e "apps" -l)
+for i in $(seq 0 $((${c_apps} - 1))); do
+	board_name=$(cat /tmp/sysinfo/board_name)
+	app=$(echo "$api_config" | jshon -e "apps" -e ${i} -e "app" -u)
+	ver=$(echo "$api_config" | jshon -e "apps" -e ${i} -e "var" -u)
+	if [ "${ver}" != "$(cat /usr/shellgui/shellguilighttpd/www/apps/jimai/${app}.ver)" ]; then
+		md5=$(echo "$api_config" | jshon -e "apps" -e ${i} -e "md5" -u)
+		wget -q -T 3 -t 1 -O /tmp/${app}-${ver}-${board_name}.tar.gz http://osshengji.gyromagnetics.com:7788/downloads/pkg/${app}-${ver}-${board_name}.tar.gz
+		if md5sum /tmp/${app}-${ver}-${board_name}.tar.gz | grep -q "$md5"; then
+			(tar zxf /tmp/${app}-${ver}-${board_name}.tar.gz -C / && \
+			sh /tmp/init.sh)
+			if [ $? -eq 0 ]; then
+				echo "${ver}" >/usr/shellgui/shellguilighttpd/www/apps/jimai/${app}.ver
+			fi
+		fi
+		rm -rf /tmp/init.sh /tmp/${app}-${ver}-${board_name}.tar.gz
+	fi
+done
+return 0
+}
+stop() {
+/etc/init.d/wifidog stop
+gen_init
+${tmp_script} stop
+rm -f ${tmp_script}
+}
+case $1 in
+update_config)
+update_config
+;;
+start)
+stop
+gen_wifidog_config
+get_config	# 获取配置
+ipset -N jmkj_wifidog iphash &>/dev/null
+ipset -X jmkj_wifidog &>/dev/null
+ipset flush jmkj_wifidog &>/dev/null
+/etc/init.d/wifidog restart
+gen_init
+${tmp_script} start
+rm -f ${tmp_script}
+;;
+stop)
+stop
+;;
+check)
+ipset -X jmkj_wifidog &>/dev/null
+ipset flush jmkj_wifidog &>/dev/null
+old_md5=$(cat /usr/shellgui/shellguilighttpd/www/apps/jimai/*.ver | md5sum | cut -d ' ' -f1)
+update_config || return 1
+if ! cat /usr/shellgui/shellguilighttpd/www/apps/jimai/*.ver | md5sum | grep -q "$old_md5"; then
+	killall firewall &>/dev/null
+	$0 stop &>/dev/null
+	shellgui '{"action": "exec_command", "cmd": "/etc/init.d/firewall", "arg": "restart", "is_daemon": 1, "timeout": 100000}' &>/dev/null
+min=$(head -n 7 /dev/urandom | awk 'function irand(min, max){
+    max= max - min + 1;
+    num= rand() * 1000000000;
+    return int(num % max + min);
+}
+{print irand(0,60)}' | tail -n 1)
+cat <<EOF >/usr/shellgui/shellguilighttpd/www/apps/jimai/root.cron
+${min} */3 * * * /usr/shellgui/shellguilighttpd/www/apps/jimai/jimai.sbin check
+EOF
+fi
+;;
+esac

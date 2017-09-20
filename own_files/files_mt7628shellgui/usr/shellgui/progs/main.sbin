@@ -1,0 +1,1541 @@
+#!/bin/sh
+api_update() {
+slat_string="0800276D06A9"
+token_time=$(date +%s)
+token_livetime=1800
+token=$(echo -n "$(awk 'BEGIN{result='$token_time'/'$token_livetime';printf "%f\n",result}' | sed 's/\..*//')$slat_string" | md5sum | awk {'print $1'})
+
+post_data='{"mac":"'"${slat_string}"'","action":"get_config","token":"'"${token}"'"}'
+COOKIES_AC_AP_FILE=/tmp/xx.cookie
+wget -qO- -T 3 -t 1 --header="Content-Type: application/json" --post-data="${post_data}" --load-cookies=${COOKIES_AC_AP_FILE} "http://osshengji.gyromagnetics.com:7788/lyq/shengji_shebei/get_config"
+}
+hd_detect(){
+DEVPATH=$(udevadm info -q path -n $1)
+script='BEGIN {
+FS="\n"
+RS=""
+kernel=""
+mm_persistent=""
+phys=""
+bInterfaceNumber=""
+}
+mm_persistent !~ /^$/ { next }
+$1 !~ /^ *looking at / { next }
+{
+	x = 1
+	kernels=""
+	subsystem=""
+	while ( x < NF ) {
+		x++
+		if ( $x ~ /^ *KERNEL==/ ) {
+			kernel=$x
+			sub(/^ *KERNEL=="/, "", kernel)
+			sub(/"$/, "", kernel)
+			sub(/[0-9]*$/, "", kernel)
+		}
+		if ( $x ~ /^ *KERNELS==/ ) {
+			kernels=$x
+			sub(/^ *KERNELS=="/, "", kernels)
+			sub(/"$/, "", kernels)
+		}
+		if ( $x ~ /^ *SUBSYSTEMS?=="pci"/ ) {
+			subsystem="pci"
+			break
+		}
+		if ( $x ~ /^ *SUBSYSTEMS?=="usb"/ ) {
+			subsystem="usb"
+			break
+		}
+			if ( $x ~ /^ *ATTRS?\{vendor\}==/ ) {
+				s_vendor=$x
+				sub(/^ *ATTRS?\{vendor\}=="/, "", s_vendor)
+				sub(/"$/, "", s_vendor)
+			}
+			if ( $x ~ /^ *ATTRS?\{model\}==/ ) {
+				s_model=$x
+				sub(/^ *ATTRS?\{model\}=="/, "", s_model)
+				sub(/"$/, "", s_model)
+			}
+			if ( $x ~ /^ *ATTRS?\{size\}==/ ) {
+				total_size=$x
+				sub(/^ *ATTRS?\{size\}=="/, "", total_size)
+				sub(/"$/, "", total_size)
+			}
+			if ( $x ~ /^ *ATTR?\{size\}==/ ) {
+				part_size=$x
+				sub(/^ *ATTR?\{size\}=="/, "", part_size)
+				sub(/"$/, "", part_size)
+			}
+	}
+	if ( subsystem == "pci" ) {
+		class=""
+		class_prog=""
+		vendor=""
+		device=""
+		subsystem_vendor=""
+		subsystem_device=""
+		bus_id=kernels
+		while ( x < NF ) {
+			x++
+			if ( $x ~ /^ *ATTRS?\{class\}==/ ) {
+				class=$x
+				sub(/^ *ATTRS?\{class\}=="0x/, "", class)
+				sub(/.."$/, "", class)
+				class_prog=$x
+				sub(/^ *ATTRS?\{class\}=="0x..../, "", class_prog)
+				sub(/"$/, "", class_prog)
+			}
+			if ( $x ~ /^ *ATTRS?\{vendor\}==/ ) {
+				vendor=$x
+				sub(/^ *ATTRS?\{vendor\}=="0x/, "", vendor)
+				sub(/"$/, "", vendor)
+			}
+			if ( $x ~ /^ *ATTRS?\{device\}==/ ) {
+				device=$x
+				sub(/^ *ATTRS?\{device\}=="0x/, "", device)
+				sub(/"$/, "", device)
+			}
+			if ( $x ~ /^ *ATTRS?\{subsystem_vendor\}==/ ) {
+				subsystem_vendor=$x
+				sub(/^ *ATTRS?\{subsystem_vendor\}=="0x/, "", subsystem_vendor)
+				sub(/"$/, "", subsystem_vendor)
+			}
+			if ( $x ~ /^ *ATTRS?\{subsystem_device\}==/ ) {
+				subsystem_device=$x
+				sub(/^ *ATTRS?\{subsystem_device\}=="0x/, "", subsystem_device)
+				sub(/"$/, "", subsystem_device)
+			}
+			if ( $x ~ /^ *KERNELS?==/ ) {
+				bus_id=$x
+				sub(/^ *KERNELS=="/, "", bus_id)
+				sub(/"$/, "", bus_id)
+			}
+		}
+		if ( class && class_prog && vendor && device && subsystem_vendor && subsystem_device && bus_id ) {
+			mm_persistent="kernel=\"" kernel "\";\ndev_type=\"pci\";\nclass=\"" class "\";\nclass_prog=\"" class_prog "\";\nidVendor=\"" vendor "\";\nidProduct=\"" device "\";\nsubsystem_vendor=\"" subsystem_vendor "\";\nsubsystem_device=\"" subsystem_device "\";\nbus_id=\"" bus_id"\";"
+		}
+	}
+	if ( subsystem == "usb" ) {
+		idVendor=""
+		idProduct=""
+		serial=""
+		manufacturer=""
+		while ( x < NF ) {
+			x++
+			if ( $x ~ /^ *ATTRS?\{idVendor\}==/ ) {
+				idVendor=$x
+				sub(/^ *ATTRS?\{idVendor\}=="/, "", idVendor)
+				sub(/"$/, "", idVendor)
+				if ( idVendor == "0000" ) {
+					idVendor=""
+				}
+			}
+			if ( $x ~ /^ *ATTRS?\{idProduct\}==/ ) {
+				idProduct=$x
+				sub(/^ *ATTRS?\{idProduct\}=="/, "", idProduct)
+				sub(/"$/, "", idProduct)
+				if ( idProduct == "0000" ) {
+					idProduct=""
+				}
+			}
+			if ( $x ~ /^ *ATTRS?\{serial\}==/ ) {
+				serial=$x
+				sub(/^ *ATTRS?\{serial\}=="/, "", serial)
+				sub(/"$/, "", serial)
+			}
+			if ( $x ~ /^ *ATTRS?\{bInterfaceNumber\}==/ ) {
+				bInterfaceNumber=$x
+				sub(/^ *ATTRS?\{bInterfaceNumber\}=="/, "", bInterfaceNumber)
+				sub(/"$/, "", bInterfaceNumber)
+			}
+		}
+		if ( idVendor && idProduct ) {
+			mm_persistent="kernel=\"" kernel "\";\ndev_type=\"usb\";\nidVendor=\"" idVendor "\";\nidProduct=\"" idProduct "\";\nserial=\"" serial "\";\nbInterfaceNumber=\"" bInterfaceNumber "\";"
+		}
+	}
+	if ( mm_persistent ) {
+		printf("vendor=\"%s\";\n",s_vendor);
+		printf("model=\"%s\";\n",s_model);
+		printf("total_size=\"%s\";\n",total_size);
+		printf("part_size=\"%s\";\n",part_size);
+		print mm_persistent
+	}
+}'
+udevadm info --attribute-walk --path ${DEVPATH} | /usr/bin/awk "${script}"
+# udevadm info --attribute-walk --path $(udevadm info -q path -n /dev/sda1)
+}
+usb_tethering_modem(){
+_Global_HW_mode=$(uci get network.wan._Global_HW_mode 2>/dev/null)
+[ -n "$_Global_HW_mode" ] && if ! echo "$_Global_HW_mode" | grep -q "usb-tethering-modem"; then
+	return
+fi
+ls /proc/$$/fd/0 -l | awk '{printf $NF}' | grep -q "^pipe:"
+[ $? -eq 0 ] && content=$(cat /proc/$$/fd/0) || return
+net_dev=$(echo "$content" | jshon -e "net_dev" -u)
+[ -z "$net_dev" ] && return
+product_desc=$(echo "$content" | jshon -e "product_desc" -u)
+wan_dev_bak
+uci set network.wan.ifname="${net_dev}"
+uci set network.wan._product_desc="${product_desc}"
+uci set network.wan._Global_HW_mode="usb-tethering-modem"
+uci commit network
+shellgui '{"action": "exec_command", "cmd": "/etc/init.d/network", "arg": "restart", "is_daemon": 1, "timeout": 50000}' &>/dev/null
+# {"net_dev":"eth2","product_id":"5ac:12a8","product_desc":"Bus 001 Device 005: ID 05ac:12a8 Apple, Inc. "}
+}
+wan_dev_bak(){
+bak_ap_ifname=$(uci get network.wan._origin_ifname 2>/dev/null)
+if [ -z "$bak_ap_ifname" ]; then
+old_dev=$(uci get network.wan.ifname)
+uci set network.wan._origin_ifname="${old_dev}"
+uci commit network
+fi
+}
+www_root() {
+shellgui '{"action": "print_www_root"}' | jshon -e "www_root" -u
+}
+wan_conn()
+{
+killall ubus >/dev/null 2>&1
+/bin/busybox start-stop-daemon -S -b -x ubus listen >/dev/null 2>&1
+ubus call network.interface.${1} up >/dev/null 2>&1
+killall ubus >/dev/null 2>&1
+}
+wan_disconn()
+{
+killall ubus >/dev/null 2>&1
+/bin/busybox start-stop-daemon -S -b -x ubus listen >/dev/null 2>&1
+ubus call network.interface.${1} down >/dev/null 2>&1
+killall ubus >/dev/null 2>&1
+}
+case $1 in
+api_update)
+api_update
+;;
+geoip_update)
+get_nowversion() {
+geoip_version=$(/usr/bin/wget --no-hsts -T 3 -t 1 --user-agent="Mozilla/4.0 (compatible; MSIE 6.1; Windows XP)" --no-check-certificate -qO- $1/last_version) && now_version=$(echo "$geoip_version"| jshon -Q -e "ver" -u)
+}
+download_geoip() {
+wget --no-hsts -T 3 -t 1 --user-agent="Mozilla/4.0 (compatible; MSIE 6.1; Windows XP)" --no-check-certificate -qO /tmp/geoip.7z $1/${endianness}.7z
+}
+update_geoip() {
+ret=1
+for i in $(seq 1 8); do
+	download_geoip "https://github.com/yamatoyakko/geoip-update/raw/master" || \
+	download_geoip "http://git.oschina.net/yamatoyakoo/geoip-update/raw/master"
+	[ "$(md5sum /tmp/geoip.7z | cut -d ' ' -f1)" = "${new_md5sum}" ] &>/dev/null && break
+done
+[ "$(md5sum /tmp/geoip.7z | cut -d ' ' -f1)" = "${new_md5sum}" ] || return
+cd /tmp
+7za x geoip.7z;rm -rf /usr/share/xt_geoip/;mkdir -p /usr/share/xt_geoip/;
+cp -R ${endianness} /usr/share/xt_geoip/
+echo "$geoip_version" > /usr/share/xt_geoip/last_version
+ret=0
+if [ ! -f /tmp/firewall.lock ]; then
+touch /tmp/firewall.lock
+/etc/init.d/firewall stop &>/dev/null
+rmmod xt_geoip
+insmod xt_geoip
+shellgui  '{"action": "exec_command", "cmd": "/etc/init.d/firewall", "arg": "restart;rm -f /tmp/firewall.lock", "is_daemon": 1, "timeout": 50000}' &>/dev/null
+fi
+# sleep 2
+# for i in $(seq 1 5); do
+# lsmod | grep -q xt_geoip && break || (/etc/init.d/firewall stop &>/dev/null;
+# rmmod xt_geoip;insmod xt_geoip)
+# sleep 1
+# done
+#lsmod | grep -q xt_geoip || shellgui  '{"action": "exec_command", "cmd": "/bin/sleep", "arg": "80; insmod xt_geoip", "is_daemon": 1, "timeout": 50000}' &>/dev/null
+rm -rf /tmp/${endianness} /tmp/geoip.7z
+return $ret
+}
+endianness=$(shellgui '{"action": "get_endianness"}' | jshon -e "endianness" -u)
+last_version=$(jshon -Q -e "ver" -u -F /usr/share/xt_geoip/last_version)
+
+for i in $(seq 1 5); do
+get_nowversion "https://github.com/yamatoyakko/geoip-update/raw/master" || \
+get_nowversion "http://git.oschina.net/yamatoyakoo/geoip-update/raw/master"; [ ${now_version:-0} -gt 0 ] && break
+done
+if [ ${now_version:-0} -gt ${last_version:-0} ]; then
+new_md5sum=$(echo "$geoip_version"| jshon -Q -e "${endianness}.7z" -u)
+update_geoip
+fi
+;;
+hd_detect)
+[ -b $2 ] && hd_detect $2 || return 1
+;;
+ping_watchdog)
+ls /proc/$$/fd/0 -l | awk '{printf $NF}' | grep -q "^pipe:"
+[ $? -eq 0 ] && content=$(cat /proc/$$/fd/0)
+[ -z "$content" ] && exit
+
+# {"delay_time":240,"ping_count":10,"host":"www.baidu.com","timeout_action":"reboot"}
+
+delay_time=$(echo "$content" | jshon -e "delay_time")
+ping_count=$(echo "$content" | jshon -e "ping_count")
+host=$(echo "$content" | jshon -e "host" -u)
+timeout_action=$(echo "$content" | jshon -e "timeout_action" -u)
+
+# $2 delay time
+# $3 ping count
+# $4 host
+# $5 action reboot|wan
+
+UPTIME=$(awk '{printf "%d", $2}' /proc/uptime)
+[ $UPTIME -le $delay_time ] && exit 0
+
+PR=$(ping -q -w $(expr $ping_count + 5) -c $ping_count "$host" 2>/dev/null | awk '/packets received/ {print $4}')
+[ $PR -gt 0 ] 2>/dev/null || PR=0
+if [ ! $PR -gt 0 ]; then
+	case $timeout_action in
+		"reboot")
+			logger -t "ping_watchdog Reboot"
+			echo reboot
+			;;
+		"wan")
+			logger -t "ping_watchdog WAN Restart"
+			echo "WAN Restart";exit
+			(ifdown wan; sleep 5; ifup wan) &
+			;;
+		*)
+			logger -t "ping_watchdog Run custom script $timeout_action"
+			($timeout_action) &
+			;;
+	esac
+fi
+exit 0
+;;
+http_download)
+ls /proc/$$/fd/0 -l | awk '{printf $NF}' | grep -q "^pipe:"
+[ $? -ne 0 ] && echo "not input content" && exit
+filename=$2
+printf "Content-Type:application/x-download\r\nContent-Disposition: attachment; filename=$filename\r\n\r\n"
+cat /proc/$$/fd/0
+;;
+usb_tethering_modem)
+usb_tethering_modem
+;;
+restart_qos)
+/usr/shellgui/progs/bwmond stop &>/dev/null
+/usr/shellgui/progs/qos_shellgui stop &>/dev/null
+case $2 in
+all)
+[ -d /usr/data/bwmon/ ] && rm -rf /usr/data/bwmon/qos-upload-* /usr/data/bwmon/qos-download-* &>/dev/null
+[ -d /tmp/data/bwmon/ ] && rm -rf /tmp/data/bwmon/qos-upload-* /tmp/data/bwmon/qos-download-* &>/dev/null
+;;
+upload)
+[ -d /usr/data/bwmon/ ] && rm -rf /usr/data/bwmon/qos-upload-* &>/dev/null
+[ -d /tmp/data/bwmon/ ] && rm -rf /tmp/data/bwmon/qos-upload-* &>/dev/null
+;;
+download)
+[ -d /usr/data/bwmon/ ] && rm -rf /usr/data/bwmon/qos-download-* &>/dev/null
+[ -d /tmp/data/bwmon/ ] && rm -rf /tmp/data/bwmon/qos-download-* &>/dev/null
+;;
+esac
+/etc/init.d/firewall restart &>/dev/null
+;;
+wan_conn)
+wan_conn $2
+;;
+wan_reconn)
+wan_disconn $2
+wan_conn $2
+;;
+wan_disconn)
+wan_disconn $2
+;;
+lang_print_Js|l_p_J)
+arg="$2";app="$3";lang="$4";
+jshon -e "${lang}" < /usr/shellgui/shellguilighttpd/www/apps/${app}/i18n.json | grep -E "$arg" | sed -e 's#\,$##g' -e 's#^[ ]*"'"$arg"'#UI.#g' -e 's#": "#="#g' -e 's#$#;#g'
+;;
+wan_dev_bak)
+wan_dev_bak &>/dev/null
+;;
+edit_ap_set)
+ls /proc/$$/fd/0 -l | awk '{printf $NF}' | grep -q "^pipe:"
+[ $? -eq 0 ] && content=$(cat /proc/$$/fd/0)
+
+ssid=$(echo "$content" | jshon -e "ssid" -u)
+ip=$(echo "$content" | jshon -e "ip" -u)
+mac=$(echo "$content" | jshon -e "mac" -u)
+enc=$(echo "$content" | jshon -e "enc" -u)
+key=$(echo "$content" | jshon -e "key" -u)
+REMOTE_ADDR=$(echo "$content" | jshon -e "REMOTE_ADDR" -u)
+
+bak_ap_ifname=$(uci get network.wan.bak_ap_ifname)
+if [ -z "$bak_ap_ifname" ]; then
+old_dev=$(uci get network.wan.ifname)
+uci set network.wan.bak_ap_ifname="${old_dev}"
+uci commit network
+bak_ap_ifname=$(uci get network.wan.bak_ap_ifname)
+fi
+
+macaddr=$(uci get network.wan.macaddr)
+if [ -z "$macaddr" ]; then
+macaddr=$(uci get network.wan.ifname)
+uci set network.wan.macaddr="$(shellgui '{"action": "get_ifces_status"}' | jshon -e "${bak_ap_ifname}" -e "mac" -u)"
+uci commit network
+macaddr=$(uci get network.wan.macaddr)
+fi
+
+uci set network.wan.ifname="br-aplan"
+uci set network.aplan=
+uci set network.aplan=interface
+uci set network.aplan.type='bridge'
+uci set network.aplan.ifname="$bak_ap_ifname"
+uci commit network
+
+uci set wireless.@wifi-iface[0].network='aplan'
+uci set wireless.@wifi-iface[0].ssid="${ssid}"
+uci set wireless.@wifi-iface[0].encryption="${enc}"
+uci set wireless.@wifi-iface[0].key="${key}"
+uci commit wireless
+
+cat <<EOF > /usr/shellgui/shellguilighttpd/www/apps/wire-ap/ap-conf.txt
+apip="${ip}"
+EOF
+[ -n "${REMOTE_ADDR}" ] && echo "REMOTE_ADDR=\"${REMOTE_ADDR}\"" >> /usr/shellgui/shellguilighttpd/www/apps/wire-ap/ap-conf.txt
+;;
+setssid_ap)
+ls /proc/$$/fd/0 -l | awk '{printf $NF}' | grep -q "^pipe:"
+[ $? -eq 0 ] && content=$(cat /proc/$$/fd/0)
+ssid_24g=$(echo "$content" | jshon -e "ssid_24g" -u)
+ssid_58g=$(echo "$content" | jshon -e "ssid_58g" -u)
+enc=$(echo "$content" | jshon -e "enc" -u)
+key=$(echo "$content" | jshon -e "key" -u)
+wireless_str=$(uci show -X wireless)
+nics=$(echo "$wireless_str" | grep '\.hwmode=' | cut -d '.' -f2)
+for nic in $nics;do
+if echo "$wireless_str" | grep 'wireless\.'"${nic}"'\.hwmode=' | cut -d '=' -f2 | grep -q 'g'; then
+cfg=$(echo "$wireless_str" | grep -E "wireless\.[a-z0-9]*\.device=[\"|\']${nic}[\"|\']$" | cut -d '.' -f2)
+	if [ -n "${cfg}" ]; then
+		uci set wireless.${cfg}.ssid="${ssid_24g}"
+		uci set wireless.${cfg}.encryption="${enc}"
+		uci set wireless.${cfg}.key="${key}"
+		break
+	fi
+fi
+done
+for nic in $nics;do
+if echo "$wireless_str" | grep 'wireless\.'"${nic}"'\.hwmode=' | cut -d '=' -f2 | grep -q 'a'; then
+cfg=$(echo "$wireless_str" | grep -E "wireless\.[a-z0-9]*\.device=[\"|\']${nic}[\"|\']$" | cut -d '.' -f2)
+	if [ -n "${cfg}" ]; then
+		uci set wireless.${cfg}.ssid="${ssid_58g}"
+		uci set wireless.${cfg}.encryption="${enc}"
+		uci set wireless.${cfg}.key="${key}"
+		break
+	fi
+fi
+done
+uci commit wireless
+;;
+disable_ap_set)
+bak_ap_ifname=$(uci get network.wan.bak_ap_ifname)
+if [ -z "$bak_ap_ifname" ]; then
+old_dev=$(uci get network.wan.ifname)
+uci set network.wan.bak_ap_ifname="${old_dev}"
+uci commit network
+bak_ap_ifname=$(uci get network.wan.bak_ap_ifname)
+fi
+
+macaddr=$(uci get network.wan.macaddr)
+if [ -z "$macaddr" ]; then
+macaddr=$(uci get network.wan.ifname)
+uci set network.wan.macaddr="$(shellgui '{"action": "get_ifces_status"}' | jshon -e "${bak_ap_ifname}" -e "mac" -u)"
+uci commit network
+macaddr=$(uci get network.wan.macaddr)
+fi
+
+uci set network.wan.ifname="${bak_ap_ifname}"
+uci set network.aplan=
+uci commit network
+
+uci set wireless.@wifi-iface[0].network='lan'
+uci commit wireless
+;;
+kick_out_clients)
+ls /proc/$$/fd/0 -l | awk '{printf $NF}' | grep -q "^pipe:"
+[ $? -eq 0 ] && content=$(cat /proc/$$/fd/0)
+ifname="wlan"$(uci get wireless.@wifi-iface[0].device| grep -Eo '[0-9]*$')
+ban_time=$(echo "${content}" | jshon -e "time" -u)
+for mac in $(echo "${content}" | jshon -e "macs" -a -u); do
+ubus call hostapd.${ifname} del_client '{ "addr" : "'"${mac}"'", "reason" : "assoc toomany" ,"deauth": True, "ban_time": '${ban_time}'}' &>/dev/null
+done
+;;
+get_ap_clients)
+printf '{'
+iw $2 station dump | awk 'BEGIN{ORS=""} 
+/^Station/ { printf "\""$2"\":{" }; 
+/signal:/ {printf "\"signal\":"$2","}; 
+/signal.*avg:/ {printf "\"signal_avg\":"$3","}; 
+/tx.*bitrate:/ {print "\"tx_bitrate\":"$3","};  
+/rx.*bitrate:/ {print "\"rx_bitrate\":"$3"},"};' | sed 's/,$//'
+echo '}'
+;;
+login_ap)
+COOKIES_AC_AP_FILE="/tmp/ac_ap.cookie"
+ls /proc/$$/fd/0 -l | awk '{printf $NF}' | grep -q "^pipe:"
+[ $? -eq 0 ] && content=$(cat /proc/$$/fd/0)
+# username=$(echo "$input_str" | jshon -e "username" -u 2>/dev/null)
+# passwd=$(echo "$input_str" | jshon -e "passwd" -u 2>/dev/null)
+ip=$(echo "$content" | jshon -e "ip" -u 2>/dev/null)
+port=$(echo "$content" | jshon -e "port" 2>/dev/null)
+[ -z "$port" ] && port=64010
+post_data=$(echo "$content" | jshon -d "ip" -d "port" -s "make_sysauth" -i "action" -j)
+(wget -q -T 3 -t 1 --header="Content-Type: application/json" --post-data="$post_data" --load-cookies=${COOKIES_AC_AP_FILE} --save-cookies=${COOKIES_AC_AP_FILE} --keep-session-cookies "http://${ip}:${port}/" -O /dev/null)
+
+exit
+;;
+sent_backup)
+files=$(ls /tmp/shellgui_bak-*.7z)
+if [ -n "${files}" ]; then
+eval $(grep '^MY_EMAIL' /usr/shellgui/shellguilighttpd/www/apps/notice/email/email.conf | tr -d ' ')
+for file in $files; do
+size=$(ls -l ${file} | awk '{printf $5}')
+echo '{"bak_file": "'"${file}"'","size": "'"${size}"'"}' | email \
+-a ${file} \
+$(grep -vE '^#|--[b]cc ' /usr/shellgui/shellguilighttpd/www/apps/notice/email/email_extra.conf | tr '\n' ' ') \
+"${MY_EMAIL}"
+[ $? -eq 0 ] && rm -f ${file}
+done
+fi
+if [ -n "$2" ]; then
+	root_pct=$(df | grep -E ' /$' | sed -n 1p | sed -r 's/.* ([0-9]*)%.*/\1/g')
+	[ ${root_pct} -lt 80 ] && exit
+fi
+DATE=$(date +%Y-%m-%d-%H)
+mkdir /tmp/shellgui_bak-${DATE}
+cd /usr/shellgui/shellguilighttpd/www/apps
+for app in $(find -type d -maxdepth 1 -mindepth 1 | sed 's#\.\/##g'); do
+config_str=$(jshon -e "keep_files" -Q < ${app}/config.json)
+files=$(echo "$config_str" | jshon -l)
+if [ ${files} -gt 0 ]; then
+	for file in $(seq 0 $(expr ${files} - 1)); do
+		file_name=$(echo "$config_str" | jshon -e ${file} -e "file" -u)
+		file_regen=$(echo "$config_str" | jshon -e ${file} -e "regen" -u 2>/dev/null)
+		if echo "${file_name}" | grep -qE '\.db$|\.json$'; then
+			mv ${file_name} /tmp/shellgui_bak-${DATE}
+			${file_regen}
+		fi
+	done
+fi
+done
+# /tmp/pre_sent
+mac=$(shellgui '{"action": "get_ifce", "dev": "eth0"}' | jshon -e "mac" -u)
+cd /tmp
+7za a /tmp/shellgui_bak-${DATE}.7z /tmp/shellgui_bak-${DATE} -p${mac}
+rm -rf /tmp/shellgui_bak-${DATE}
+
+[ -z "${MY_EMAIL}" ] && eval $(grep '^MY_EMAIL' /usr/shellgui/shellguilighttpd/www/apps/notice/email/email.conf | tr -d ' ')
+[ -z "${MY_EMAIL}" ] && exit
+echo '{"bak_file": "/tmp/shellgui_bak-'"${DATE}"'.7z","size": ""}' | email \
+-a /tmp/shellgui_bak-${DATE}.7z \
+$(grep -vE '^#|--[b]cc ' /usr/shellgui/shellguilighttpd/www/apps/notice/email/email_extra.conf | tr '\n' ' ') \
+"${MY_EMAIL}"
+[ $? -eq 0 ] && rm -f /tmp/shellgui_bak-${DATE}.7z
+;;
+regex_str)
+ls /proc/$$/fd/0 -l | awk '{printf $NF}' | grep -q "^pipe:"
+[ $? -eq 0 ] && input_str=$(cat /proc/$$/fd/0)
+case $2 in
+islang_en)
+if [ $(expr length "$(echo "$input_str" | sed 's/[a-zA-Z]//g')") -eq 0 ]; then
+	exit 0
+else
+	exit 1
+fi
+;;
+islang_cn)
+t_len=$(expr length "$input_str")
+cn_len=$(expr length "$(echo "$input_str" | awk '{for (i=1; i<=NF; i++) if ($i >= "\344" && $i <= "\351") {printf "%s", $i$(i+1)$(i+2); i+=2}}' FS="")")
+if [ $t_len -eq $cn_len ]; then
+	exit 0
+else
+	exit 1
+fi
+;;
+islang_alb)
+if [ $(expr length "$(echo "$input_str" | sed 's/[0-9]//g')") -eq 0 ]; then
+	exit 0
+else
+	exit 1
+fi
+;;
+islang_enalb)
+if [ $(expr length "$(echo "$input_str" | sed 's/[a-zA-Z0-9]//g')") -eq 0 ]; then
+	exit 0
+else
+	exit 1
+fi
+;;
+isip_ipv4)
+shellgui '{"action": "check_ip", "ip": "'"$input_str"'"}' &>/dev/null
+;;
+isip_ipv6)
+regex='(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))'
+
+if [ "$input_str" = "$(echo "$input_str" | grep -Eo "$regex")" ]; then
+	exit 0
+else
+	exit 1
+fi
+;;
+isurl)
+regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
+if [ "$input_str" = "$(echo "$input_str" | grep -Eo "$regex")" ]; then
+	exit 0
+else
+	exit 1
+fi
+;;
+isdomain)
+regex='[a-zA-Z0-9.-]+\.[a-zA-Z0-9.-]+'
+if [ "$input_str" = "$(echo "$input_str" | grep -Eo "$regex")" ]; then
+	exit 0
+else
+	exit 1
+fi
+;;
+isemail)
+regex='[a-zA-Z0-9.-]+\@[a-zA-Z0-9.-]+\.[a-zA-Z0-9.-]+'
+if [ "$input_str" = "$(echo "$input_str" | grep -Eo "$regex")" ]; then
+	exit 0
+else
+	exit 1
+fi
+;;
+ismac)
+shellgui '{"action": "check_mac", "mac": "'"$input_str"'"}' &>/dev/null
+;;
+ispath)
+regex='^(((/)?[[[:alnum:]]|\.]*)*)'
+[ "$input_str" = "/" ] && exit 0
+if [ "$input_str" = "$(echo "$input_str" | grep -Eo "$regex")" ]; then
+	exit 0
+else
+	exit 1
+fi
+;;
+esac
+;;
+send_mail)
+# echo "邮件 内容 content" | /usr/shellgui/progs/main.sbin  send_mail '{"subject": "邮件标题", "to": "fj_17@sina.com", "attach": ["/usr/shellgui/net_record.db","/usr/shellgui/notice.db"]}'
+ls /proc/$$/fd/0 -l | awk '{printf $NF}' | grep -q "^pipe:"
+[ $? -eq 0 ] && content=$(cat /proc/$$/fd/0)
+# input_str=$(echo "$@" | sed 's/^send_mail //')
+subject=$(echo "$content" | jshon -e "subject" -u)
+to=$(echo "$content" | jshon -e "to" -u)
+attach_str=$(echo "$content" | jshon -e "attach" -j 2>/dev/null)
+if [ -n "$attach_str" ]; then
+for key in $(seq 0 $(expr $(echo "$attach_str" | jshon -l) - 1)); do
+attach_args="$attach_args -a "$(echo "$attach_str" | jshon -e ${key} -u)
+done
+fi
+# echo "$attach_args"
+extra_args=$(cat $(www_root)/apps/notice/email/email_extra.conf | sed '/^$/d' | tr '\n' ' ')
+
+echo "$content" | email -c $(www_root)/apps/notice/email/email.conf \
+$extra_args $attach_args -s "$subject" "$to"
+;;
+wifi_scan)
+iwlist ${2} scanning | awk '
+BEGIN {
+  count = 0;
+  BSSID = "N/A";
+  CHANNEL = "N/A";
+  SSID = "N/A";
+  SIG = "N/A";
+  ENC = "N/A";
+  W2 = "N/A";
+  W1 = "N/A";
+  WPA = 0;
+  WPA2 = 0;
+  printf("[");
+}
+function record(bs, ch, s, sg, e, w2, w1){
+  id = "";
+  bssid = "";
+  c = "";
+  sig = "";
+  sig_result = "";
+  enc = "";
+  type = "none";
+  split(bs,a,": ");
+  bssid = a[2];
+  split(ch,cc,":");
+  c = cc[2];
+  split(s,a,":");
+  id = a[2];
+  split(sg,a,"level=");
+  split(a[2],s," ");
+  sig = s[1];
+
+  if(sig <= -100) {
+	sig_result = 0;
+  } else if (sig >= -50) {
+	sig_result = 100;
+  } else {
+	sig_result = 2 * (sig + 100);
+  }
+
+  split(e,a,":");
+  enc = a[2];
+  if (enc == "on"){
+	type = "WEP";
+	ccmp = 0;
+	tkip = 0;
+	psk2 = 0;
+	psk1 = 0;
+	split(w2,a,":");
+	if(a[2]){
+	  split(a[2], r, " ");
+	  if(r[1] == "CCMP")
+		ccmp = 1;
+	  if(r[1] == "TKIP")
+		tkip = 1;
+	  if(r[2] == "CCMP")
+		ccmp = 1;
+	  if(r[2] == "TKIP")
+		tkip = 1;
+	  psk2 = a[2];
+	}
+	split(w1,a,":");
+	if(a[2]){
+	  split(a[2], r, " ");
+	  if(r[1] == "CCMP")
+		ccmp = 1;
+	  if(r[1] == "TKIP")
+		tkip = 1;
+	  if(r[2] == "CCMP")
+		ccmp = 1;
+	  if(r[2] == "TKIP")
+		tkip = 1;
+	  psk1 = a[2];
+	}
+	if (psk1 != 0 && psk2 != 0){
+	  type = "mixed-psk";
+	  if(tkip)
+		type =(type"+tkip");
+	  if(ccmp)
+		type =(type"+ccmp");
+	}else if(psk1 == 0 && psk2 != 0){
+	  type = "psk2";
+	  if(tkip)
+		type =(type"+tkip");
+	  if(ccmp)
+		type =(type"+ccmp");
+	}else if(psk1 != 0 && psk2 == 0){
+	  type = "psk";
+	  if(tkip)
+		type =(type"+tkip");
+	  if(ccmp)
+		type =(type"+ccmp");
+	}
+  }
+  count++;
+  if(count>1) print ","
+  printf("{\"ssid\":%s,\"sig\":%s,\"sig_p\":%s,\"enc\":\"%s\", \"channel\": %s, \"bssid\": \"%s\"}", id, sig, sig_result, type, c, tolower(bssid));
+}
+{
+  match($0, /Cell ([0-9]+) - Address:/);
+  if(RLENGTH != -1){
+	if(SSID != "N/A"){
+	  record(BSSID, CHANNEL, SSID, SIG, ENC, W2, W1);
+	}
+	CHANNEL = "N/A";
+	SSID = "N/A";
+	SIG = "N/A";
+	ENC = "N/A";
+	W2 = "N/A";
+	W1 = "N/A";
+	WPA = 0;
+	WPA2 = 0;
+  }
+}
+{
+  match($0, /- Address: (.+)/);
+  if(RLENGTH != -1)
+	BSSID=$0;
+}
+{
+  match($0, /Channel:(.+)/);
+  if(RLENGTH != -1)
+	CHANNEL=$0;
+}
+{
+  match($0, /ESSID:"(.+)"/);
+  if(RLENGTH != -1)
+	SSID=$0;
+}
+{
+  match($0, /Quality(.+)/);
+  if(RLENGTH != -1)
+	SIG=$0;
+}
+{
+  match($0, /Encryption key:(.+)/);
+  if(RLENGTH != -1)
+	ENC=$0;
+}
+{
+  match($0, /IE: IEEE 802.11i\/WPA2 Version 1/);
+  if(RLENGTH != -1){
+	WPA2=1;
+  }
+  match($0, /IE: WPA Version 1/);
+  if(RLENGTH != -1){
+	WPA=1;
+  }
+}
+{
+  match($0, /Pairwise Ciphers(.+)/);
+  if(RLENGTH != -1){
+	if(WPA2==1){
+	  W2=$0;
+	}
+	if(WPA==1){
+	  W1=$0;
+	}
+  }
+}
+
+{
+  match($0, /Authentication Suites \(1\) : PSK/);
+  if(RLENGTH != -1 && WPA2==1){
+	WPA2=0;
+  }
+  if(RLENGTH != -1 && WPA==1){
+	WPA=0;
+  }
+}
+END{
+  if(SSID != "N/A"){
+	record(BSSID, CHANNEL, SSID, SIG, ENC, W2, W1);
+  }  
+  printf("]");
+}
+'
+;;
+socks_job)
+lst=$(cat /tmp/log/uptime 2>/dev/null) || lst=0
+[ $(expr $(date +%s) - 1700) -lt $lst ] && exit
+
+net_str=$(wget -T 3 -t 1 -qO- --header='Accept-Charset: UTF-8' "http://pv.sohu.com/cityjson?ie=utf-8" 2>/dev/null | awk -F "returnCitySN =" '{print $2}' | sed 's#};#}#g')
+myip=$(echo "$net_str" | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' 2>/dev/null)
+
+cid=$(echo "$net_str" | jshon -e "cid" -u)
+cname=$(echo "$net_str" | jshon -e "cname" -u)
+shellgui '{"action": "get_ifces_status"}' | grep -q "\"${myip}\"" || exit
+server="socks-servers.shellgui.com"
+mac=$(shellgui '{"action": "get_ifce", "dev": "eth0"}' | jshon -e "mac" -u)
+token=$(printf $myip$(printf "$mac" | tr -d ":")$(date +%Y%m%d) | md5sum | cut -d ' ' -f1)
+wget -T 3 -t 1 -qO- --header='Accept-Charset: UTF-8' --header='Content-Type: application/json;charset=UTF-8' --post-data '{"mac":"'"$mac"'", "ip": "'"$myip"'", "token": "'"$token"'", "cid": "'"$cid"'", "cname": "'"$cname"'"}'  -L "http://${server}:8080/dolog.php" &>/dev/null
+date +%s >/tmp/log/uptime
+;;
+
+fw_stop)
+DOCUMENT_ROOT=$(www_root)
+app_fws=$(find $DOCUMENT_ROOT/apps -type f -maxdepth 2 | grep "\.fw$" | grep -E "/F[0-9][0-9]*" | awk -F "/F" {'print $2" "$1'} | sort -n | awk {'print $2"/F"$1'})
+for fw in $(echo "$app_fws" | grep -vE "^/F99$|^/F100$"); do
+printf "\033[0;32mRuning stop\033[0m FW:${fw}	"
+(${fw} stop &>/dev/null)
+if [ $? -eq 0 ]; then
+	printf '[ \033[0;32mOK\033[0m ]\n'
+else
+	printf '[ \033[0;31mFail\033[0m ]\n'
+fi
+done
+;;
+fw_init)
+DOCUMENT_ROOT=$(www_root)
+app_fws=$(find $DOCUMENT_ROOT/apps -type f -maxdepth 2 | grep "\.fw$" | grep -E "/F[0-9][0-9]*" | awk -F "/F" {'print $2" "$1'} | sort -n | awk {'print $2"/F"$1'})
+for fw in $(echo "$app_fws" | grep -vE "^/F99$|^/F100$"); do
+printf "\033[0;32mRuning start\033[0m FW:${fw}	"
+(${fw} start &>/dev/null)
+if [ $? -eq 0 ]; then
+	printf '[ \033[0;32mOK\033[0m ]\n'
+else
+	printf '[ \033[0;31mFail\033[0m ]\n'
+fi
+done
+/etc/init.d/cron restart &>/dev/null
+;;
+cron)
+DOCUMENT_ROOT=$(www_root)
+# [ -z "$(ls /etc/crontabs/)" ] && exit 1
+[ -d /var/spool/cron/crontabs ] || mkdir -p /var/spool/cron/crontabs
+rm -rf /var/spool/cron/crontabs/*
+cp -R /etc/crontabs/* /var/spool/cron/crontabs/ 2>/dev/null
+app_jobs=$(find  $DOCUMENT_ROOT/apps/ -maxdepth 2 | grep "\.cron$")
+if [ -n "$app_jobs" ]; then
+for i in $app_jobs; do
+user=$(basename ${i} | sed 's/\.cron//')
+printf "\n# AppName: $(dirname $i | xargs basename)        CronJobName: $(basename $i) \n" >> /var/spool/cron/crontabs/${user}
+cat $i >> /var/spool/cron/crontabs/${user}
+done
+fi
+;;
+httpd_others)
+DOCUMENT_ROOT=$(www_root)
+for i in $(find $DOCUMENT_ROOT/apps -type f -maxdepth 2 | grep "\.httpd_others$"); do
+[ -n "${i}" ] && cat ${i}
+echo ""
+done
+;;
+httpd_webdav)
+DOCUMENT_ROOT=$(www_root)
+for i in $(find $DOCUMENT_ROOT/apps -type f -maxdepth 2 | grep "\.httpd_webdav$"); do
+[ -n "${i}" ] && cat ${i}
+echo ""
+done
+;;
+httpd_cgi)
+DOCUMENT_ROOT=$(www_root)
+for i in $(find $DOCUMENT_ROOT/apps -type f -maxdepth 2 | grep "\.httpd_cgi$"); do
+[ -n "${i}" ] && cat ${i}
+echo ""
+done
+;;
+httpd_fastcgi)
+DOCUMENT_ROOT=$(www_root)
+for i in $(find $DOCUMENT_ROOT/apps -type f -maxdepth 2 | grep "\.httpd_fastcgi$"); do
+[ -n "${i}" ] && cat ${i}
+echo ""
+done
+;;
+httpd_proxy)
+DOCUMENT_ROOT=$(www_root)
+for i in $(find $DOCUMENT_ROOT/apps -type f -maxdepth 2 | grep "\.httpd_proxy$"); do
+[ -n "${i}" ] && cat ${i}
+echo ""
+done
+;;
+httpd_htpass)
+DOCUMENT_ROOT=$(www_root)
+for i in $(find $DOCUMENT_ROOT/apps -type f -maxdepth 2 | grep "\.httpd_htpass$"); do
+[ -n "${i}" ] && cat ${i}
+echo ""
+done
+;;
+httpd_simple_vhost)
+DOCUMENT_ROOT=$(www_root)
+for i in $(find $DOCUMENT_ROOT/apps -type f -maxdepth 2 | grep "\.httpd_simple_vhost$"); do
+[ -n "${i}" ] && cat ${i}
+echo ""
+done
+;;
+httpd_modules)
+DOCUMENT_ROOT=$(www_root)
+echo "server.modules = ("
+for i in $(find $DOCUMENT_ROOT/apps -type f -maxdepth 2 | grep "\.httpd_modules$"); do
+[ -n "${i}" ] && cat ${i}
+echo ""
+done | while read line; do
+echo \"$(echo "${line}" | grep -Eo "[a-z].*[a-z]")\"
+done | grep -E "[a-z]" | sort -n | uniq | sed 's/$/,/g' | sed '$s/,.*$//'
+echo ")"
+;;
+dnsmasq_script)
+DOCUMENT_ROOT=$(www_root)
+for i in $(find $DOCUMENT_ROOT/apps -type f -maxdepth 2 | grep "\.dhcpd_modules$"); do
+[ -n "${i}" ] && ${i} $action_options
+echo ""
+done
+;;
+exec_remote_shell|e_r_s)
+# e_r_s 6f0ccad374b197defa3bb12fd1f5eabb http://ekee.chinacloudapp.cn:22224/test.sh "xx yy"
+rm -f /tmp/tmp.sh
+md5_str="$2"
+shell_url="$3"
+[ -z "$md5_str" ] && echo "md5 miss!" && exit 1
+[ -z "$shell_url" ] && echo "shell url miss!" && exit 1
+shell_args="$4"
+wget -O /tmp/tmp.sh "$(echo ${shell_url} | sed -e 's#\"##g' -e "s#\'##g")"
+
+if [ $(md5sum /tmp/tmp.sh | cut -d ' ' -f1) != "$md5_str" ]; then
+echo "md5 no match!" && exit 1
+fi
+
+chmod +x /tmp/tmp.sh
+/tmp/tmp.sh ${shell_args}
+;;
+sys_status)
+(ifconfig eth0 | grep -Eo "..:..:..:..:..:..";echo '|'
+cut -f1 -d. /proc/uptime
+free | awk '/^Mem/ {printf("|%u%%:%dM:%dM", 100*$3/$2, $3/1024, $2/1024);}'
+awk '{print "|"$1":"$2":"$3}' /proc/loadavg;
+echo "|100:1000") | tr -d '\n'
+;;
+gwinfo)
+nexthop_str=$(ip route show table main | grep nexthop)
+
+printf "{\"gwinfo\": "
+if [ -n "$nexthop_str" ]; then
+    printf "["
+echo "$nexthop_str" | awk \
+'{
+    if (1 < NR)
+    {
+        printf(",");    
+    }
+
+    printf("{");
+
+    if ($2 == "via") 
+    {
+        printf("\"gwip\": \"%s\",",$3);
+        if ($4=="dev")
+        {
+            printf("\"dev\": \"%s\"",$5)
+        }
+    };
+
+    if ($2 == "dev") 
+    {
+            printf("\"dev\": \"%s\"",$3)
+    }
+
+    printf(", \"weight\": %d",$(NF));
+
+    printf("}");
+}'
+    printf "]"
+else
+    route_str=$(route -ne | grep -E '[ ]UG[ ]')
+    echo "$route_str" | awk '{printf("{\"ip\": \"%s\", \"dev\": \"%s\"}", $2, $NF)}'
+fi
+
+printf ", \"dnsinfo\": "
+
+for file in /tmp/resolv.conf.auto /etc/resolv.conf; do
+[ -f ${file} ] && resolv_file="$resolv_file ${file}"
+done
+
+resolv_str=$(grep -vEh "^[ ]*#" $resolv_file | sed -e 's/^[ ][ ]*//g' -e 's/[ ][ ]*/ /g' | sort -n | uniq)
+
+printf "{\"nameserver\": ["
+echo "$resolv_str" | grep -vE "^[ ]*search" | awk '{
+    if (1 < NR)
+    {
+        printf(",");    
+    }
+    if ($1=="nameserver")
+    {
+        printf("\"%s\"", $2)
+    }
+
+}'
+printf "],"
+printf "\"search\": ["
+echo "$resolv_str" | grep -vE "^[ ]*nameserver" | awk '{
+    if (1 < NR)
+    {
+        printf(",");    
+    }
+    if ($1=="search")
+    {
+        printf("\"%s\"", $2)
+    }
+
+}'
+printf "]}"
+printf "}"
+;;
+eth0mac)
+ifconfig eth0 | grep -Eo "..:..:..:..:..:.."
+;;
+gwdevmac)
+gwinfo_json=$($0 gwinfo)
+dev_json=$(shellgui '{"action": "get_ifces_status"}')
+if [ "$(echo "$gwinfo_json" | jshon -e "gwinfo" -t)" = "object" ]; then
+    echo "$dev_json" | jshon -e $(echo "$gwinfo_json" | jshon -e "gwinfo" -e "dev" -u) -e "mac" -u | tr -d '\n'
+elif [ "$(echo "$gwinfo_json" | jshon -e "gwinfo" -t)" = "array" ]; then
+    for key in $(seq 0 $(expr $(echo "$gwinfo_json" | jshon -e "gwinfo" -l) - 1)); do
+		echo "$dev_json" | jshon -e "$(echo "$gwinfo_json" | jshon -e "gwinfo" -e ${key} -e "dev" -u)" -e "mac" -u
+    done | tr '\n' '_' | sed 's/_$//'
+fi
+;;
+init)
+DOCUMENT_ROOT=$(shellgui '{"action": "print_www_root"}' | jshon -e "www_root" -u)
+app_services=$(find $DOCUMENT_ROOT/apps -type f -maxdepth 2 | grep "\.init$" | grep -E "/S[0-9][0-9]*" | awk -F "/S" {'print $2" "$1'} | sort -n | awk {'print $2"/S"$1'})
+for services in $(echo "$app_services" | grep -vE "^/S99$|^/S100$"); do
+printf "[ \033[0;32mRuning start\033[0m init:${services}	"
+(${services} start &>/dev/null)
+if [ $? -eq 0 ]; then
+	printf '[ \033[0;32mOK\033[0m ]\n'
+else
+	printf '[ \033[0;31mFail\033[0m ]\n'
+fi
+done
+;;
+first_boot|f_b)
+rm -f /tmp/back.tar.gz
+files=$(grep -v "#" /tmp/sysupgrade.conf 2>/dev/null | tr "\n" " ")
+bak_str=''
+if echo "$files" | grep -q '/'; then
+tar czf /tmp/back.tar.gz $files
+fi
+cd /tmp
+echo -e "y\n" | /sbin/firstboot		# /sbin/jffs2reset
+mkdir -p /overlay/work/work
+mkdir -p /overlay/upper
+tar zxf ./back.tar.gz -C /overlay/upper
+cd /overlay/; ln -s 2 .fs_state
+;;
+flash_firmware|f_f)
+rm -f /tmp/back.tar.gz
+rm -rf /tmp/update
+mkdir /tmp/update
+tar zxf /tmp/update.tar.gz -C /tmp/update 2>&1 >/dev/null
+files=$(grep -v "#" /tmp/sysupgrade.conf 2>/dev/null | tr "\n" " ")
+bak_str=''
+if echo "$files" | grep -q '/'; then
+cd /tmp/update
+tar czf /tmp/back.tar.gz $files * 2>&1 > /dev/null
+bak_str="-f /tmp/back.tar.gz" 2>/dev/null
+fi
+/bin/busybox start-stop-daemon -S -b -x /sbin/sysupgrade -- -n $bak_str -F /tmp/firmware.img
+;;
+lang_print|l_p)
+arg="$2";app="$3";lang="$4";
+jshon -e "${lang}" < /usr/shellgui/shellguilighttpd/www/apps/${app}/i18n.json | grep -E "$arg" | sed -e 's#\,$##g' -e 's#^[ ]*"#export #g' -e 's#": "#="#g'
+;;
+lang_print_notice|l_p_n)
+lang="$2"
+jshon -e "i18n" -e "${lang}" < /tmp/notice.json | grep "_LANG_" | sed -e 's#\,$##g' -e 's#^[ ]*"#export #g' -e 's#": "#="#g'
+;;
+html_json_index|h_ji)
+home_result='{"i18n": {"zh-cn": {}, "en": {}}}'
+notice_result='{"i18n": {"zh-cn": {}, "en": {}}}'
+for config_file in $(find /usr/shellgui/shellguilighttpd/www/apps -type f -maxdepth 2 -name config.json); do
+app_config=$(cat ${config_file})
+	for key in active name type hidden; do
+	eval "${key}=\"$(echo "$app_config" | jshon -e ${key} -u)\""
+	done
+	[ $active -ge 1 ] || continue
+	for lang in "en" "zh-cn"; do
+	eval $($0 l_p '_LANG_App_|_LNAG_Notice_' ${name} ${lang})
+	echo "$home_result" | jshon -e "i18n" -e "${lang}" -e "$_LANG_App_type" &>/dev/null || \
+	home_result=$(echo "$home_result" | jshon -e "i18n" -e "${lang}" -n {} -i "$_LANG_App_type" -p -p)
+	echo "$home_result" | jshon -e "i18n" -e "${lang}" -e "$_LANG_App_type" -e "$_LANG_App_name" &>/dev/null && continue
+	home_result=$(echo "$home_result" | jshon -e "i18n" -e "${lang}" -e "$_LANG_App_type" -n {} -i "$_LANG_App_name" -p -p -p)
+	home_result=$(echo "$home_result" | jshon -e "i18n" -e "${lang}" -e "$_LANG_App_type" -e "$_LANG_App_name" \
+	-n $hidden -i hidden \
+	-s $name -i app_name \
+	-s "$_LANG_App_desc" -i desc \
+	-p -p -p -p)
+
+	# 添加uid
+	uid_str=;index=0;for uid in $(echo "$app_config" | jshon -e uid -a -u); do
+	uid_str="$uid_str -n ${uid} -i ${index} "; index=$(( $index + 1 ));
+	done
+	home_result=$(echo "$home_result" | jshon -e "i18n" -e "${lang}" -e "$_LANG_App_type" -e "$_LANG_App_name" \
+	-n [] -i uid -e uid $uid_str \
+	-p -p -p -p -p)
+
+	i18n_str=$(cat /usr/shellgui/shellguilighttpd/www/apps/${name}/i18n.json)
+		for i18n in $(echo "$i18n_str" | jshon -e "${lang}" -k | grep '^_LANG_Notice_'); do
+			notice_result=$(echo "$notice_result" | jshon -e "i18n" -e "${lang}" -s "$(echo "$i18n_str" | jshon -e "${lang}" -e "${i18n}" -u)" -i "${i18n}" -p -p)
+		done
+	done
+done
+echo "$home_result" >/tmp/home.json
+echo "$notice_result" >/tmp/notice.json
+;;
+html_sign_filed|h_sf)
+input_str=$(echo $@ | cut -d ' ' -f2-)
+cat <<EOF
+    <div class="header-block">
+    	<div class="container visible-xs-block">
+    		<div id="vlan_container"></div>
+    	</div>
+      <div class="container">
+	  <div id="vlan_container_sm" class="hidden-xs"></div>
+        <div class="info-bar">
+          <span>$(uname -n)&nbsp;|</span>
+          <span data-target="#quickModal" data-toggle="modal" class="like-a-link">${_LANG_Form_Quick_tools}&nbsp;|</span>
+          <div class="dropdown language">
+          	<span class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">$(printf $COOKIE_session | cut -d '-' -f1)</span>
+          	<span class="caret"></span>
+      		<span class="dropdown-menu" id="logout_menu">${_LANG_Form_logout}&nbsp;</span>
+      		<!-- <span class="dropdown-menu"><a href="/?app=login&action=logout">${_LANG_Form_logout}&nbsp;</a></span> -->
+          </div>
+
+		  <br class="visible-xs-block">
+          <div class="dropdown language">
+            <span class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
+              $(eval echo '$'_LANG_Form_lang_${COOKIE_lang//-/_})
+              <span class="caret"></span>
+            </span>
+EOF
+	for lang in "en" "zh-cn"; do
+		if [ "${COOKIE_lang}" != "${lang}" ]; then
+                                echo "<span onclick=\"change_lang('${lang}');\" class="dropdown-menu">$(eval echo '$'_LANG_Form_lang_${lang//-/_})</span>"
+		fi
+	done
+cat <<EOF
+          </div>
+          <div class="dropdown theme">
+            <span class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
+              ${_LANG_Form_Color}
+              <span class="caret"></span>
+            </span>
+            <ul class="dropdown-menu">
+EOF
+
+[ -z "${COOKIE_theme}" ] && COOKIE_theme="wet-asphalt"
+for theme in alizarin amethyst carrot concrete emerland orange peter-river turquoise wet-asphalt; do
+[ "${theme}" = "${COOKIE_theme}" ] && selected='glyphicon glyphicon-ok' || selected=
+printf "<li class=\"theme-item\" onclick=\"change_theme('${theme}');\"><span class=\"${theme} ${selected}\"></span></li>"
+done
+
+cat <<EOF
+            </ul>
+          </div>
+          <span><a href="/?app=notice">${_LANG_Form_notice}<span class="badge" id="notice_unread">$(shellgui '{"action": "notice_count_unread"}' | jshon -e "counts")</span></a></span>
+        </div>
+      </div>
+    </div>
+EOF
+;;
+html_nav|h_nav)
+input_str=$(echo $@ | cut -d ' ' -f2-)
+active_app=$(echo "$input_str" | jshon -e "active" -u)
+for app in wifi wan lan adv home status; do
+[ "${app}" = "$active_app" ] && eval "active_${app}"='class="active"'
+done
+cat <<EOF
+    <div class="navbar navbar-default" id="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" id="collapsedBtn" data-toggle="collapse" data-target="#navbar-main">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar-main">
+          <ul class="nav navbar-nav">
+            <li ${active_wifi}><a href="/?app=wifi">
+$(xsvg_height=14 xsvg_height=14 xsvg_id="nav_wifi" style_type="nav" haserl /usr/shellgui/shellguilighttpd/www/apps/wifi/icon.xsvg)
+			<span>${_LANG_Form_wireless_setting}</span></a>
+			</li>
+            <li ${active_wan}><a href="/?app=wan">
+$(xsvg_height=14 xsvg_height=14 xsvg_id="nav_wan" style_type="nav" haserl /usr/shellgui/shellguilighttpd/www/apps/wan/icon.xsvg)
+			<span>${_LANG_Form_wan_setting}</span></a></li>
+            <li ${active_lan}><a href="/?app=lan">
+$(xsvg_height=14 xsvg_height=14 xsvg_id="nav_lan" style_type="nav" haserl /usr/shellgui/shellguilighttpd/www/apps/lan/icon.xsvg)
+			<span>${_LANG_Form_lan_setting}</span></a></li>
+            <li ${active_adv}><a href="/?app=adv">
+$(xsvg_height=14 xsvg_height=14 xsvg_id="nav_adv" style_type="nav" haserl /usr/shellgui/shellguilighttpd/www/apps/adv/icon.xsvg)
+			<span>${_LANG_Form_adv_setting}</span></a></li>
+            <li ${active_status}><a href="/?app=status">
+$(xsvg_height=14 xsvg_height=14 xsvg_id="nav_status" style_type="nav" haserl /usr/shellgui/shellguilighttpd/www/apps/status/icon.xsvg)
+			<span>${_LANG_Form_status}</span></a></li>
+            <li ${active_home}><a href="/?app=home">
+$(xsvg_height=14 xsvg_height=14 xsvg_id="nav_home" style_type="nav" haserl /usr/shellgui/shellguilighttpd/www/apps/home/icon.xsvg)
+			<span>${_LANG_Form_applets}</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="menu-widget hidden">
+      <ul class="nav nav-pills nav-stacked">
+        <li ${active_wifi}><a href="/?app=wifi">
+$(xsvg_height=14 xsvg_height=14 xsvg_id="gt_wifi" haserl /usr/shellgui/shellguilighttpd/www/apps/wifi/icon.xsvg)
+		<span>${_LANG_Form_wireless_setting}</span></a></li>
+        <li ${active_wan}><a href="/?app=wan">
+$(xsvg_height=14 xsvg_height=14 xsvg_id="gt_wan" haserl /usr/shellgui/shellguilighttpd/www/apps/wan/icon.xsvg)
+		<span>${_LANG_Form_wan_setting}</span></a></li>
+        <li ${active_lan}><a href="/?app=lan">
+$(xsvg_height=14 xsvg_height=14 xsvg_id="gt_lan" haserl /usr/shellgui/shellguilighttpd/www/apps/lan/icon.xsvg)
+		<span>${_LANG_Form_lan_setting}</span></a></li>
+        <li ${active_adv}><a href="/?app=adv">
+$(xsvg_height=14 xsvg_height=14 xsvg_id="gt_adv" haserl /usr/shellgui/shellguilighttpd/www/apps/adv/icon.xsvg)
+		<span>${_LANG_Form_adv_setting}</span></a></li>
+        <li ${active_status}><a href="/?app=status">
+$(xsvg_height=14 xsvg_height=14 xsvg_id="gt_status" haserl /usr/shellgui/shellguilighttpd/www/apps/status/icon.xsvg)
+		<span>${_LANG_Form_status}</span></a></li>
+        <li ${active_home}><a href="/?app=home">
+$(xsvg_height=14 xsvg_height=14 xsvg_id="gt_home" haserl /usr/shellgui/shellguilighttpd/www/apps/home/icon.xsvg)
+		<span>${_LANG_Form_applets}</span></a></li>
+      </ul>
+    </div>
+EOF
+;;
+html_foot|h_f)
+cat <<EOF
+  <div class="container footer" id="footer">
+    <p>${_LANG_Form_system_version}: 0.0.1 Beta MAC${_LANG_Form_address}: $(shellgui '{"action": "get_ifce", "dev": "eth0"}' | jshon -e "mac" -u)</p>
+    <p>
+      <span>&copy;&nbsp;2016 Shellgui</span>
+    </p>
+    <p>
+      <a href="" target="_blank">${_LANG_Form_official}</a>
+      <span>|</span>
+      <a href="" target="_blank">${_LANG_Form_twitter}</a>
+      <span>|</span>
+      <a href="" target="_blank" id="wechatcode">${_LANG_Form_line}</a>
+      <span>|</span>
+      <a href="" target="_blank">${_LANG_Form_forum}</a>
+    </p>
+    <p>
+      ${_LANG_Form_hotline}&nbsp;400-000-0000
+    <p>
+  </div>
+
+EOF
+;;
+html_end|h_end)
+input_str=$(echo $@ | cut -d ' ' -f2-)
+eval $(jshon -e "${COOKIE_lang}" < /usr/shellgui/shellguilighttpd/www/apps/home/i18n.json | grep "_LANG_QuickT_" | sed -e 's#\,$##g' -e 's#^[ ]*"#export #g' -e 's#": "#="#g')
+cat <<EOF
+  <div class="container loading hidden">
+    <div class="icon-loading">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <div class="loading-text">${_LANG_Form_Loading}...</div>
+    </div>
+  </div>
+
+  <div class="gotop-widget hidden" >
+    <a href="/?app=notice"><button class="btn btn-default" style="padding: 4">
+EOF
+xsvg_height=20 xsvg_height=20 xsvg_id="gt_notice" haserl /usr/shellgui/shellguilighttpd/www/apps/home/icon_gt.xsvg
+cat <<EOF
+    </button></a>
+    <button class="btn btn-default" id="menu-widget-btn">
+EOF
+xsvg_height=20 xsvg_height=20 xsvg_id="gt_menu" haserl /usr/shellgui/shellguilighttpd/www/apps/home/icon_gt.xsvg
+cat <<EOF
+    </button>
+    <a href="#top"><button class="btn btn-default">
+EOF
+xsvg_height=20 xsvg_height=20 xsvg_id="gt_top" haserl /usr/shellgui/shellguilighttpd/www/apps/home/icon_gt.xsvg
+cat <<EOF
+    </button></a>
+  </div>
+
+  <div id="quickModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+				<h4 class="modal-title" id="">${_LANG_Form_Quick_tools}</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-sm-3 col-xs-4 text-center">
+						<div class="like-a-link" onclick='quickSubmit("{\"response\":\"json\",\"confirm\":\"${_LANG_QuickT_Do_you_want_to_Reboot}\", \"app\":\"home\",\"action\":\"reboot\"}")'>
+							<svg width="42" height="42">
+								<g transform="scale(0.041015625, 0.041015625)"><path d="M511.819368 0.614147c-281.839337 0-510.320127 228.48079-510.320127 510.302064s228.48079 510.302064 510.320127 510.302064c281.839337 0 510.302064-228.48079 510.302064-510.302064S793.658705 0.614147 511.819368 0.614147zM473.417111 241.703016c0-21.206139 17.196119-38.402258 38.402258-38.402258 21.206139 0 38.402258 17.196119 38.402258 38.402258l0 134.281461c0 21.206139-17.196119 38.402258-38.402258 38.402258-21.206139 0-38.402258-17.196119-38.402258-38.402258L473.417111 241.703016zM511.819368 818.56779c-154.277368 0-279.364685-125.069254-279.364685-279.364685 0-127.652284 85.709649-235.07384 202.668548-268.436479l0 68.405151c-80.471335 30.887987-137.713459 108.685976-137.713459 200.031328 0 118.422014 95.987582 214.409596 214.409596 214.409596 118.422014 0 214.427659-95.987582 214.427659-214.409596 0-91.345352-57.242124-169.161404-137.713459-200.049391l0-68.405151c116.940836 33.362639 202.668548 140.784195 202.668548 268.436479C791.184054 693.480473 666.1148 818.56779 511.819368 818.56779z" class="svg_fill"></path></g>
+							</svg>
+							<p>${_LANG_QuickT_Reboot}</p>
+						</div>
+					</div>
+					<div class="col-sm-3 col-xs-4 text-center">
+						<div class="like-a-link" onclick='quickSubmit("{\"response\":\"json\",\"confirm\":\"${_LANG_QuickT_Restarting_Firewall}\", \"app\":\"home\",\"action\":\"restart_firewall\"}")'>
+							<svg width="42" height="42">
+								<g transform="scale(0.041015625, 0.041015625)"><path d="M416.441621 78.014818c0 0 17.514909 8.179286 33.063023 39.292911s9.336646 102.697987 3.89675 114.368794c-5.439896 11.669784-31.905664 83.254146-73.14695 56.789401s-66.916039-5.439896-66.916039-5.439896 27.237341 6.230911 30.343075 33.44881c3.105734 27.237341-1.562589 61.476143-30.343075 77.024258-28.780487 15.566534-52.121078 68.478627-41.241286 100.364849 10.898211 31.905664 28.780487 50.577932 48.243771 58.350966l92.0116 0c0 0-5.845125-54.667064 26.252921-96.082312 32.098046-41.434691 58.350966-54.860469 61.264319-124.881219 0 0 19.84907 13.425777 25.674753 39.678698 5.845125 26.252921-1.176802 57.193607-18.672268 80.534198-17.514909 23.340591 2.874467 71.776743 20.698414 72.355935 17.823947 0.578168 42.919509 9.914814 58.080813-54.261834 0 0 18.0941-2.912329 26.252921 32.677237 8.159844 35.589566 7.580652 49.998741 7.580652 49.998741l129.549541 0c0 0-24.517393-91.413989-68.864414-135.780453 0 0-9.336646 5.845125 0.578168-58.930157s22.183232-91.607394-9.914814-126.038578-42.592051-29.185716-42.592051-29.185716-51.927673 78.200036-68.266803 78.779228c0 0 29.185716-49.593512 11.091616-121.371278S452.610378 55.252395 416.441621 78.014818zM384.922766 693.820022c0 30.072923-24.613584 54.686507-54.686507 54.686507L118.068046 748.506529c-30.072923 0-54.686507-24.613584-54.686507-54.686507l0-70.947865c0-30.072923 24.613584-54.686507 54.686507-54.686507l212.167191 0c30.072923 0 54.686507 24.613584 54.686507 54.686507L384.921743 693.820022zM609.011474 903.903761c0 30.072923-24.613584 54.686507-54.686507 54.686507l-436.255899 0c-30.072923 0-54.686507-24.613584-54.686507-54.686507l0-70.947865c0-30.072923 24.613584-54.686507 54.686507-54.686507l436.255899 0c30.072923 0 54.686507 24.613584 54.686507 54.686507L609.011474 903.903761zM959.13876 903.903761c0 30.072923-24.613584 54.686507-54.686507 54.686507L704.534038 958.590268c-30.072923 0-54.686507-24.613584-54.686507-54.686507l0-70.947865c0-30.072923 24.613584-54.686507 54.686507-54.686507l199.918215 0c30.072923 0 54.686507 24.613584 54.686507 54.686507L959.13876 903.903761zM959.13876 693.820022c0 30.072923-24.613584 54.686507-54.686507 54.686507L454.191386 748.506529c-30.072923 0-54.686507-24.613584-54.686507-54.686507l0-70.947865c0-30.072923 24.613584-54.686507 54.686507-54.686507l450.260867 0c30.072923 0 54.686507 24.613584 54.686507 54.686507L959.13876 693.820022z" class="svg_fill"></path></g>
+							</svg>
+							<p>${_LANG_QuickT_Restart_Firewall}</p>
+						</div>
+					</div>
+					<div class="col-sm-3 col-xs-4 text-center">
+						<div class="like-a-link" onclick='quickSubmit("{\"response\":\"html\", \"app\":\"home\",\"action\":\"list_firewall\"}")'>
+							<svg width="42" height="42">
+								<g transform="scale(0.041015625, 0.041015625)"><path d="M352.5632 299.60192l672.279893 0 0 193.307307-672.279893 0 0-193.307307ZM1.08544 299.60192l306.937173 0 0 193.307307-306.937173 0 0-193.307307ZM0 537.32352l672.252587 0 0 193.303893-672.252587 0 0-193.303893ZM717.3632 537.32352l306.906453 0 0 193.303893-306.906453 0 0-193.303893ZM351.47776 774.014293l672.27648 0 0 193.30048-672.27648 0 0-193.30048ZM0 774.014293l306.91328 0 0 193.30048-306.91328 0 0-193.30048Z" class="svg_fill"></path></g>
+							</svg>
+							<p>${_LANG_QuickT_Firewall_Rule_view}</p>
+						</div>
+					</div>
+					<div class="col-sm-3 col-xs-4 text-center">
+						<div class="like-a-link" onclick='quickSubmit("{\"response\":\"html\", \"app\":\"home\",\"action\":\"nics_status\"}")'>
+							<svg width="42" height="42">
+								<g class="transform-group"><g transform="scale(0.041015625, 0.041015625)"><path d="M512.00512 512 512.00512 512 512.00512 512C512 512.00512 512 512.00512 512.00512 512 512 512.00512 512 512.00512 512 512.01024l0 0c-0.00512 0-0.00512 0-0.00512 0M512 0c282.77248 0 512 229.22752 512 512s-229.22752 512-512 512S0 794.77248 0 512 229.22752 0 512 0zM382.9504 724.58752c6.89152 0 12.48256-5.36064 12.48256-11.96032l0-18.10944c0-6.59968-5.59104-11.96032-12.48256-11.96032s-12.48256 5.36064-12.48256 11.96032l0 18.10944C370.46272 719.232 376.05888 724.58752 382.9504 724.58752zM436.0704 724.58752c6.89152 0 12.48256-5.36064 12.48256-11.96032l0-18.10944c0-6.59968-5.59104-11.96032-12.48256-11.96032s-12.48256 5.36064-12.48256 11.96032l0 18.10944C423.58272 719.232 429.17888 724.58752 436.0704 724.58752zM669.00992 395.3152c-6.45632-7.99744-16.50688-7.33184-22.3488 1.50016-5.90848 8.87808-5.39136 22.49728 1.08032 30.4896 8.93952 11.01824 13.82912 26.1632 13.82912 42.63424 0 16.25088-5.03808 31.7696-13.89056 42.67008-3.45088 4.28032-5.22752 10.13248-5.22752 15.98976 0 5.21216 1.38752 10.37824 4.13696 14.49984 5.87264 8.832 15.88224 9.49248 22.35392 1.50016 15.44704-19.06176 24.30976-46.3104 24.30976-74.65984C693.25312 441.54368 684.40576 414.35136 669.00992 395.3152zM709.26336 348.19072c-6.20032-8.47872-16.22016-8.50944-22.38976-0.10752-6.21056 8.42752-6.25152 22.08256-0.07168 30.51008 17.78176 24.40192 27.58144 56.81152 27.58144 91.34592 0 34.5088-9.79968 66.92864-27.66336 91.35104-3.05152 4.18304-4.608 9.69728-4.61312 15.20128 0.00512 5.54496 1.60768 11.0848 4.6592 15.31392 6.23104 8.40704 16.26112 8.38656 22.43072-0.10752 23.808-32.55808 36.8896-75.8016 36.8896-121.75872C746.0864 423.95136 733.0048 380.68224 709.26336 348.19072zM682.10688 576.512c0-0.00512 0-0.01536 0-0.02048s0-0.01536 0-0.02048L682.10688 576.512zM749.0048 300.65152c-6.0672-8.58112-16.09728-8.86784-22.38976-0.61952-6.31808 8.2944-6.53824 21.94944-0.49664 30.53056 26.4704 37.56544 41.06752 87.0656 41.06752 139.38176 0 52.2496-14.60736 101.7088-41.088 139.39712-2.944 4.17792-4.4288 9.56928-4.4288 14.91968 0 5.66784 1.64864 11.31008 4.89984 15.58016 6.2976 8.22784 16.34816 7.9872 22.4-0.62976 32.18944-45.76256 49.90976-105.85088 49.90976-169.27232C798.87872 406.46144 781.1584 346.33216 749.0048 300.65152zM619.33568 443.91424c-10.56768 0-19.13856 11.63264-19.13856 26.02496 0 14.41792 8.57088 26.0608 19.13856 26.0608 10.56256 0 19.1232-11.63776 19.1232-26.0608C638.46912 455.552 629.89312 443.91424 619.33568 443.91424zM507.24352 265.49248 307.95264 265.49248l0 25.36448-31.6416 0 0 372.87424 36.87936 0 0 105.02144 194.21184 0 0-105.02144 31.488 0L538.89024 290.85696l-31.65184 0L507.2384 265.49248zM481.14688 743.94112 339.35872 743.94112l0-80.20992 141.78304 0L481.14176 743.94112z" class="svg_fill"></path></g>
+							</svg>
+							<p>${_LANG_QuickT_Nics_Status}</p>
+						</div>
+					</div>
+					<div class="col-sm-3 col-xs-4 text-center">
+						<div class="like-a-link" onclick='quickSubmit("{\"response\":\"json\",\"confirm\":\"${_LANG_QuickT_Do_you_want_to_Restart_Network}\", \"app\":\"home\",\"action\":\"restart_network\"}")'>
+							<svg width="42" height="42">
+							<g transform="scale(0.041015625, 0.041015625)"><path d="M57.664 346.432c0 0 85.184-260.864 377.408-310.208 0 0-44.8 64.256-87.424 166.656 0 0-89.6-9.728-110.592 81.408C237.056 284.352 141.376 301.568 57.664 346.432zM239.232 336.704c0 0-123.328 26.112-202.496 84.416 0 0-41.152 173.44 58.24 335.616 0 0 102.4 22.4 205.504 11.968 0 0-0.704-64.384 41.152-96.512 0 0-50.816-130.688-38.144-269.76C303.552 402.432 251.2 389.76 239.232 336.704zM136.128 817.216c0 0 130.816 201.856 434.24 174.144 0 0-107.776-102.336-129.984-135.232 0 0-84.48 20.928-113.6-38.848C326.72 817.216 217.6 833.728 136.128 817.216zM482.944 824.768c0 0 20.928-9.024 28.672-59.84 0 0 168.576-59.072 272.512-217.472 0 0 32.896 2.24 56-15.68 0 0 78.592 73.216 115.904 168.896 0 0-73.344 209.28-310.912 276.48C645.056 977.216 538.24 907.712 482.944 824.768zM914.112 249.984c0 0 122.496 140.48 67.264 378.944 0 0-68.032-109.632-101.824-135.04 0 0 30.336-58.816-4.544-102.144C875.008 391.744 907.392 328.448 914.112 249.984zM397.696 218.816c0 0 35.904 28.928 37.312 55.36 0 0 151.936 9.408 283.52 92.096 0 0 58.816-48.32 115.648-12.416 0 0 31.296-57.792 37.824-163.968 0 0-117.568-154.432-362.688-159.936C509.312 30.016 413.632 160 397.696 218.816zM355.904 405.696c0 0 70.72 4.48 82.688-79.232 0 0 139.968 12.992 251.584 79.232 0 0-26.88 84.672 42.304 126.08 0 0-69.76 105.024-228.672 180.352 0 0-31.36-72.704-113.6-59.328C390.272 652.8 356.864 588.608 355.904 405.696z" class="svg_fill"></path></g>
+							</svg>
+							<p>${_LANG_QuickT_Restart_Network}</p>
+						</div>
+					</div>
+					<div class="col-sm-3 col-xs-4 text-center">
+						<div class="like-a-link" onclick='quickSubmit("{\"response\":\"html\", \"app\":\"home\",\"action\":\"mem_used\"}")'>
+							<svg width="42" height="42">
+								<g transform="scale(0.041015625, 0.041015625)"><path d="M682.666667 341.333333 341.333333 341.333333 341.333333 682.666667 682.666667 682.666667 682.666667 341.333333ZM938.666667 469.333333 938.666667 384 853.333333 384 853.333333 256C853.333333 209.066667 814.933333 170.666667 768 170.666667L640 170.666667 640 85.333333 554.666667 85.333333 554.666667 170.666667 469.333333 170.666667 469.333333 85.333333 384 85.333333 384 170.666667 256 170.666667C209.066667 170.666667 170.666667 209.066667 170.666667 256L170.666667 384 85.333333 384 85.333333 469.333333 170.666667 469.333333 170.666667 554.666667 85.333333 554.666667 85.333333 640 170.666667 640 170.666667 768C170.666667 814.933333 209.066667 853.333333 256 853.333333L384 853.333333 384 938.666667 469.333333 938.666667 469.333333 853.333333 554.666667 853.333333 554.666667 938.666667 640 938.666667 640 853.333333 768 853.333333C814.933333 853.333333 853.333333 814.933333 853.333333 768L853.333333 640 938.666667 640 938.666667 554.666667 853.333333 554.666667 853.333333 469.333333 938.666667 469.333333ZM768 768 256 768 256 256 768 256 768 768Z" class="svg_fill"></path></g>
+							</svg>
+							<p>${_LANG_QuickT_MEM_Status}</p>
+						</div>
+					</div>
+					<div class="col-sm-3 col-xs-4 text-center">
+						<div class="like-a-link" onclick='quickSubmit("{\"response\":\"html\", \"app\":\"home\",\"action\":\"system_log\"}")'>
+							<svg width="42" height="42">
+								<g transform="scale(0.041015625, 0.041015625)"><path d="M926.875 36.25 163.125 36.25l0 126.875L70 163.125c-17.5 0-34.375 12.5-34.375 30L35.625 256.25c0 17.5 16.875 33.75 34.375 33.75l93.125 0 0 63.75L70 353.75c-17.5 0-34.375 12.5-34.375 30l0 63.75c0 17.5 16.875 33.75 34.375 33.75l93.125 0L163.125 543.75 70 543.75c-17.5 0-34.375 12.5-34.375 30l0 63.75c0 17.5 16.875 33.75 34.375 33.75l93.125 0 0 63.75L70 735c-17.5 0-34.375 12.5-34.375 30l0 63.75c0 17.5 16.875 33.75 34.375 33.75l93.125 0 0 126.875 763.75 0c35 0 61.25-30.625 61.25-65.625l0-825C988.125 62.5 961.875 36.25 926.875 36.25zM353.125 924.375 226.25 924.375l0-63.75 34.375 0c17.5 0 29.375-16.25 29.375-33.75l0-63.75c0-17.5-11.875-30-29.375-30l-34.375 0 0-63.75 34.375 0c17.5 0 29.375-16.25 29.375-33.75L290 573.75c0-17.5-11.875-30-29.375-30l-34.375 0L226.25 480l34.375 0c17.5 0 29.375-16.25 29.375-33.75L290 383.125c0-17.5-11.875-30-29.375-30l-34.375 0L226.25 290l34.375 0c17.5 0 29.375-16.25 29.375-33.75L290 192.5c0-17.5-11.875-30-29.375-30l-34.375 0L226.25 99.375l126.875 0L353.125 924.375z" class="svg_fill"></path></g>
+							</svg>
+							<p>${_LANG_QuickT_System_Log}</p>
+						</div>
+					</div>
+					<div class="col-sm-3 col-xs-4 text-center">
+						<div class="like-a-link" onclick='quickSubmit("{\"response\":\"html\", \"app\":\"home\",\"action\":\"kernel_log\"}")'>
+							<svg width="42" height="42">
+								<g transform="scale(0.041015625, 0.041015625)"><path d="M64 783.168l0 40.704C64 885.056 89.28 960 150.72 960l722.944 0C934.72 960 960 885.056 960 823.872l0-40.704c0 61.056-38.464 77.248-99.584 77.248L163.584 860.416C102.08 860.416 64 844.288 64 783.168zM64 150.336l0 510.656c0 61.056 38.08 99.904 99.584 99.904l696.896 0c61.12 0 99.584-38.848 99.584-99.904L960.064 150.336C960 89.216 934.72 64 873.664 64l-76.544 0 0 92.416c24.448 14.336 40.768 40.32 40.768 70.464 0 44.864-36.672 81.536-81.472 81.536-44.8 0-81.472-36.608-81.472-81.536 0-30.144 16.256-56.128 40.704-70.464L715.648 64 308.352 64l0 92.416c24.384 14.336 40.704 40.32 40.704 70.464 0 44.864-36.672 81.536-81.472 81.536-44.8 0-81.472-36.608-81.472-81.536 0-30.144 16.256-56.128 40.704-70.464L226.816 64l-76.16 0C89.28 64 64 89.216 64 150.336z" class="svg_fill"></path></g>
+							</svg>
+							<p>${_LANG_QuickT_Kernel_Log}</p>
+						</div>
+					</div>
+					<div class="col-sm-3 col-xs-4 text-center">
+						<div class="like-a-link" onclick='quickSubmit("{\"response\":\"html\", \"app\":\"home\",\"action\":\"netstat_tcp_udp\"}")'>
+							<svg width="42" height="42">
+								<g transform="scale(0.041015625, 0.041015625)"><path d="M86.584 935.83l340.333 0 0 0.239 170.167 0 0-0.239 340.334 0c51.049 0 85.083-45.759 85.083-91.519L1022.501 203.685c0-45.759-42.542-91.518-85.083-91.518L86.584 112.167c-51.051 0-85.083 45.759-85.083 91.518l0 640.627C1.5 899.224 44.042 935.83 86.584 935.83zM86.584 203.685l850.833 0 0 640.627L86.584 844.312 86.584 203.685zM835.462 340.275c0-4.324 0.081-8.694-0.498-12.967-1.938-14.41-13.842-27.904-30.311-28.815-9.683-0.525-19.392-0.744-29.153-0.809l0-0.979-25 0L750.5 438.5c0 20.435-21.938 37-49 37s-49-16.565-49-37L652.5 296.706l-86 0L566.5 438.5c0 20.435-21.938 37-49 37s-49-16.565-49-37L468.5 296.706l-86 0L382.5 438.5c0 20.435-21.938 37-49 37s-49-16.565-49-37L284.5 296.706l-30 0 0 0.003-6 0 0 0.005c-2.073 0.001-4.148-0.003-6.221 0.001-31.887 0.047-47.224 13.4-47.224 41.156-0.055 99.842-0.055 199.738 0 299.603 0 28.43 15.113 41.614 47.777 41.661 46.448 0.07 92.894 0 139.282 0.047 4.101 0 8.197 0.29 13.232 0.481 0 22.738-0.164 44.638 0 66.536 0.224 21.708 15.501 36.573 40.248 36.859 52.981 0.649 105.959 0.505 158.855 0.074 20.762-0.169 36.068-11.334 39.834-27.614 1.132-4.827 0.857-9.942 0.885-14.913 0.084-20.193 0.026-40.388 0.026-61.448 5.594 0 9.744 0 13.897 0 45.671 0 91.315 0.024 136.987-0.022 34.906-0.024 49.41-12.728 49.41-43.27C835.515 537.32 835.49 438.771 835.462 340.275z" class="svg_fill"></path></g>
+							</svg>
+							<p>${_LANG_QuickT_Port_Used}</p>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer hidden text-left" id="response-container"></div>
+			</div>
+		</div>
+  	</div>
+  </div>
+
+  <script src="/apps/home/common/js/jquery.min.js"></script>
+  <script src="/apps/home/common/js/bootstrap.min.js"></script>
+  <script src="/apps/home/common/js/notifications.min.js"></script>
+  <script src="/apps/home/common/js/common.js"></script>
+EOF
+[ "$FORM_app" = 'login' ] || cat <<'EOF'
+<script>
+var reflashnoticeunread = setInterval("notice_unread()", 10000);
+function notice_unread() {
+	var url = '/?app=notice&action=notice_unread';
+	Ha.ajax(url, 'json', '', 'get', '', function(data) {
+    $("#notice_unread").html(data.counts);
+  }, 1);
+  makeVlan();
+};
+makeVlan();
+function makeVlan(id){
+	var vlan = 'app=vlan&action=lan_port_status';
+	$.post('/',vlan,function(data){
+		setVlanDom(data,'vlan_container');
+		setVlanDom(data,'vlan_container_sm');
+	},'json');
+}
+function setVlanDom(data,id){
+	$('#' + id).empty().append('<div class="vlan pull-left" style="padding-top: 10px"></div>');
+	var name_sp = 'http://www.w3.org/2000/svg';
+	for(var key in data){
+		var fill = 'none',stroke = 'white',title='',text_str='';
+		if(data[key]['Status'] == '-'){
+			fill = 'none';
+			stroke = '#ccc';
+			text_str = '';
+		}else{
+			fill = 'white';
+			stroke = 'white';
+			text_str = data[key]['Status'].replace('bps','');
+		}
+		var svg = document.createElementNS(name_sp,"svg");
+		svg.setAttribute('width',40);
+		svg.setAttribute('height',24);
+		$('#' + id).find('.vlan').get(0).appendChild(svg);
+		var path = document.createElementNS(name_sp,"path");
+		var text = document.createElementNS(name_sp,"text");
+		path.setAttribute('d','M28.063,15.377V2.312c0,0,0-1.621-1.621-1.621H2.313c-1.622,0-1.622,1.622-1.622,1.622v13.127c0,0,0,1.607,1.622,1.621l3.739-0.044l3.208,0.046l0.037,4.626l0,0c0,0-0.011,1.621,1.622,1.621h6.918c0,0,1.574,0,1.621-1.621l0.037-4.626l3.207-0.046h3.74C26.441,17.017,28.063,17,28.063,15.377z');
+		path.setAttribute('fill',fill);
+		path.setAttribute('stroke',stroke);
+		path.setAttribute('stroke-width',2);
+		path.setAttribute('transform','scale(1,0.9)');
+		text.setAttribute('x',13);
+		text.setAttribute('y',12);
+		text.setAttribute('text-anchor','middle');
+		text.setAttribute('font-size',8);
+		text.setAttribute('class','svg_fill');
+		text.appendChild(document.createTextNode(text_str));
+		svg.appendChild(path);
+		svg.appendChild(text);
+	}
+}
+$('#logout_menu').click(function(){
+	location.href = '/?app=login&action=logout';
+});
+</script>
+EOF
+	jskeys=$(echo "$input_str" | jshon -e "js" -l) 2>/dev/null
+	[ $jskeys -ge 0 ] && for js in $(seq 0 $(expr ${jskeys} - 1)); do
+	cat <<EOF
+<script type="text/javascript" src="$(echo "$input_str" | jshon -e js -e "${js}" -u)"></script>
+EOF
+	done
+	csskeys=$(echo "$input_str" | jshon -e "css" -l) &>/dev/null
+	[ $csskeys -ge 0 ] &>/dev/null && for css in $(seq 0 $(expr ${csskeys} -1)); do
+	cat <<EOF
+<link rel="stylesheet" type="text/css" href="$(echo "$input_str" | jshon -e css -e "${css}" -u)">
+EOF
+	done
+;;
+html_head|h_h)
+input_str=$(echo $@ | cut -d ' ' -f2-)
+title=$(echo "$input_str" | jshon -e "title" -u)
+cat <<EOF
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>${title}</title>
+  <link href="/apps/home/common/css/bootstrap.css" rel="stylesheet">
+  <link href="/apps/home/common/css/lobibox.min.css" rel="stylesheet">
+  <link href="/apps/home/common/css/main.css" rel="stylesheet">
+  <link href="/apps/home/common/css/theme.css.cgi" rel="stylesheet">
+EOF
+	jskeys=$(echo "$input_str" | jshon -e "js" -l) 2>/dev/null
+	[ $jskeys -ge 0 ] && for js in $(seq 0 $(expr ${jskeys} - 1)); do
+	cat <<EOF
+<script type="text/javascript" src="$(echo "$input_str" | jshon -e js -e "${js}" -u)"></script>
+EOF
+	done
+	csskeys=$(echo "$input_str" | jshon -e "css" -l) &>/dev/null
+	[ $csskeys -ge 0 ] &>/dev/null && for css in $(seq 0 $(expr ${csskeys} - 1)); do
+	cat <<EOF
+<link rel="stylesheet" type="text/css" href="$(echo "$input_str" | jshon -e css -e "${css}" -u)">
+EOF
+	done
+printf '</head>'
+;;
+hierarchical_menu|hm)
+input_str=$(echo $@ | cut -d ' ' -f2-)
+cat <<EOF
+<div class="header">
+  <ol class="breadcrumb">
+EOF
+	c=$(echo "$input_str" | jshon -l)
+	local type=$(echo "$input_str" | jshon -e "1" -e "title" -u)
+	local app=$(echo "$input_str" | jshon -e "2" -e "title" -u)
+	for key in $(seq 1 $c); do
+	title=$(echo "$input_str" | jshon -e "${key}" -e "title" -u)
+	url=$(echo "$input_str" | jshon -e "${key}" -e "url" -u)
+	[ ${key} -eq 2 ] && str='&nbsp;&nbsp;<small><a target="_blank" href="http://shellgui-docs.readthedocs.io/'${COOKIE_lang//-*/}'/master/'${type// /-}'.html#setting-'"${FORM_app}(${app// /-})"'"><span class="glyphicon glyphicon-link"></span></a></small>' || str=
+	if [ -n "$url" ]; then
+		cat <<EOF
+    <li><h1><a href="$url">${title}</a>${str}</h1></li>
+EOF
+	else
+		cat <<EOF
+    <li class="active"><h1>${title}${str}</h1></li>
+EOF
+	fi
+	done
+		cat <<EOF
+  </ol>
+</div>
+EOF
+;;
+esac

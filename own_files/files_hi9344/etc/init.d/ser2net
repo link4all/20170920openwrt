@@ -1,0 +1,17 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006-2011 OpenWrt.org
+
+START=70
+
+start () {
+	stty -F /dev/ttyS0 115200
+	ser2net -c /etc/ser2net.conf
+	#sleep 2
+	#killall ser2net
+	#stty -F /dev/ttyS0 115200
+}
+
+stop() {
+	killall ser2net
+}
+

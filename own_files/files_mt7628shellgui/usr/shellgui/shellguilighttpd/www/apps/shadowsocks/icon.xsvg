@@ -1,0 +1,27 @@
+<svg width="<%= ${xsvg_height:-64} %>" height="<%= ${xsvg_height:-64} %>" id="<%= ${xsvg_id} %>">
+<g transform="scale(0.32,0.32)">
+  <defs>
+	<mask id="socks_mask">
+	  <rect x="0" y="0" width="200" height="200" fill="black"></rect>
+	  <circle cx="100" cy="100" r="80" fill="white"></circle>
+	</mask>
+  </defs>
+  <circle cx="100" cy="100" r="76" stroke-width="8" fill="none" class="svg_stroke"></circle>
+  <g mask="url(#socks_mask)">
+	<g id="socks_back" transform="translate(100,100) scale(0.6, 0.6)" opacity="0">
+	  <g transform="translate(-110,-100) scale(0.1953125, 0.1953125)">
+		<path fill="none" class="svg_stroke" stroke-width="36" d="M64.523,586.491l895.859-461.076l-236.646,770.99
+		  L460.049,776.029l-111.78,120.377V733.029l500.33-504.437L250.819,681.444L64.523,586.491z"/>
+	  </g>
+	</g>
+	<g transform="translate(100,100) scale(0.65, 0.65)">
+	  <g id="socks_front">
+		<g transform="translate(-110,-100) scale(0.1953125, 0.1953125)">
+		  <path class="svg_fill" d="M64.523,586.491l895.859-461.076l-236.646,770.99L460.049,776.029l-111.78,120.377V733.029l500.33-504.437
+			L250.819,681.444L64.523,586.491z"/>
+		</g>
+	  </g>
+	</g>
+  </g>
+</g>
+</svg>

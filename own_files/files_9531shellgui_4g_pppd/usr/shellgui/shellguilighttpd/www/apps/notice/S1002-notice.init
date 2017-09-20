@@ -1,0 +1,18 @@
+#!/bin/sh
+start() {
+email=$(sed -rn "s/MY_EMAIL[ ]*=[ ]*'([a-zA-Z0-9.-]+\@[a-zA-Z0-9.-]+\.[a-zA-Z0-9.-]+)'/\1/p;g" /usr/shellgui/shellguilighttpd/www/apps/notice/email/email.conf)
+[ -n "$email" ] && echo "$email" | /usr/shellgui/progs/main.sbin regex_str isemail
+if [ $? -ne 0 ]; then
+	mac=$(shellgui '{"action":"get_ifce","dev": "eth0"}' | jshon -e "mac" -u)
+	sed -i "/MY_NAME/d" /usr/shellgui/shellguilighttpd/www/apps/notice/email/email.conf
+	sed -i '/^\-s /d' /usr/shellgui/shellguilighttpd/www/apps/notice/email/email_extra.conf
+	echo "MY_NAME = '[ShellguiRouter][${mac}]'" >>/usr/shellgui/shellguilighttpd/www/apps/notice/email/email.conf
+	echo "-s [ShellguiRouter][${mac}]" >> /usr/shellgui/shellguilighttpd/www/apps/notice/email/email_extra.conf
+	shellgui '{"action":"notice_add_new","Notice":{"Dest_type":"app","Dest":"notice&action=email_setting","Ergen":3, "Desc":"_LANG_Notice_Email_need_set","Detail":"_LANG_Notice_Email_need_set_detail","Uniqueid":"Email_need_set"}}'
+fi
+}
+case $1 in
+start)
+start
+;;
+esac

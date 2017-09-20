@@ -1,0 +1,4 @@
+config LC_LTENCM
+    tristate "NCM support LeadCore/tuoshi 4g modem"
+    help
+        it is a NCM driver to support LeadCore/tuoshi 4g modem

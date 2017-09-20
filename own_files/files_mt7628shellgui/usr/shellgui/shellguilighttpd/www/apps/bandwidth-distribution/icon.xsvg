@@ -1,0 +1,19 @@
+<svg width="<%= ${xsvg_height:-64} %>" height="<%= ${xsvg_height:-64} %>" id="<%= ${xsvg_id} %>">
+<g transform="scale(0.32,0.32)" id="bddis">
+  <g transform="translate(100,100)">
+	<defs>
+	  <mask id="angle_mask">
+		<g transform="rotate(-90)">
+		  <rect x="-100" y="-100" width="200" height="200" fill="black"></rect>
+		  <rect x="0" y="0" width="100" height="100" fill="white"></rect>
+		  <rect id="rotate_back" x="0" y="0" width="100" height="100" fill="white" transform="rotate(0)"></rect>
+		</g>
+	  </mask>
+	</defs>
+	<circle cx="0" cy="0" r="80" class="svg_fill" stroke="none"></circle>
+	<circle id="scale_arch" cx="0" cy="0" r="80" fill="#666" stroke="none" mask="url(#angle_mask)" opacity="0.5"></circle>
+	<line id="static_line" transform="rotate(-90)" x1="-4" x2="80" y1="0" y2="0" stroke="white" stroke-width="8"></line>
+	<line id="rotate_line" transform="rotate(0)" x1="-4" x2="80" y1="0" y2="0" stroke="white" stroke-width="8"></line>
+  </g>
+</g>
+</svg>

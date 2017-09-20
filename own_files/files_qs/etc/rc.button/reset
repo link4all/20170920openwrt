@@ -1,0 +1,25 @@
+#!/bin/sh
+
+[ "${ACTION}" = "released" ] || exit 0
+. /lib/functions.sh
+
+#exec /sbin/poweroff
+#logger "$BUTTON pressed for $SEEN seconds"
+
+#shutdown device
+#&& [ "$SEEN" -le 5 ]
+if [ "$SEEN" -ge 2 ] && [ "$SEEN" -le 8 ]
+then
+    echo "Power OFF!" > /dev/console
+    echo 0 > /sys/class/gpio/gpio11/value
+        sync
+        sync
+        exec /sbin/poweroff
+#fi
+elif [ "$SEEN" -gt 10  ]
+then
+       echo "restore to factory"
+       firstboot -y && reboot
+fi
+
+return 0

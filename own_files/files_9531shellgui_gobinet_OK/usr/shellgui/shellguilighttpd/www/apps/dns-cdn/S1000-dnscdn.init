@@ -1,0 +1,45 @@
+#!/bin/sh
+update_chnroute_file() {
+wget -q -O /tmp/delegated-apnic-latest 'http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest'
+awk -F\| '/CN\|ipv4/ { printf("%s/%d\n", $4, 32-log($5)/log(2)) }' /tmp/delegated-apnic-latest > /tmp/chinadns_chnroute.txt
+[ $(wc -l /tmp/chinadns_chnroute.txt | cut -d ' ' -f1) -gt 3000 ] && grep -Eo '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\/[0-9]*' /tmp/chinadns_chnroute.txt /etc/chinadns_chnroute.txt
+rm -rf /tmp/delegated-apnic-latest /tmp/chinadns_chnroute.txt
+/etc/init.d/chinadns restart &>/dev/null
+}
+start() {
+UPTIME=$(awk '{printf "%d", $2}' /proc/uptime)
+if [ $UPTIME -le 240 ]; then
+	shellgui '{"action":"exec_command","cmd":"'"$0"'","arg":"update_chnroute_file","is_daemon":1,"timeout":50000}' &>/dev/null
+fi
+mkdir -p /tmp/dnsmasq.d/
+rm -rf /tmp/dnsmasq.d/*
+for file in $(find /usr/shellgui/shellguilighttpd/www/apps -type f -maxdepth 2 -regex '.*\.dnsmasqd'); do
+cp -r ${file} /tmp/dnsmasq.d/
+done
+/etc/init.d/dnsmasq restart &>/dev/null
+/etc/init.d/chinadns start &>/dev/null
+[ $(uci get chinadns.@chinadns[0].enable) -gt 0 ] && /etc/init.d/dns-forwarder start &>/dev/null
+}
+stop() {
+/etc/init.d/dnsmasq stop &>/dev/null
+/etc/init.d/chinadns stop &>/dev/null
+/etc/init.d/dns-forwarder stop &>/dev/null
+}
+restart() {
+stop
+start
+}
+case $1 in
+restart)
+restart
+;;
+stop)
+stop
+;;
+start)
+start
+;;
+update_chnroute_file)
+update_chnroute_file
+;;
+esac

@@ -1,0 +1,33 @@
+#!/bin/sh
+base_dir="/usr/shellgui/shellguilighttpd/www/apps/adbyby-save"
+fw_start(){
+enabled=$(jshon -Q -e "enabled" < "$base_dir/adbyby-save.json")
+[ ${enabled:-0} -eq 0 ] && fw_stop && return
+iptables -t nat -N adbyby
+iptables -t nat -A adbyby -d 0.0.0.0/8 -j RETURN
+iptables -t nat -A adbyby -d 10.0.0.0/8 -j RETURN
+iptables -t nat -A adbyby -d 127.0.0.0/8 -j RETURN
+iptables -t nat -A adbyby -d 169.254.0.0/16 -j RETURN
+iptables -t nat -A adbyby -d 172.16.0.0/12 -j RETURN
+iptables -t nat -A adbyby -d 192.168.0.0/16 -j RETURN
+iptables -t nat -A adbyby -d 224.0.0.0/4 -j RETURN
+iptables -t nat -A adbyby -d 240.0.0.0/4 -j RETURN
+iptables -t nat -A adbyby -p tcp -j REDIRECT --to-ports 8118
+iptables -t nat -I zone_lan_prerouting -p tcp --dport 80 -j adbyby
+# iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8118
+}
+fw_stop(){
+dcft nat adbyby
+# iptables -t nat -D PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8118
+}
+case $1 in
+fw_start)
+fw_start
+;;
+fw_stop)
+fw_stop
+;;
+fw_restart)
+fw_stop;fw_start
+;;
+esac

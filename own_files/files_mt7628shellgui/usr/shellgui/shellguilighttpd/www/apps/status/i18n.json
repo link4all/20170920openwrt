@@ -1,0 +1,58 @@
+{
+  "zh-cn": {
+	"_LANG_App_name": "系统状态",
+	"_LANG_App_type": "系统",
+	"_LANG_App_desc": "系统状态",
+	"_LANG_App_detail": "系统状态",
+
+	"_LANG_Form_Memory": "内存",
+	"_LANG_Form_Swap": "交换分区",
+	"_LANG_Form_total": "总共",
+	"_LANG_Form_used": "已使用",
+	"_LANG_Form_Runs": "已运行",
+	"_LANG_Form_Days": "天",
+	"_LANG_Form_hours": "时",
+	"_LANG_Form_mins": "分",
+	"_LANG_Form_secs": "秒",
+
+	"_LANG_Form_Running_state_of_the_system": "系统运行状态",
+	"_LANG_Form_Network_status": "网络状态",
+	"_LANG_Form_Edit": "编辑",
+
+	"_LANG_JsUI_Standby": "未使用",
+	"_LANG_JsUI_Inused": "使用中",
+	"_LANG_JsUI_Bandwidth_used": "带宽已用",
+	"_LANG_JsUI_Days": "天",
+	"_LANG_JsUI_hours": "时",
+	"_LANG_JsUI_mins": "分",
+	"_LANG_JsUI_secs": "秒"
+  },
+  "en": {
+	"_LANG_App_name": "Status",
+	"_LANG_App_type": "System",
+	"_LANG_App_desc": "System Status",
+	"_LANG_App_detail": "System Status",
+
+	"_LANG_Form_Memory": "Memory",
+	"_LANG_Form_Swap": "Swap",
+	"_LANG_Form_total": "total",
+	"_LANG_Form_used": "used",
+	"_LANG_Form_Runs": "Runs",
+	"_LANG_Form_Days": "Days",
+	"_LANG_Form_hours": "hours",
+	"_LANG_Form_mins": "mins",
+	"_LANG_Form_secs": "secs",
+	"_LANG_Form_Edit": "Edit",
+
+	"_LANG_Form_Running_state_of_the_system": "Running state of the system",
+	"_LANG_Form_Network_status": "Network status",
+
+	"_LANG_JsUI_Standby": "Standby",
+	"_LANG_JsUI_Inused": "Inused",
+	"_LANG_JsUI_Bandwidth_used": "Bandwidth used",
+	"_LANG_JsUI_Days": "Days",
+	"_LANG_JsUI_hours": "hours",
+	"_LANG_JsUI_mins": "mins",
+	"_LANG_JsUI_secs": "secs"
+  }
+}

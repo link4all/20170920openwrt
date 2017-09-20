@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# $PRODUCT - idVendor/idProduct/bcdDevice
+# $INTERFACE - bInterfaceClass/bInterfaceSubClass/bInterfaceProtocol
+
+# idVendor = Texas Instruments (0x451)
+# idProduct = CC2531 USB Dongle (0x16A8)
+PRODUCT_ID="451/16a8/0"
+
+# bInterfaceClass = CDC-Data (0xA)
+INTERFACE_ID="10/0/0"
+
+#logger -t DEBUG "hotplug.d/usb: action='$ACTION' devicename='$DEVICENAME' devname='$DEVNAME' devpath='$DEVPATH' product='$PRODUCT' type='$TYPE' interface='$INTERFACE' device='$DEVICE'"
+
+if [ "${PRODUCT}" = "${PRODUCT_ID}" ]; then
+	if [ "${INTERFACE}" = "${INTERFACE_ID}" ]; then
+		if [ "${ACTION}" = "add" ]; then
+			/etc/init.d/cc2531slip start
+#			logger -t DEBUG "/etc/init.d/cc2531slip start"
+		fi
+		if [ "${ACTION}" = "remove" ]; then
+			/etc/init.d/cc2531slip stop
+#			logger -t DEBUG "/etc/init.d/cc2531slip stop"
+		fi
+	fi
+fi
+

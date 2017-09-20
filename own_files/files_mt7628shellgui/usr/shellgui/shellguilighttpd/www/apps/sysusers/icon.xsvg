@@ -1,0 +1,23 @@
+<svg width="<%= ${xsvg_height:-64} %>" height="<%= ${xsvg_height:-64} %>" id="<%= ${xsvg_id} %>">
+<g transform="scale(0.32,0.32)">
+  <g transform="translate(120,100)">
+	<g id="user1" fill="none" class="svg_stroke" stroke-width="8" transform="translate(-100,-110)">
+	  <circle cx="100" cy="73" r="25"/>
+	  <path d="M147.131,157.096c0-32.387-21.269-58.697-47.501-58.697
+	  c-26.231,0-47.499,26.338-47.499,58.725C52.131,171.751,147.131,171.729,147.131,157.096z"/>
+	</g>
+  </g>
+  <g id="user2" transform="translate(90,100) scale(1.2,1.2)">
+	<g fill="white" stroke="white" stroke-width="8" transform="translate(-100,-110)">
+	  <circle cx="100" cy="73" r="25" stroke-width="16"/>
+	  <path d="M147.131,157.096c0-32.387-21.269-58.697-47.501-58.697
+	  c-26.231,0-47.499,26.338-47.499,58.725C52.131,171.751,147.131,171.729,147.131,157.096z"/>
+	</g>
+	<g id="user3"  class="svg_fill" stroke="none" transform="translate(-100,-110)">
+	  <circle cx="100" cy="73" r="25"/>
+	  <path d="M147.131,157.096c0-32.387-21.269-58.697-47.501-58.697
+	  c-26.231,0-47.499,26.338-47.499,58.725C52.131,171.751,147.131,171.729,147.131,157.096z"/>
+	</g>
+  </g>
+</g>
+</svg>

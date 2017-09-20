@@ -1,0 +1,10 @@
+{
+	"uid":[0,1000],
+	"name": "home",
+	"type": "System",
+	"active": 1,
+	"hidden": 1,
+	"version": "0.1",
+	"uninstall": 1,
+	"keep_files": [{"file": "/etc/config/system", "note":"_LANG_Keep_system_config_file", "priority_keep": 1}]
+}

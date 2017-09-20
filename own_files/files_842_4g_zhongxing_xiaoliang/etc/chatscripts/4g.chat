@@ -1,0 +1,35 @@
+#!/bin/sh
+
+device=/dev/ttyUSB1
+imsi=$(gcom -d "$device" -s /etc/gcom/getimsi.gcom |grep "460")
+sig=$(gcom -d "$device" -s /etc/gcom/getstrength.gcom |grep ",")
+dns=baidu.com
+echo $imsi
+echo $sig >/tmp/sig
+cat /tmp/sig
+mnc=${imsi:3:2}
+echo $mnc
+
+
+ ping -s 1 -c 3 $dns
+ if [ "$?" != "0" ];then
+          case  "$mnc"  in  
+            01)
+            echo "chinaunion" 
+            echo -e   'AT^NDISDUP=1,1,"3gnet","","",0\r' > $device  
+            ;;
+            02)
+            echo "chinamoblile"
+            echo -e   'AT^NDISDUP=1,1,"cmnet","","",0\r' > $device
+            ;;
+            03|11) 
+            echo "chinanet"
+            echo -e   'AT^NDISDUP=1,1,"ctnet","card","card",0\r' >$device
+           ;; 
+            *) 
+            echo "unkonw simcard" 
+            ;;
+            esac
+   fi   
+
+   

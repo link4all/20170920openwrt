@@ -1,0 +1,18 @@
+<% if [ "$style_type" = "nav" ]; then
+g_class="svg_fill"
+circle_class="dis-theme-fill"
+else
+g_class="dis-theme-fill"
+circle_class="svg_fill"
+fi
+%><svg width="<%= ${xsvg_height:-64} %>" height="<%= ${xsvg_height:-64} %>" id="<%= ${xsvg_id} %>">
+<g transform="scale(0.07,0.07)">
+	<g transform="translate(100,120)">
+  <circle cx="0" cy="0" r="80" class="<%= ${circle_class} %>" stroke="none"></circle>
+  <g stroke="none" class="<%= ${g_class} %>">
+	  <rect x="-15" y="-55" width="30" height="30" rx="5"></rect>
+	  <rect x="-15" y="-15" width="30" height="70" rx="5"></rect>
+  </g>
+</g>
+</g>
+</svg>

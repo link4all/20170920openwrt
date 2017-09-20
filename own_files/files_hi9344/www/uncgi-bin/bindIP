@@ -1,0 +1,18 @@
+#!/bin/sh
+echo 'Content-type: text/html'
+echo ''
+
+hhost=`cat /etc/config/dhcp |grep  192.168.2.220`
+ if [ -n $hhost ] ;then
+ uci add dhcp.host
+ else 
+ echo "already has host option"
+ fi
+ 
+ uci set dhcp.@host[0].ip=192.168.2.220
+ uci set dhcp.@host[0].mac=$www_mac
+ uci set dhcp.@host[0].name=station
+ uci commit  dhcp
+echo "bind ip ok"
+ killall dnsmasq
+ /etc/init.d/dnsmasq start

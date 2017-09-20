@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>SmartCloudAp</title>
+<link rel="icon" href="/luci-static/wfnt/wfnt/wifi_favicon.ico" type="image/x-icon"/> 
+<link href="/luci-static/wfnt/wfnt/login.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="soof_login">
+	<div class="viewport">
+    	<div class="main">
+            <form name="login" method="post" action="<%=pcdata(luci.http.getenv("REQUEST_URI"))%>" onsubmit="return check_form()">
+                <div class="login_panel">
+                    <div class="logo_wrap">
+                        <img class="logo" src="/luci-static/wfnt/wfnt/login/logo_cloud.png" alt="logo SmartCloudAp" border="0" />
+                    </div>
+                    <div class="inputs_wrap">
+                        <div class="tip">请输入密码：（Please input password:）</div>
+                        <%- if fuser then %>
+                        <div class="err">密码错误！（Password Error!）</div>
+                        <% end -%>
+                        <div style="display:none">
+                            <input class="cbi-input-user" type="text" name="luci_username" value="<%=duser%>" />
+                        </div>
+                        <div class="inp show_mask isubmit">
+                            <label class="soof_icon lock_24" for="field_password"></label>
+                            <input type="password" name="luci_password" id="field_password" tabindex="1" />
+                         
+                            <button class="submit">
+                                <span class="soof_icon triangle_white"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="foot">Powerby SmartCloudAp</div>
+</div>
+<script type="text/javascript" src="<%=resource%>/jquery.js"></script>
+<script type="text/javascript">
+document.getElementById('field_password').focus();
+
+function check_form(){
+	var password_fld = document.getElementById("field_password");
+	if(password_fld.value.length==0){
+		alert("密码不能为空");
+		password_fld.focus();
+		return false;
+	}
+	return true;
+}
+
+var maskedInputs = jQuery("input[name='password']");
+
+function checkMaskDisplay(inp){
+	var closestInputCtn = jQuery(inp).closest(".inp");	
+	setTimeout(function(){//defer to get the input value.
+		if(inp.value === "")
+			closestInputCtn.addClass("show_mask");
+		else
+			closestInputCtn.removeClass("show_mask");
+	}, 10);
+}
+
+function checkAllMaskDisplay(){
+	maskedInputs.each(function(){
+		checkMaskDisplay(this);
+	});
+}
+
+setTimeout(checkAllMaskDisplay, 100);
+jQuery("form[name='login']").on("keyup input", checkAllMaskDisplay);
+
+</script>
+</body>
+</html>
+

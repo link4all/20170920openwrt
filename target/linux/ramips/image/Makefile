@@ -1011,7 +1011,8 @@ endef
 # MT7628 Profiles
 #
 
-Image/Build/Profile/MT7628=$(call BuildFirmware/Default4M/$(1),$(1),mt7628,MT7628)
+#Image/Build/Profile/MT7628=$(call BuildFirmware/Default4M/$(1),$(1),mt7628,MT7628)
+Image/Build/Profile/MT7628=$(call BuildFirmware/Default16M/$(1),$(1),mt7628,MT7628)
 
 ifeq ($(SUBTARGET),mt7628)
 define Image/Build/Profile/Default
@@ -1024,13 +1025,22 @@ endif
 # MT7688 Profiles
 #
 
-Image/Build/Profile/MT7688=$(call BuildFirmware/Default4M/$(1),$(1),mt7628,MT7628)
+#Image/Build/Profile/MT7688=$(call BuildFirmware/Default4M/$(1),$(1),mt7628,MT7628)
+Image/Build/Profile/MT7688=$(call BuildFirmware/Default16M/$(1),$(1),mt7628,MT7628)
 Image/Build/Profile/LinkIt7688=$(call BuildFirmware/Default32M/$(1),$(1),LinkIt7688,LINKIT7688)
+#add wifi_audio 7628mifi
+Image/Build/Profile/wifi_audio=$(call BuildFirmware/Default16M/$(1),$(1),wifi_audio,wifi_audio)
+Image/Build/Profile/7628mifi=$(call BuildFirmware/Default16M/$(1),$(1),7628mifi,7628mifi)
+Image/Build/Profile/7628tw=$(call BuildFirmware/Default16M/$(1),$(1),7628tw,7628tw)
+
 
 ifeq ($(SUBTARGET),mt7628)
 define Image/Build/Profile/Default
 	$(call Image/Build/Profile/MT7688,$(1))
 	$(call Image/Build/Profile/LinkIt7688,$(1))
+	$(call Image/Build/Profile/wifi_audio,$(1))
+	$(call Image/Build/Profile/7628mifi,$(1))
+	$(call Image/Build/Profile/7628tw,$(1))
 endef
 endif
 

@@ -1,0 +1,6 @@
+if [ "$ACTION" = "add" ]; then
+rm /etc/config/wireless
+sleep 3
+wifi detect > /etc/config/wireless
+/etc/init.d/network restart
+fi

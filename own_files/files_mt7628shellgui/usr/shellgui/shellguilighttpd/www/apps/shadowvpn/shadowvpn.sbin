@@ -1,0 +1,337 @@
+#!/bin/sh
+set -x
+if [ -f /tmp/shadowvpn.firewall.running ] ; then
+	exit
+fi
+
+cron_file="/usr/shellgui/shellguilighttpd/www/apps/shadowvpn/root.cron"
+backup_script_dir="/tmp/bw_backup"
+backup_script="$backup_script_dir/do_shadowvpn_bw_backup.sh"
+
+minute_s=60
+hour_s=3600
+day_s=86400
+
+#high res intervals
+hr1_interval=2
+hr1_num_intervals=449
+hr1_reset_time=2
+	
+hr2_interval="minute"
+hr2_num_intervals=359
+	
+hr3_interval=$((3*$minute_s))
+hr3_num_intervals=479
+hr3_reset_time=$((3*$minute_s))
+	
+hr4_interval=$((2*$hour_s))
+hr4_num_intervals=359
+hr4_reset_time=$((2*$hour_s))
+
+hr5_interval="day"
+hr5_num_intervals=365
+
+#low res intervals
+lr1_interval="minute"
+lr1_num_intervals=15
+
+lr2_interval=$((15*$minute_s))
+lr2_num_intervals=24
+lr2_reset_time=$((15*$minute_s))
+	
+lr3_interval="hour"
+lr3_num_intervals=24
+
+lr4_interval="day"
+lr4_num_intervals=31
+
+lr5_interval="month"
+lr5_num_intervals=12
+
+
+mon_nums="1 2 3 4 5"
+bw_ids=""
+
+set_shadowvpn_cron_watchdog()
+{
+	enabled=$( uci get shadowvpn.@shadowvpn[0].enable 2>/dev/null )
+	have_watchdog=$( grep "ifconfig.*ss0.*init.*shadowvpn" "${cron_file}" )
+	if [ "$enabled" == "1" ] ; then
+		if [ -z "$have_watchdog" ] ; then
+			cat <<'EOF' >> "${cron_file}"
+* * * * * /usr/shellgui/shellguilighttpd/www/apps/shadowvpn/shadowvpn.sbin check
+EOF
+		fi
+	else
+		if [ -n "$have_watchdog" ] ; then
+			sed -i "/shadowvpn.sbin check/d" "${cron_file}"
+		fi
+	fi
+}
+
+shutdown()
+{
+	if [ -e "$backup_script" ] ; then
+		sh "$backup_script" 2>/dev/null
+		rm -rf "$backup_script"
+	fi
+
+	clear_chains
+}
+
+clear_chains()
+{
+	dcft mangle shadowvpn_down_bw
+	dcft mangle shadowvpn_up_bw
+}
+
+bw_restore() {
+	bw_id="$1"
+	backup_to_tmp="$2"
+	
+	if [ -e "/usr/data/bwmon/$bw_id.bw" ] ; then
+		bw-padding -i "$bw_id" -h -f /usr/data/bwmon/$bw_id.bw >/dev/null 2>&1
+	elif [ -e "/tmp/data/bwmon/$bw_id.bw" ] ; then
+		bw-padding -i "$bw_id" -h -f /tmp/data/bwmon/$bw_id.bw >/dev/null 2>&1
+	elif [ -e "/usr/data/bwmon/$bw_id" ] ; then
+		bw_trans "/usr/data/bwmon/$bw_id" "/usr/data/bwmon/$bw_id.bw"
+		rm "/usr/data/bwmon/$bw_id"
+		bw-padding -i "$bw_id" -h -f /usr/data/bwmon/$bw_id.bw >/dev/null 2>&1
+	elif [ -e "/tmp/data/bwmon/$bw_id" ] ; then
+		bw_trans "/tmp/data/bwmon/$bw_id" "/usr/data/bwmon/$bw_id.bw"
+		rm "/tmp/data/bwmon/$bw_id"
+		bw-padding -i "$bw_id" -h -f /tmp/data/bwmon/$bw_id.bw >/dev/null 2>&1
+	fi
+
+	if [ "$backup_to_tmp" = "1" ] ; then
+		echo "bw-gain -i \"$bw_id\" -h -f \"/tmp/data/bwmon/$bw_id.bw\" >/dev/null 2>&1" >> "$backup_script"
+	else
+		echo "bw-gain -i \"$bw_id\" -h -f \"/usr/data/bwmon/$bw_id.bw\" >/dev/null 2>&1" >> "$backup_script"
+	fi
+}
+
+initialize() {
+	enabled=$( uci get shadowvpn.@shadowvpn[0].enable 2>/dev/null )
+	if [ $enabled -eq 1 ] ; then
+		for i in $(seq 1 40); do
+		pidof shadowvpn | grep -qE '[0-9]*'
+		if [ $? -ne 0 ]; then
+			touch /tmp/shadowvpn.restart
+			rm -f /tmp/shadowvpn.firewall.running
+			exit
+		else
+			rm -f /tmp/shadowvpn.restart
+		fi
+		local_shadowvpn_port=$(netstat -u -t -p -a -e -n 2>/dev/null | awk ' $0 ~/shadowvpn/ { gsub(/^.*:/, "", $4) ; print $4 ; } ')
+		[ -n "${local_shadowvpn_port}" ] && break || sleep 1
+		done
+		if [ -z "${local_shadowvpn_port}" ]; then
+			touch /tmp/shadowvpn.restart
+			rm -f /tmp/shadowvpn.firewall.running
+			exit
+		else
+			rm -f /tmp/shadowvpn.restart
+		fi
+		wan_if=$(uci -P /var/state get network.wan.ifname 2>/dev/null)
+		# vpn_if=$(uci -P /var/state get network.shadowvpn.ifname 2>/dev/null)
+		vpn_if="ss0"
+		if [ -n "$local_shadowvpn_port" ] && [ -n "$wan_if" ] && [ -n "$vpn_if" ]  ; then
+
+			iptables -t mangle -N shadowvpn_down_bw
+			iptables -t mangle -N shadowvpn_up_bw
+
+			for n in $mon_nums ; do
+				for res in "hr" "lr" ; do
+					interval=$(eval "echo \$$res"$n"_interval")
+					num_intervals=$(eval "echo \$$res"$n"_num_intervals")
+					reset_time=$(eval "echo \$$res"$n"_reset_time")
+					if [ -n "$reset_time" ] ; then reset_time="--reset_time $reset_time" ; fi
+
+					iptables -t mangle -A shadowvpn_down_bw  -m bandwidth --id "shadowvpn-$res$n-download-$interval-$num_intervals" --reset_interval $interval --intervals_to_save $num_intervals $reset_time
+					iptables -t mangle -A shadowvpn_up_bw    -m bandwidth --id "shadowvpn-$res$n-upload-$interval-$num_intervals"   --reset_interval $interval --intervals_to_save $num_intervals $reset_time
+
+					next_ids="shadowvpn-$res$n-download-$interval-$num_intervals shadowvpn-$res$n-upload-$interval-$num_intervals"
+					if [ -z "$bw_ids" ] ; then bw_ids="$next_ids" ; else bw_ids="$bw_ids $next_ids" ; fi
+				done
+			done
+
+
+			iptables -t mangle -I FORWARD -i "$wan_if" -o "$vpn_if" -j shadowvpn_down_bw
+			iptables -t mangle -I FORWARD -i "$vpn_if" -o "$wan_if" -j shadowvpn_up_bw
+
+			iptables -t mangle -A INPUT  -i "$wan_if" -p udp --dport "$local_shadowvpn_port" -j shadowvpn_down_bw
+			iptables -t mangle -A OUTPUT -o "$wan_if" -p udp --sport "$local_shadowvpn_port" -j shadowvpn_up_bw
+
+
+			# enable backups of bandwidth data 
+			sed -i "/do_shadowvpn_bw_backup.sh/d" "${cron_file}"
+			cat <<EOF >> "${cron_file}"
+0 0,4,8,12,16,20 * * * $backup_script
+EOF
+
+			mkdir -p "$backup_script_dir"
+			echo "#!/bin/sh" > "$backup_script"
+			chmod 700 "$backup_script"
+
+			for i in $bw_ids ; do
+				is_hr123=$(echo "$i" | egrep "\-hr\-[123]")
+				is_lr123=$(echo "$i" | egrep "\-lr\-[123]")
+				if [ -n "$is_hr123" ] || [ -n "$is_lr123" ]   ; then
+					bw_restore "$i" 1
+				else
+					bw_restore "$i" 0
+				fi
+			done
+		fi
+	fi
+}
+
+set_block_nonovpn() {
+	enabled=$( uci get shadowvpn.@shadowvpn[0].enable 2>/dev/null )
+	client_enabled="false"
+	if [ "$enabled" = "1" ] ; then
+		client_enabled=$(uci get shadowvpn.@shadowvpn[0].mode 2>/dev/null)
+	fi
+	dcft filter block_non_shadowvpn
+	
+	if [ "$client_enabled" = "client" ] ; then
+		do_block=$(uci get shadowvpn.@shadowvpn[0].block_non_shadowvpn 2>/dev/null)
+		
+		
+		if [ "$do_block" = "1" ] || [ "$do_block" = "true" ] ; then
+			iptables -t filter -N block_non_shadowvpn
+			iptables -t filter -A block_non_shadowvpn -d 10.0.0.0/8     -j ACCEPT
+			iptables -t filter -A block_non_shadowvpn -d 172.16.0.0/12  -j ACCEPT
+			iptables -t filter -A block_non_shadowvpn -d 192.168.0.0/16 -j ACCEPT
+			iptables -t filter -A block_non_shadowvpn -j REJECT
+			iptables -t filter -I zone_lan_forward  -i br-lan -o "$wan_if" -j block_non_shadowvpn
+		fi
+	fi
+}
+
+start_fw() {
+	shutdown
+	initialize
+	set_block_nonovpn
+	# set_shadowvpn_cron_watchdog
+	
+	server_iner_lanip=$(uci get shadowvpn.@shadowvpn[0].server_iner_lanip 2>/dev/null)
+	server_iner_lanmask=$(uci get shadowvpn.@shadowvpn[0].server_iner_lanmask 2>/dev/null)
+	if [ -n "${server_iner_lanip}" ] && [ -n "${server_iner_lanmask}" ]; then
+		server_iner_ip=$(uci get shadowvpn.@shadowvpn[0].server_iner_ip 2>/dev/null)
+		eval $(ipcalc.sh ${server_iner_lanip} ${server_iner_lanmask})
+		/sbin/route add -net ${NETWORK} netmask ${NETMASK} gw ${server_iner_ip}
+	fi
+}
+client_start() {
+ip addr add $net dev $intf
+ip link set $intf mtu $mtu
+ip link set $intf up
+ip route add $server via $(ip route show 0/0 | sed -e 's/.* via \([^ ]*\).*/\1/')
+except_cc=$(uci get shadowvpn.@shadowvpn[0].except_cc 2>/dev/null)
+if [ -n "$except_cc" ]; then
+# client_fw
+ip route flush table 100
+# ip route list table 100
+. /lib/functions/network.sh; network_get_device wandev wan
+ip route show dev ${wandev} | while read gwroute; do
+	ip route add ${gwroute} dev ${wandev} table 100
+done
+ip route add   0/1 dev $intf table 100
+ip route add 128/1 dev $intf table 100
+while true;do
+ip rule list | grep -q 'fwmark 0x64 lookup 100' && ip rule del fwmark 100 table 100 || break
+done
+ip rule add fwmark 100 table 100
+else
+ip route add   0/1 dev $intf
+ip route add 128/1 dev $intf
+fi
+}
+client_stop() {
+shutdown
+ip route del $server
+ip route del   0/1
+ip route del 128/1
+dcft mangle shadowvpnmark
+while true;do
+ip rule list | grep -q 'fwmark 0x64 lookup 100' && ip rule del fwmark 100 table 100 || break
+done
+}
+server_start() {
+ip addr add $net dev $intf
+ip link set $intf mtu $mtu
+ip link set $intf up
+echo $$ > /tmp/shadowvpn.firewall.running
+	shutdown
+	initialize
+	set_block_nonovpn
+	set_shadowvpn_cron_watchdog
+rm /tmp/shadowvpn.firewall.running
+}
+server_stop() {
+shutdown
+}
+client_fw() {
+dcft mangle shadowvpnmark
+uci get shadowvpn.@shadowvpn[0].mode | grep -q client || return
+except_cc=$(uci get shadowvpn.@shadowvpn[0].except_cc 2>/dev/null)
+if [ -n "$except_cc" ]; then
+iptables -t mangle -N shadowvpnmark
+	lsmod | grep -q xt_geoip || (rmmod xt_geoip;insmod xt_geoip) &>/dev/null
+iptables -t mangle -A shadowvpnmark -d $(uci get shadowvpn.@shadowvpn[0].server) -j RETURN
+iptables -t mangle -A shadowvpnmark -d 0.0.0.0/8 -j RETURN
+iptables -t mangle -A shadowvpnmark -d 10.0.0.0/8 -j RETURN
+iptables -t mangle -A shadowvpnmark -d 127.0.0.0/8 -j RETURN
+iptables -t mangle -A shadowvpnmark -d 169.254.0.0/16 -j RETURN
+iptables -t mangle -A shadowvpnmark -d 172.16.0.0/12 -j RETURN
+iptables -t mangle -A shadowvpnmark -d 192.168.0.0/16 -j RETURN
+iptables -t mangle -A shadowvpnmark -d 224.0.0.0/4 -j RETURN
+iptables -t mangle -A shadowvpnmark -d 240.0.0.0/4 -j RETURN
+	iptables -t mangle -A shadowvpnmark -m geoip ! --destination-country ${except_cc} -j MARK --set-mark 100
+for file in $(find /usr/shellgui/shellguilighttpd/www/apps -type f -maxdepth 2 -regex '.*\.socks5tproxy'); do
+username=$(basename ${file} | cut -d '.' -f1)
+[ -n "${username}" ] && iptables -t mangle -A OUTPUT -m owner --uid-owner ${username} -j shadowvpnmark
+done
+iptables -t mangle -A PREROUTING -j shadowvpnmark
+fi
+}
+stop_fw() {
+dcft mangle shadowvpn_down_bw
+dcft mangle shadowvpn_up_bw
+dcft filter block_non_shadowvpn
+dcft filter shadowvpnmark
+}
+case $1 in
+server_start)
+server_start
+;;
+server_stop)
+server_stop
+;;
+client_start)
+client_start
+;;
+client_stop)
+client_stop
+;;
+set_shadowvpn_cron_watchdog)
+set_shadowvpn_cron_watchdog
+;;
+client_fw)
+client_fw
+;;
+stop_fw)
+stop_fw &>/dev/null
+;;
+check)
+if ! ifconfig ss0 &>/dev/null | grep -qE '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*' || [ -f /tmp/shadowvpn.restart ]; then
+logger "shadowvpn stopped, restarting"; /etc/init.d/shadowvpn restart
+fi
+;;
+start_fw)
+echo $$ > /tmp/shadowvpn.firewall.running
+start_fw
+rm /tmp/shadowvpn.firewall.running
+;;
+esac

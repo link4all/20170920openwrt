@@ -1,0 +1,26 @@
+#!/bin/sh
+echo "Content-Type: application/json"
+echo ""
+apcli=`ifconfig | grep apcli0`
+while [[ -z "$apcli" ]]
+do
+    apcli=`ifconfig | grep apcli0`
+done
+
+ip1=`ifconfig apcli0 | grep 'inet addr:'| cut -d: -f2 | awk '{ print $1}'`
+ip2=`ifconfig apclii0 | grep 'inet addr:'| cut -d: -f2 | awk '{ print $1}'`
+if [ $ip1 -a -z $ip2 ]; then
+    echo "{\"result\":\"success\",\"message\":\"connected with 2.4 IP $ip1\", \"ip1\":\"$ip1\",\"ip2\":\"$ip2\"}"
+fi
+
+if [ $ip2 -a -z $ip1 ]; then
+    echo "{\"result\":\"success\",\"message\":\"connected with 5.8G IP: $ip2\", \"ip1\":\"$ip1\",\"ip2\":\"$ip2\"}"
+fi
+
+if [ $ip2 -a  $ip1 ]; then
+    echo "{\"result\":\"success\",\"message\":\"connected with 5.8G IP: $ip2\", \"ip1\":\"$ip1\",\"ip2\":\"$ip2\"}"
+fi
+
+if [ -z $ip1 -a -z $ip2 ]; then
+    echo "{\"result\":\"error\",\"message\":\"can not connect to $ussid\"}"
+fi

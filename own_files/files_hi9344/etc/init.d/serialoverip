@@ -1,0 +1,14 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=99
+
+start() {
+ sleep 15
+ /etc/start_serialoverip.sh &
+
+}
+
+stop() {
+killall serialoverip
+}

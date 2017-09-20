@@ -1,0 +1,26 @@
+{
+  "zh-cn": {
+	"_LANG_App_name": "网络诊断",
+	"_LANG_App_type": "网络",
+	"_LANG_App_desc": "网络诊断",
+	"_LANG_App_detail": "网络诊断",
+
+	"_LANG_Form_Ping_test": "Ping 测试",
+	"_LANG_Form_Host": "主机",
+	"_LANG_Form_Count": "次数",
+	"_LANG_Form_Go": "开始",
+	"_LANG_Form_May_need_to_wait_long_time": "可能需要等待较长时间"
+  },
+  "en": {
+	"_LANG_App_name": "Network Diagnostics",
+	"_LANG_App_type": "Network",
+	"_LANG_App_desc": "Network Diagnostics",
+	"_LANG_App_detail": "Network Diagnostics",
+
+	"_LANG_Form_Ping_test": "Ping test",
+	"_LANG_Form_Host": "Host",
+	"_LANG_Form_Count": "Count",
+	"_LANG_Form_Go": "Go",
+	"_LANG_Form_May_need_to_wait_long_time": "May need to wait a very long time"
+  }
+}

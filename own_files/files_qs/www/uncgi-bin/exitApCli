@@ -1,0 +1,13 @@
+#!/bin/sh
+echo 'Content-type: text/html'
+echo ''
+
+uci set wireless.@wifi-iface[0].ApCliEnable=0
+uci commit wireless
+echo {status:0}
+sleep 1
+/etc/init.d/network restart
+
+
+
+

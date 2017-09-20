@@ -1,0 +1,1575 @@
+Binary files driver_xinfeng/gobinet_XinYi_V3.zip and driver_yiyuan/gobinet_XinYi_V3.zip differ
+diff -uNr driver_xinfeng/GobiUSBNet.c driver_yiyuan/GobiUSBNet.c
+--- driver_xinfeng/GobiUSBNet.c	2017-04-13 17:42:21.000000000 +0800
++++ driver_yiyuan/GobiUSBNet.c	2017-04-05 12:10:20.183455435 +0800
+@@ -64,7 +64,7 @@
+ //-----------------------------------------------------------------------------
+ 
+ // Version Information
+-#define DRIVER_VERSION "XinYi_GobiNet_2017_V03"
++#define DRIVER_VERSION "Quectel_Linux_GobiNet_SR01A02V16"
+ #define DRIVER_AUTHOR "Qualcomm Innovation Center"
+ #define DRIVER_DESC "GobiNet"
+ 
+@@ -130,7 +130,7 @@
+    // Is this autosuspend or system suspend?
+    //    do we allow remote wakeup?
+ #if (LINUX_VERSION_CODE < KERNEL_VERSION( 2,6,33 ))
+-#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,14 ))
++#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,18 ))
+    if (pDev->udev->auto_pm == 0)
+ #else
+    if (1)
+@@ -289,7 +289,8 @@
+       return -ENODEV;
+    }
+ 
+-   if ( pIntf->cur_altsetting->desc.bInterfaceNumber != pDev->driver_info->data) 
++   // Verify correct interface (4 for UC20)
++   if ( !test_bit(pIntf->cur_altsetting->desc.bInterfaceNumber, &pDev->driver_info->data))
+    {
+       DBG( "invalid interface %d\n", 
+            pIntf->cur_altsetting->desc.bInterfaceNumber );
+@@ -422,19 +423,24 @@
+ {
+     sGobiUSBNet * pGobiDev = (sGobiUSBNet *)dev->data[0];
+ 
+-//   if (!pGobiDev->mbRawIPMode)
+-//       return skb;
+-     DBG("GobiNetDriverTxFixup:");
+-     PrintHex (skb->data, skb->len);
++    if (!pGobiDev->mbRawIPMode)
++        return skb;
++        
+     // Skip Ethernet header from message
+     if (skb_pull(skb, ETH_HLEN)) {
+         return skb;
+     } else {
++#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,22 ))
+         dev_err(&dev->intf->dev,  "Packet Dropped ");
++#elif (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,18 ))
++        dev_err(dev->net->dev.parent,  "Packet Dropped ");
++#else
++        INFO("Packet Dropped ");
++#endif
+     }
+     
+    // Filter the packet out, release it
+-   dev_kfree_skb_any(skb);
++   //dev_kfree_skb_any(skb); //usbnet.c usbnet_start_xmit() will free it
+    return NULL;
+ }
+ 
+@@ -457,10 +463,9 @@
+     __be16 proto;
+     sGobiUSBNet * pGobiDev = (sGobiUSBNet *)dev->data[0];
+ 
+- //   if (!pGobiDev->mbRawIPMode)
+- //       return 1;
+-   DBG("GobiNetDriverRxFixup:");
+-    PrintHex (skb->data, skb->len);
++    if (!pGobiDev->mbRawIPMode)
++        return 1;
++
+     /* This check is no longer done by usbnet */
+     if (skb->len < dev->net->hard_header_len)
+ 		return 0;
+@@ -511,7 +516,7 @@
+ RETURN VALUE:
+    None
+ ===========================================================================*/
+-#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,14 ))
++#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,18 ))
+ void GobiUSBNetURBCallback( struct urb * pURB )
+ #else
+ void GobiUSBNetURBCallback(struct urb *pURB, struct pt_regs *regs)
+@@ -542,6 +547,10 @@
+ 
+    complete( &pAutoPM->mThreadDoWork );
+    
++#ifdef URB_FREE_BUFFER_BY_SELF
++    if (pURB->transfer_flags & URB_FREE_BUFFER)
++        kfree(pURB->transfer_buffer);
++#endif
+    usb_free_urb( pURB );
+ }
+ 
+@@ -747,7 +756,7 @@
+          if (status == -EPERM)
+          {
+ #if (LINUX_VERSION_CODE < KERNEL_VERSION( 2,6,33 ))
+-#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,14 ))
++#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,18 ))
+             pUdev->auto_pm = 0;
+ #else
+              pUdev = pUdev;
+@@ -888,7 +897,7 @@
+    }
+ 
+ #if 1 //def DATA_MODE_RP
+-   GobiNetDriverTxFixup(pNet, pSKB, GFP_ATOMIC);	
++   GobiNetDriverTxFixup(pDev, pSKB, GFP_ATOMIC);	
+ #endif
+ 
+    // Allocate URB transfer_buffer
+@@ -1150,28 +1159,8 @@
+ static const struct driver_info GobiNetInfo = 
+ {
+    .description   = "GobiNet Ethernet Device",
+-//++ LB NOTE:support kernel version 3.0+
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION( 3,0,0))
+-   .flags         = FLAG_POINTTOPOINT,
+-#else
+-   .flags         = FLAG_ETHER,
+-#endif
+-   .bind          = GobiNetDriverBind,
+-   .unbind        = GobiNetDriverUnbind,
+-#if 1 //def DATA_MODE_RP
+-   .rx_fixup      = GobiNetDriverRxFixup,
+-   .tx_fixup      = GobiNetDriverTxFixup,
+-#endif
+-   .data          = 2,
+-};
+-
+-
+-static const struct driver_info GobiNetInfo_9x07 = 
+-{
+-   .description   = "GobiNet Ethernet Device",
+-//++ LB NOTE:support kernel version 3.0+
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION( 3,0,0))
+-   .flags         = FLAG_POINTTOPOINT,
++#ifdef CONFIG_ANDROID
++   .flags         = FLAG_ETHER | FLAG_POINTTOPOINT, //usb0
+ #else
+    .flags         = FLAG_ETHER,
+ #endif
+@@ -1181,27 +1170,54 @@
+    .rx_fixup      = GobiNetDriverRxFixup,
+    .tx_fixup      = GobiNetDriverTxFixup,
+ #endif
+-   .data          = 4,
++   .data          = (1 << 4),
+ };
+ 
+-
+ /*=========================================================================*/
+ // Qualcomm Gobi 3000 VID/PIDs
+ /*=========================================================================*/
+ static const struct usb_device_id GobiVIDPIDTable [] =
+ {
+-
++   // Quectel UC20
+    { 
+-      USB_DEVICE( 0x05c6, 0x9091 ),
++      USB_DEVICE( 0x05c6, 0x9003 ),
++      .driver_info = (unsigned long)&GobiNetInfo 
++   },
++   // Quectel EC20
++   { 
++      USB_DEVICE( 0x05c6, 0x9215 ),
++      .driver_info = (unsigned long)&GobiNetInfo 
++   },
++   // Quectel EC25
++   { 
++      USB_DEVICE( 0x2c7c, 0x0125 ),
++      .driver_info = (unsigned long)&GobiNetInfo 
++   },
++   // Quectel EC21
++   { 
++      USB_DEVICE( 0x2c7c, 0x0121 ),
++      .driver_info = (unsigned long)&GobiNetInfo 
++   },
++   //xin feng wei ye
++   { 
++      USB_DEVICE( 0x5c6, 0x5012 ),
++      .driver_info = (unsigned long)&GobiNetInfo 
++   },
++   //xin feng wei ye
++   { 
++      USB_DEVICE( 0x5c6, 0x5013 ),
++      .driver_info = (unsigned long)&GobiNetInfo 
++   },
++   //fang ge 730
++   { 
++      USB_DEVICE( 0x05c6, 0xf601 ),
++      .driver_info = (unsigned long)&GobiNetInfo 
++   },
++   //nodecom
++   { 
++      USB_DEVICE( 0x1508, 0x1001 ),
+       .driver_info = (unsigned long)&GobiNetInfo 
+    },
+-
+-  { 
+-	 USB_DEVICE( 0x05c6, 0x5013 ),
+-	 .driver_info = (unsigned long)&GobiNetInfo_9x07
+-  },
+-
+-
+    //Terminating entry
+    { }
+ };
+@@ -1286,7 +1302,7 @@
+ #if defined(CONFIG_PM) && (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,14 ))
+    pDev->net->hard_start_xmit = GobiUSBNetStartXmit;
+    pDev->net->tx_timeout = GobiUSBNetTXTimeout;
+-#else 
++#else  //quectel donot send dhcp request before ndis connect for uc20
+     local_usbnet_start_xmit = pDev->net->hard_start_xmit;
+     pDev->net->hard_start_xmit = GobiUSBNetStartXmit2;
+ #endif
+@@ -1304,7 +1320,7 @@
+    pNetDevOps->ndo_open = GobiUSBNetOpen;
+    pGobiDev->mpUSBNetStop = pNetDevOps->ndo_stop;
+    pNetDevOps->ndo_stop = GobiUSBNetStop;
+-#if 1 
++#if 1 //quectel donot send dhcp request before ndis connect for uc20
+    pNetDevOps->ndo_start_xmit = GobiUSBNetStartXmit2;
+ #else
+    pNetDevOps->ndo_start_xmit = usbnet_start_xmit;
+@@ -1348,12 +1364,13 @@
+ //#endif
+ 
+    // Register QMI
++   pGobiDev->mbMdm9x07 |= (pDev->udev->descriptor.idVendor == cpu_to_le16(0x2c7c));
++   pGobiDev->mbRawIPMode = pGobiDev->mbMdm9x07;
+    status = RegisterQMIDevice( pGobiDev );
+    if (status != 0)
+    {
+       // usbnet_disconnect() will call GobiNetDriverUnbind() which will call
+       // DeregisterQMIDevice() to clean up any partially created QMI device
+-      DBG( "RegisterQMIDevice:failed.\n" );
+       usbnet_disconnect( pIntf );
+       return status;
+    }
+@@ -1371,15 +1388,9 @@
+ #ifdef CONFIG_PM
+    .suspend    = GobiNetSuspend,
+    .resume     = GobiNetResume,
+-#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,14 ))   
++#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,18 ))   
+    .supports_autosuspend = true,
+ #endif   
+-#else
+-   .suspend    = NULL,
+-   .resume     = NULL,
+-#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,14 ))   
+-   .supports_autosuspend = false,
+-#endif   
+ #endif /* CONFIG_PM */
+ };
+ 
+diff -uNr driver_xinfeng/makefile driver_yiyuan/makefile
+--- driver_xinfeng/makefile	1970-01-01 08:00:00.000000000 +0800
++++ driver_yiyuan/makefile	2016-11-05 10:22:34.000000000 +0800
+@@ -0,0 +1,35 @@
++obj-m := GobiNet.o
++GobiNet-objs := GobiUSBNet.o QMIDevice.o QMI.o
++
++PWD := $(shell pwd)
++OUTPUTDIR=/lib/modules/`uname -r`/kernel/drivers/net/usb/
++
++ifeq ($(ARCH),)
++ARCH := $(shell uname -m)
++endif
++ifeq ($(CROSS_COMPILE),)
++CROSS_COMPILE :=
++endif
++ifeq ($(KDIR),)
++KDIR := /lib/modules/$(shell uname -r)/build
++ifeq ($(ARCH),i686)
++ifeq ($(wildcard $KDIR/arch/$ARCH),)
++ARCH=i386
++endif
++endif
++endif
++
++default:
++	ln -sf makefile Makefile
++	$(MAKE) ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} -C $(KDIR) M=$(PWD) modules
++
++install: default
++	mkdir -p $(OUTPUTDIR)
++	cp -f GobiNet.ko $(OUTPUTDIR)
++	depmod
++	modprobe -r GobiNet
++	modprobe GobiNet
++
++clean:
++	rm -rf Makefile
++	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions Module.* modules.order
+diff -uNr driver_xinfeng/QMI.c driver_yiyuan/QMI.c
+--- driver_xinfeng/QMI.c	2017-04-13 17:24:40.000000000 +0800
++++ driver_yiyuan/QMI.c	2016-11-05 10:22:34.000000000 +0800
+@@ -164,6 +164,11 @@
+    return sizeof( sQMUX ) + 7;
+ }
+ 
++u16 QMIWDSSetQMUXBindMuxDataPortSize( void )
++{
++   return sizeof( sQMUX ) + 29;
++}
++
+ /*===========================================================================
+ METHOD:
+    QMIDMSGetMEIDReqSize (Public Method)
+@@ -191,7 +196,7 @@
+ ===========================================================================*/
+ u16 QMIWDASetDataFormatReqSize( void )
+ {
+-   return sizeof( sQMUX ) + 7+0x32;
++   return sizeof( sQMUX ) + 25;
+ }
+ 
+ /*===========================================================================
+@@ -685,6 +690,43 @@
+    return sizeof( sQMUX ) + 7;
+ }
+ 
++u16 QMIWDSSetQMUXBindMuxDataPortReq(
++   void *   pBuffer,
++   u16      buffSize,
++   u16      transactionID )
++{
++   if (pBuffer == 0 || buffSize < QMIWDSSetQMUXBindMuxDataPortSize() )
++   {
++      return -ENOMEM;
++   }
++
++   // QMI WDS Set QMUX Bind Mux Data Port REQ
++   // Request
++   *(u8 *)(pBuffer + sizeof( sQMUX ))  = 0x00;
++   // Transaction ID
++   put_unaligned(cpu_to_le16(transactionID), (u16 *)(pBuffer + sizeof( sQMUX ) + 1));
++   // Message ID
++   put_unaligned(cpu_to_le16(0x00a2), (u16 *)(pBuffer + sizeof( sQMUX ) + 3));
++   // Size of TLV's
++   put_unaligned(cpu_to_le16(0x0016), (u16 *)(pBuffer + sizeof( sQMUX ) + 5));
++
++   *(u8 *)(pBuffer + sizeof( sQMUX ) +  7) = 0x10;
++   put_unaligned(cpu_to_le16(0x08), (u16 *)(pBuffer + sizeof( sQMUX ) + 8));
++   put_unaligned(cpu_to_le32(0x02), (u32 *)(pBuffer + sizeof( sQMUX ) + 10)); // ep_type
++   put_unaligned(cpu_to_le32(0x04), (u32 *)(pBuffer + sizeof( sQMUX ) + 14)); // iface_id
++   
++   *(u8 *)(pBuffer + sizeof( sQMUX ) +  18) = 0x11;
++   put_unaligned(cpu_to_le16(0x01), (u16 *)(pBuffer + sizeof( sQMUX ) + 19));
++   *(u8 *)(pBuffer + sizeof( sQMUX ) +  21) = 0x81;  // MuxId
++   
++   *(u8 *)(pBuffer + sizeof( sQMUX ) +  22) = 0x13;
++   put_unaligned(cpu_to_le16(0x04), (u16 *)(pBuffer + sizeof( sQMUX ) + 23));
++   put_unaligned(cpu_to_le32(0x01), (u32 *)(pBuffer + sizeof( sQMUX ) + 25));
++       
++   // success
++   return sizeof( sQMUX ) + 29;
++}
++
+ /*===========================================================================
+ METHOD:
+    QMIDMSGetMEIDReq (Public Method)
+@@ -744,6 +786,7 @@
+ int QMIWDASetDataFormatReq(
+    void *   pBuffer,
+    u16      buffSize,
++   bool     bRawIPMode,
+    u16      transactionID )
+ {
+    if (pBuffer == 0 || buffSize < QMIWDASetDataFormatReqSize() )
+@@ -762,7 +805,7 @@
+    put_unaligned( cpu_to_le16(0x0020), (u16 *)(pBuffer + sizeof( sQMUX ) + 3) );
+ 
+    // Size of TLV's
+-   put_unaligned( cpu_to_le16(0x0032), (u16 *)(pBuffer + sizeof( sQMUX ) + 5));
++   put_unaligned( cpu_to_le16(0x0012), (u16 *)(pBuffer + sizeof( sQMUX ) + 5));
+ 
+    /* TLVType QOS Data Format 1 byte  */
+    *(u8 *)(pBuffer + sizeof( sQMUX ) +  7) = 0x10; // type data format
+@@ -784,17 +827,18 @@
+    put_unaligned( cpu_to_le16(0x0004), (u16 *)(pBuffer + sizeof( sQMUX ) + 12));
+ 
+    /* LinkProt: 0x1 - ETH; 0x2 - rawIP  4 bytes */
+-#ifdef DATA_MODE_RP
++if (bRawIPMode) { //#ifdef DATA_MODE_RP
+    /* Set RawIP mode */
+    put_unaligned( cpu_to_le32(0x00000002), (u32 *)(pBuffer + sizeof( sQMUX ) + 14));
+    DBG("Request RawIP Data Format\n");
+-#else
++} else { //#else
+    /* Set Ethernet  mode */
+    put_unaligned( cpu_to_le32(0x00000001), (u32 *)(pBuffer + sizeof( sQMUX ) + 14));
+    DBG("Request Ethernet Data Format\n");
+-#endif
++} //#endif
+ 
+-   *(u8 *)(pBuffer + sizeof( sQMUX ) + 18) = 0x12;
++   /* TLVType Uplink Data Aggression Protocol - 1 byte */
++   *(u8 *)(pBuffer + sizeof( sQMUX ) + 18) = 0x13;
+ 
+    /* TLVLength 2 bytes */
+    put_unaligned( cpu_to_le16(0x0004), (u16 *)(pBuffer + sizeof( sQMUX ) + 19));
+@@ -802,47 +846,6 @@
+    /* TLV Data */
+    put_unaligned( cpu_to_le32(0x00000000), (u32 *)(pBuffer + sizeof( sQMUX ) + 21));
+ 
+-
+-   /* TLVType Uplink Data Aggression Protocol - 1 byte */
+-   *(u8 *)(pBuffer + sizeof( sQMUX ) + 25) = 0x13;
+-
+-   /* TLVLength 2 bytes */
+-   put_unaligned( cpu_to_le16(0x0004), (u16 *)(pBuffer + sizeof( sQMUX ) + 26));
+-
+-   /* TLV Data */
+-   put_unaligned( cpu_to_le32(0x00000000), (u32 *)(pBuffer + sizeof( sQMUX ) + 28));
+-
+-   *(u8 *)(pBuffer + sizeof( sQMUX ) + 32) = 0x15;
+-
+-   /* TLVLength 2 bytes */
+-   put_unaligned( cpu_to_le16(0x0004), (u16 *)(pBuffer + sizeof( sQMUX ) + 33));
+-
+-   /* TLV Data */
+-   put_unaligned( cpu_to_le32(0x00000020), (u32 *)(pBuffer + sizeof( sQMUX ) + 35));
+-
+-
+-   *(u8 *)(pBuffer + sizeof( sQMUX ) + 39) = 0x16;
+-
+-   /* TLVLength 2 bytes */
+-   put_unaligned( cpu_to_le16(0x0004), (u16 *)(pBuffer + sizeof( sQMUX ) + 40));
+-
+-   /* TLV Data */
+-   put_unaligned( cpu_to_le32(0x00008000), (u32 *)(pBuffer + sizeof( sQMUX ) + 42));
+-
+-
+-   *(u8 *)(pBuffer + sizeof( sQMUX ) + 46) = 0x17;
+-
+-   /* TLVLength 2 bytes */
+-   put_unaligned( cpu_to_le16(0x0008), (u16 *)(pBuffer + sizeof( sQMUX ) + 47));
+-
+-   /* TLV Data */
+-   put_unaligned( cpu_to_le32(0x00000002), (u32 *)(pBuffer + sizeof( sQMUX ) + 49));//05
+-   put_unaligned( cpu_to_le32(0x00000004), (u32 *)(pBuffer + sizeof( sQMUX ) + 53));//08
+-
+-
+-
+-
+-
+    // success
+    return QMIWDASetDataFormatReqSize();
+ }
+@@ -923,178 +926,6 @@
+ 
+ }
+ 
+-
+-
+-/*===========================================================================
+-METHOD:
+-   QMIWDSBindMuxDataPortReqSize (Public Method)
+-
+-DESCRIPTION:
+-   Get size of buffer needed for QMUX + QMIWDSBindMuxDataPortReq
+- 
+-RETURN VALUE:
+-   u16 - size of buffer
+-===========================================================================*/
+-u16 QMIWDSBindMuxDataPortReqSize( void )
+-{
+-   return sizeof( sQMUX ) + 29;
+-}
+-
+-
+-
+-/*===========================================================================
+-METHOD:
+-   QMIWDSBindMuxDataPortReq (Public Method)
+-
+-DESCRIPTION:
+-   Fill buffer with QMI WDS Bind Mux Data Port Request
+-
+-PARAMETERS
+-   pBuffer         [ 0 ] - Buffer to be filled
+-   buffSize        [ I ] - Size of pBuffer
+-   transactionID   [ I ] - Transaction ID
+-
+-RETURN VALUE:
+-   int - Positive for resulting size of pBuffer
+-         Negative errno for error
+-===========================================================================*/
+-int QMIWDSBindMuxDataPortReq(
+-   void *   pBuffer,
+-   u16      buffSize,
+-   u16      transactionID )
+-{
+-   if (pBuffer == 0 || buffSize < QMIWDSBindMuxDataPortReqSize() )
+-   {
+-      return -ENOMEM;
+-   }
+-
+-   // QMI WDA SET DATA FORMAT REQ
+-   // Request
+-   *(u8 *)(pBuffer + sizeof( sQMUX ))  = 0x00; //1
+-
+-   // Transaction ID
+-   put_unaligned( cpu_to_le16(transactionID), (u16 *)(pBuffer + sizeof( sQMUX ) + 1) ); //2
+-
+-   // Message ID
+-   put_unaligned( cpu_to_le16(0x00A2), (u16 *)(pBuffer + sizeof( sQMUX ) + 3) ); //2
+-
+-   // Size of TLV's
+-   put_unaligned( cpu_to_le16(0x0016), (u16 *)(pBuffer + sizeof( sQMUX ) + 5)); //2
+-
+-   /* TLVType Peripheral End Point ID Format 1 byte  */
+-   *(u8 *)(pBuffer + sizeof( sQMUX ) +  7) = 0x10; //Peripheral End Point ID
+-   /* TLVLength  2 bytes - see spec */
+-   put_unaligned( cpu_to_le16(0x0008), (u16 *)(pBuffer + sizeof( sQMUX ) + 8));
+-   //ep_type 4 bit
+-   put_unaligned( cpu_to_le32(0x00000005), (u32 *)(pBuffer + sizeof( sQMUX ) + 10));
+-   //iface_id 4 bit
+-   put_unaligned( cpu_to_le32(0x00000008), (u32 *)(pBuffer + sizeof( sQMUX ) + 14));
+-   
+-   //TLVType Mux ID 1 bit
+-   *(u8 *)(pBuffer + sizeof( sQMUX ) + 18) = 0x11;
+-   /* TLVLength 2 bytes */
+-   put_unaligned( cpu_to_le16(0x0001), (u16 *)(pBuffer + sizeof( sQMUX ) + 19));
+-   /* Mux ID of the logical data channel to which the client binds. The default value is 0. 1 byte */
+-   *(u8 *)(pBuffer + sizeof( sQMUX ) + 21) = 0x0;
+-
+-
+-   //TLVType Mux ID 1 bit
+-   *(u8 *)(pBuffer + sizeof( sQMUX ) + 22) = 0x13;
+-   put_unaligned( cpu_to_le16(0x0004), (u16 *)(pBuffer + sizeof( sQMUX ) + 23));
+-   put_unaligned( cpu_to_le32(0x00000001), (u32 *)(pBuffer + sizeof( sQMUX ) + 25));
+-
+-   // success
+-   return QMIWDSBindMuxDataPortReqSize();
+-}
+-
+-
+-
+-
+-/*===========================================================================
+-METHOD:
+-   QMIWDSBindMuxDataPortPreReqSize (Public Method)
+-
+-DESCRIPTION:
+-   Get size of buffer needed for QMUX + QMIWDSBindMuxDataPortReq
+- 
+-RETURN VALUE:
+-   u16 - size of buffer
+-===========================================================================*/
+-u16 QMIWDSBindMuxDataPortPreReqSize( void )
+-{
+-   return sizeof( sQMUX ) + 22;
+-}
+-
+-
+-
+-/*===========================================================================
+-METHOD:
+-
+-   QMIWDSBindMuxDataPortPreReq (Public Method)
+-
+-DESCRIPTION:
+-
+-   Fill buffer with QMI WDS Bind Mux Data Port Request
+-
+-PARAMETERS
+-
+-   pBuffer         [ 0 ] - Buffer to be filled
+-   buffSize        [ I ] - Size of pBuffer
+-   transactionID   [ I ] - Transaction ID
+-
+-
+-RETURN VALUE:
+-   int - Positive for resulting size of pBuffer
+-
+-         Negative errno for error
+-===========================================================================*/
+-int QMIWDSBindMuxDataPortPreReq(
+-   void *   pBuffer,
+-   u16      buffSize,
+-   u16      transactionID,
+-   unsigned int index )
+-{
+-   if (pBuffer == 0 || buffSize < QMIWDSBindMuxDataPortPreReqSize() )
+-   {
+-      return -ENOMEM;
+-   }
+-
+-   // QMI WDA SET DATA FORMAT REQ
+-   // Request
+-   *(u8 *)(pBuffer + sizeof( sQMUX ))  = 0x00; //1
+-
+-   // Transaction ID
+-   put_unaligned( cpu_to_le16(transactionID), (u16 *)(pBuffer + sizeof( sQMUX ) + 1) ); //2
+-
+-   // Message ID
+-   put_unaligned( cpu_to_le16(0x00A2), (u16 *)(pBuffer + sizeof( sQMUX ) + 3) ); //2
+-
+-   // Size of TLV's
+-   put_unaligned( cpu_to_le16(0x000F), (u16 *)(pBuffer + sizeof( sQMUX ) + 5)); //2
+-
+-   /* TLVType Peripheral End Point ID Format 1 byte  */
+-   *(u8 *)(pBuffer + sizeof( sQMUX ) +  7) = 0x10; //Peripheral End Point ID
+-   /* TLVLength  2 bytes - see spec */
+-   put_unaligned( cpu_to_le16(0x0008), (u16 *)(pBuffer + sizeof( sQMUX ) + 8));
+-   //ep_type 4 bit
+-   put_unaligned( cpu_to_le32(0x00000005), (u32 *)(pBuffer + sizeof( sQMUX ) + 10));
+-   //iface_id 4 bit
+-   put_unaligned( cpu_to_le32(0x00000000), (u32 *)(pBuffer + sizeof( sQMUX ) + 14));
+-   
+-   //TLVType Mux ID 1 bit
+-   *(u8 *)(pBuffer + sizeof( sQMUX ) + 18) = 0x11;
+-   /* TLVLength 2 bytes */
+-   put_unaligned( cpu_to_le16(0x0001), (u16 *)(pBuffer + sizeof( sQMUX ) + 19));
+-   /* Mux ID of the logical data channel to which the client binds. The default value is 0. 1 byte */
+-   *(u8 *)(pBuffer + sizeof( sQMUX ) + 21) = index;
+-
+-   // success
+-   return QMIWDSBindMuxDataPortPreReqSize();
+-}
+-
+-
+-
+-
+ /*===========================================================================
+ METHOD:
+    QMICTLSyncReq (Public Method)
+@@ -1448,7 +1279,7 @@
+ ===========================================================================*/
+ int QMIWDASetDataFormatResp(
+    void *   pBuffer,
+-   u16      buffSize )
++   u16      buffSize, bool bRawIPMode )
+ {
+ 
+    int result;
+@@ -1491,85 +1322,22 @@
+       return 0;
+       
+    }
+-   DBG("Data Format Set to Ethernet Mode:%d\n",pktLinkProtocol[0] );
+-#ifdef DATA_MODE_RP
++
++if (bRawIPMode) { ////#ifdef DATA_MODE_RP
+    if (pktLinkProtocol[0] != 2)
+    {
+       DBG("EFAULT: Data Format Cannot be set to RawIP Mode\n"); 
+       return pktLinkProtocol[0];
+    }
+    DBG("Data Format Set to RawIP\n");
+-#else
++} else { ////#else
+    if (pktLinkProtocol[0] != 1)
+    {
+       DBG("EFAULT: Data Format Cannot be set to Ethernet Mode\n"); 
+       return pktLinkProtocol[0];
+    }
+-  
+-#endif
+-
+-   return pktLinkProtocol[0];
+-}
+-
+-/*===========================================================================
+-METHOD:
+-   QMIWDSBindMuxDataPortResp (Public Method)
+-
+-DESCRIPTION:
+-   Parse the QMI WDS Bind Mux Data Port Response
+-
+-PARAMETERS
+-   pBuffer         [ I ] - Buffer to be parsed
+-   buffSize        [ I ] - Size of pBuffer
+-
+-RETURN VALUE:
+-   int - 0 for success
+-         Negative errno for error
+-===========================================================================*/
+-int QMIWDSBindMuxDataPortResp(
+-   void *   pBuffer,
+-   u16      buffSize )
+-{
+-
+-   int result;
+-
+-   u8 pktLinkProtocol[4];
+-
+-   // Ignore QMUX and SDU
+-   // QMI SDU is 3 bytes
+-   u8 offset = sizeof( sQMUX ) + 3;
+-
+-   if (pBuffer == 0 || buffSize < offset)
+-   {
+-      return -ENOMEM;
+-   }
+-
+-   pBuffer = pBuffer + offset;
+-   buffSize -= offset;
+-
+-   result = GetQMIMessageID( pBuffer, buffSize );
+-   if (result != 0xA2)
+-   {
+-      return -EFAULT;
+-   }
+-
+-   /* Check response message result TLV */
+-   result = ValidQMIMessage( pBuffer, buffSize );
+-   if (result != 0)
+-   {
+-      DBG("EFAULT: Data Format Mode Bad Response\n"); 
+-      return 0;
+-   }
+-
+-   /* Check response message link protocol */
+-   result = GetTLV( pBuffer, buffSize, 0x02,
+-                     &pktLinkProtocol[0], 4);
+-   if (result != 4)
+-   {
+-      DBG("EFAULT: Wrong TLV format\n"); 
+-      return 0;
+-      
+-   }
++   DBG("Data Format Set to Ethernet Mode \n");
++} //#endif
+ 
+    return pktLinkProtocol[0];
+ }
+diff -uNr driver_xinfeng/QMIDevice.c driver_yiyuan/QMIDevice.c
+--- driver_xinfeng/QMIDevice.c	2017-04-13 17:41:01.000000000 +0800
++++ driver_yiyuan/QMIDevice.c	2016-11-05 10:22:34.000000000 +0800
+@@ -442,8 +442,7 @@
+ {
+    int status;
+    int interval;
+-   
+-   DBG("\n");
++
+    // Sanity test
+    if ( (pIntURB == NULL)
+    ||   (pIntURB->dev == NULL) )
+@@ -490,7 +489,7 @@
+ RETURN VALUE:
+    None
+ ===========================================================================*/
+-#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,14 ))
++#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,18 ))
+ void ReadCallback( struct urb * pReadURB )
+ #else
+ void ReadCallback(struct urb *pReadURB, struct pt_regs *regs)
+@@ -519,6 +518,12 @@
+       return;
+    }   
+ 
++#ifdef READ_QMI_URB_ERROR
++   del_timer(&pDev->mQMIDev.mReadUrbTimer);
++   if ((pReadURB->status == -ECONNRESET) && (pReadURB->actual_length > 0))
++      pReadURB->status = 0;
++#endif
++
+    if (pReadURB->status != 0)
+    {
+       DBG( "Read status = %d\n", pReadURB->status );
+@@ -535,6 +540,14 @@
+ 
+    PrintHex( pData, dataSize );
+ 
++#ifdef READ_QMI_URB_ERROR
++   if (dataSize < (le16_to_cpu(get_unaligned((u16*)(pData + 1))) + 1)) {
++      dataSize = (le16_to_cpu(get_unaligned((u16*)(pData + 1))) + 1);
++      memset(pReadURB->transfer_buffer + pReadURB->actual_length, 0x00, dataSize - pReadURB->actual_length);
++      INFO( "Read %d / %d bytes\n", pReadURB->actual_length, dataSize);
++   }
++#endif
++
+    result = ParseQMUX( &clientID,
+                        pData,
+                        dataSize );
+@@ -620,7 +633,7 @@
+          }
+ 
+          // Success
+-         DBG( "Creating new readListEntry for client 0x%04X, TID %x\n",
++         VDBG( "Creating new readListEntry for client 0x%04X, TID %x\n",
+               clientID,
+               transactionID );
+ 
+@@ -663,7 +676,7 @@
+ RETURN VALUE:
+    None
+ ===========================================================================*/
+-#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,14 ))
++#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,18 ))
+ void IntCallback( struct urb * pIntURB )
+ {
+ #else
+@@ -716,6 +729,9 @@
+                                DEFAULT_READ_URB_LENGTH,
+                                ReadCallback,
+                                pDev );
++#ifdef READ_QMI_URB_ERROR
++         mod_timer( &pDev->mQMIDev.mReadUrbTimer, jiffies + msecs_to_jiffies(300) );
++#endif
+          status = usb_submit_urb( pDev->mQMIDev.mpReadURB, GFP_ATOMIC );
+          if (status != 0)
+          {
+@@ -763,6 +779,23 @@
+    return;
+ }
+ 
++#ifdef READ_QMI_URB_ERROR
++static void ReadUrbTimerFunc( struct urb * pReadURB )
++{
++  int result;
++
++  INFO( "%s called (%ld).\n", __func__, jiffies );
++
++  if ((pReadURB != NULL) && (pReadURB->status == -EINPROGRESS))
++  {
++     // Asynchronously unlink URB. On success, -EINPROGRESS will be returned, 
++     // URB status will be set to -ECONNRESET, and ReadCallback() executed
++     result = usb_unlink_urb( pReadURB );
++     INFO( "%s called usb_unlink_urb, result = %d\n", __func__, result);
++  }
++}
++#endif
++
+ /*===========================================================================
+ METHOD:
+    StartRead (Public Method)
+@@ -790,7 +823,7 @@
+       DBG( "Invalid device!\n" );
+       return -ENXIO;
+    }
+-   
++
+    // Allocate URB buffers
+    pDev->mQMIDev.mpReadURB = usb_alloc_urb( 0, GFP_KERNEL );
+    if (pDev->mQMIDev.mpReadURB == NULL)
+@@ -798,7 +831,11 @@
+       DBG( "Error allocating read urb\n" );
+       return -ENOMEM;
+    }
+-   
++
++#ifdef READ_QMI_URB_ERROR
++   setup_timer( &pDev->mQMIDev.mReadUrbTimer, (void*)ReadUrbTimerFunc, (unsigned long)pDev->mQMIDev.mpReadURB );
++#endif
++
+    pDev->mQMIDev.mpIntURB = usb_alloc_urb( 0, GFP_KERNEL );
+    if (pDev->mQMIDev.mpIntURB == NULL)
+    {
+@@ -1206,7 +1243,7 @@
+ RETURN VALUE:
+    None
+ ===========================================================================*/
+-#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,14 ))
++#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,18 ))
+ void WriteSyncCallback( struct urb * pWriteURB )
+ #else
+ void WriteSyncCallback(struct urb *pWriteURB, struct pt_regs *regs)
+@@ -1314,7 +1351,7 @@
+       {
+ #ifdef CONFIG_PM
+ #if (LINUX_VERSION_CODE < KERNEL_VERSION( 2,6,33 ))
+-#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,14 ))
++#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,18 ))
+          pDev->mpNetDev->udev->auto_pm = 0;
+ #endif
+ #endif
+@@ -2275,9 +2312,11 @@
+    }
+ }
+ 
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION( 3,19,0 ))
+ #ifndef f_dentry
+ #define f_dentry f_path.dentry
+ #endif
++#endif
+ 
+ /*=========================================================================*/
+ // Internal userspace wrappers
+@@ -2340,7 +2379,7 @@
+          }
+          
+          result = GetClientID( pFilpData->mpDev, (u8)arg );
+-
++// it seems QMIWDA only allow one client, if the last quectel-CM donot realese it (killed by SIGKILL).
+ // can force release it at here
+ #if 1
+          if (result < 0 && (u8)arg == QMIWDA)
+@@ -2446,8 +2485,8 @@
+    sGobiUSBNet * pDev = container_of( pQMIDev,
+                                     sGobiUSBNet,
+                                     mQMIDev );
+-#if 0 //xinyi delete
+-   if (pDev->mpNetDev->udev->descriptor.idVendor == cpu_to_le16(0x05c6))
++
++   if (pDev->mbMdm9x07)
+    {
+       atomic_inc(&pDev->refcount);
+       if (!pDev->mbQMIReady) {
+@@ -2460,7 +2499,7 @@
+       }
+       atomic_dec(&pDev->refcount);
+    }
+-#endif
++
+    if (IsDeviceValid( pDev ) == false)
+    {
+       DBG( "Invalid device\n" );
+@@ -2997,29 +3036,6 @@
+    {
+       goto __qmi_sync_finished;
+    }
+-
+-   //Bind Mux Data Port Pre
+-   {
+-      int i =1;
+-      for(i=1;i<9;i++)
+-      {
+-         result = QMIWDSBindMuxDataPre(pDev, i);
+-         if (result != 0)
+-         {
+-            DBG( "QMIWDSBindMuxDataPre result %d %d-%s\n", i, result, __func__);
+-            goto __qmi_sync_finished;
+-         }
+-      }
+-   }
+-
+-   //Bind Mux Data Port
+-   result = QMIWDSBindMuxData(pDev);
+-   if (result != 0)
+-   {
+-      DBG( "QMIWDSBindMuxData result %d-%s\n", result, __func__);
+-      goto __qmi_sync_finished;
+-   }
+-
+ #endif
+ 
+ __qmi_sync_finished:
+@@ -3076,27 +3092,12 @@
+    result = StartRead( pDev );
+    if (result != 0)
+    {
+-	  pDev->mbQMIValid = false;
++      pDev->mbQMIValid = false;
+       return result;
+    }
+ 
+-   if (pDev->mpNetDev->udev->descriptor.idVendor == cpu_to_le16(0x05c6))
++   if (pDev->mbMdm9x07)
+    {
+-	  usb_control_msg( pDev->mpNetDev->udev,
+-					  usb_sndctrlpipe( pDev->mpNetDev->udev, 0 ),
+-					   SET_CONTROL_LINE_STATE_REQUEST,
+-					   SET_CONTROL_LINE_STATE_REQUEST_TYPE,
+-					   0,
+-					   /* USB interface number to receive control message */
+-					   pDev->mpIntf->cur_altsetting->desc.bInterfaceNumber,
+-					   NULL,
+-					   0,
+-					   100 );
+-	  
+-	  
+-	  msleep(1000);
+-	  
+-
+       usb_control_msg( pDev->mpNetDev->udev,
+                             usb_sndctrlpipe( pDev->mpNetDev->udev, 0 ),
+                              SET_CONTROL_LINE_STATE_REQUEST,
+@@ -3107,12 +3108,24 @@
+                              NULL,
+                              0,
+                              100 );
+-
+-	msleep(1000);
+-
+-
+    }
+ 
++    //for EC21&25, must wait about 15 seconds to wait QMI ready. it is too long for driver probe(will block other drivers probe).
++   if (pDev->mbMdm9x07)
++   {
++      struct task_struct *qmi_sync_task;
++      atomic_inc(&pDev->refcount);
++      init_completion(&pDev->mQMIReadyCompletion);
++      pDev->mbQMIReady = false;
++      qmi_sync_task = kthread_run(qmi_sync_thread, (void *)pDev, "qmi_sync/%d", pDev->mpNetDev->udev->devnum);
++       if (IS_ERR(qmi_sync_task)) {
++         atomic_dec(&pDev->refcount);
++         DBG( "Create qmi_sync_thread fail\n" );
++         return PTR_ERR(qmi_sync_task);
++      }
++      goto __register_chardev_qccmi;
++   }
++   
+    // Device is not ready for QMI connections right away
+    //   Wait up to 30 seconds before failing
+    if (QMIReady( pDev, 30000 ) == false)
+@@ -3121,9 +3134,6 @@
+       return -ETIMEDOUT;
+    }
+ 
+-//xinyi debug
+-   if (pDev->mpNetDev->udev->descriptor.idVendor == cpu_to_le16(0x05c6))
+-{
+    // Initiate QMI CTL Sync Procedure
+    DBG( "Sending QMI CTL Sync Request\n" );
+    result = QMICTLSyncProc(pDev);
+@@ -3143,7 +3153,7 @@
+    {
+        return result;
+    }
+-}
++
+    // Setup WDS callback
+    result = SetupQMIWDSCallback( pDev );
+    if (result != 0)
+@@ -3158,28 +3168,6 @@
+       return result;
+    }
+ 
+-   //Bind Mux Data Port Pre
+-   {
+-      int i =1;
+-      for(i=1;i<9;i++)
+-      {
+-         result = QMIWDSBindMuxDataPre(pDev, i);
+-         if (result != 0)
+-         {
+-            DBG( "QMIWDSBindMuxDataPre result %d %d-%s\n", i, result, __func__);
+-            return result;
+-         }
+-      }
+-   }
+-
+-   //Bind Mux Data Port
+-   result = QMIWDSBindMuxData(pDev);
+-   if (result != 0)
+-   {
+-      DBG( "QMIWDSBindMuxData result %d\n", result);
+-      return result;
+-   }
+-
+ __register_chardev_qccmi:
+    // allocate and fill devno with numbers
+    result = alloc_chrdev_region( &devno, 0, 1, "qcqmi" );
+@@ -3206,6 +3194,12 @@
+        pDevName += strlen( "eth" );
+    } else if (!!(pDevName = strstr( pDev->mpNetDev->net->name, "usb" ))) {
+        pDevName += strlen( "usb" );
++#if 1 //openWRT like use ppp# or lte#
++   } else if (!!(pDevName = strstr( pDev->mpNetDev->net->name, "ppp" ))) {
++       pDevName += strlen( "ppp" );
++   } else if (!!(pDevName = strstr( pDev->mpNetDev->net->name, "lte" ))) {
++       pDevName += strlen( "lte" );
++#endif
+    } else {
+       DBG( "Bad net name: %s\n", pDev->mpNetDev->net->name );
+       return -ENXIO;
+@@ -3574,11 +3568,13 @@
+    void * pReadBuffer;
+    u16 readBufferSize;
+ 
++#if 0
+ #if (LINUX_VERSION_CODE < KERNEL_VERSION( 2,6,31 ))
+    struct net_device_stats * pStats = &(pDev->mpNetDev->stats);
+ #else
+    struct net_device_stats * pStats = &(pDev->mpNetDev->net->stats);
+ #endif
++#endif
+ 
+    u32 TXOk = (u32)-1;
+    u32 RXOk = (u32)-1;
+@@ -3591,10 +3587,7 @@
+    bool bLinkState;
+    bool bReconfigure;
+    unsigned long flags;
+-    //PQMI_PKT_IND_HDR pPktIndHeader;
+-
+-
+-    DBG("\n");
++   
+    if (IsDeviceValid( pDev ) == false)
+    {
+       DBG( "Invalid device\n" );
+@@ -3641,7 +3634,7 @@
+    }
+    else
+    {
+-
++#if 0 //usbbet.c will do this job
+       // Fill in new values, ignore max values
+       if (TXOfl != (u32)-1)
+       {
+@@ -3682,6 +3675,7 @@
+       {
+          pStats->rx_bytes = RXBytesOk;
+       }
++#endif
+ 
+       if (bReconfigure == true)
+       {
+@@ -3759,6 +3753,53 @@
+    }
+    WDSClientID = result;
+ 
++#if 0 // add for "AT$QCRMCALL=1,1", be careful: donot enable these codes if use quectel-CM, or cannot obtain IP by udhcpc
++    if (pDev->mbMdm9x07)
++    {
++       void * pReadBuffer;
++       u16 readBufferSize;
++
++        writeBufferSize = QMIWDSSetQMUXBindMuxDataPortSize();
++        pWriteBuffer = kmalloc( writeBufferSize, GFP_KERNEL );
++        if (pWriteBuffer == NULL)
++        {
++            return -ENOMEM;
++        }
++   
++        result = QMIWDSSetQMUXBindMuxDataPortReq( pWriteBuffer, 
++                                         writeBufferSize,
++                                         3 );
++        if (result < 0)
++        {
++            kfree( pWriteBuffer );
++            return result;
++        }
++
++       result = WriteSync( pDev,
++                           pWriteBuffer,
++                           writeBufferSize,
++                           WDSClientID );
++        kfree( pWriteBuffer );
++
++        if (result < 0)
++        {
++            return result;
++        }
++       
++        result = ReadSync( pDev,
++                          &pReadBuffer,
++                          WDSClientID,
++                          3 );
++        if (result < 0)
++        {
++            return result;
++        }
++        readBufferSize = result;
++
++        kfree( pReadBuffer );
++   }
++#endif
++
+    // QMI WDS Set Event Report
+    writeBufferSize = QMIWDSSetEventReportReqSize();
+    pWriteBuffer = kmalloc( writeBufferSize, GFP_KERNEL );
+@@ -3969,7 +4010,7 @@
+    u16 readBufferSize;
+    u16 WDAClientID;
+ 
+-   DBG("Enter\n");
++   DBG("\n");
+ 
+    if (IsDeviceValid( pDev ) == false)
+    {
+@@ -3993,7 +4034,7 @@
+    }
+ 
+    result = QMIWDASetDataFormatReq( pWriteBuffer,
+-                              writeBufferSize,
++                              writeBufferSize, pDev->mbRawIPMode,
+                                     1 );
+    if (result < 0)
+    {
+@@ -4024,214 +4065,24 @@
+    readBufferSize = result;
+ 
+    result = QMIWDASetDataFormatResp( pReadBuffer,
+-                                     readBufferSize );
+-
+-   kfree( pReadBuffer );
+- 
+-//xinyi debug
+-if (pDev->mpNetDev->udev->descriptor.idVendor == cpu_to_le16(0x05c6))
+-{
+-       pDev->mpNetDev->net->flags |= IFF_NOARP;
+-}
+-
+-
+-   if (result < 0)
+-   {
+-      DBG( "Data Format Cannot be set\n" );
+-   }
+-
+-   ReleaseClientID( pDev, WDAClientID );
+-   DBG("Exit pDev->mbRawIPMode:%d\n",pDev->mbRawIPMode);
+-   // Success
+-    return 0;
+-}
+-
+-/*===========================================================================
+-METHOD:
+-   QMIWDSBindMuxData (Public Method)
+-
+-DESCRIPTION:
+-   Register WDS client
+-   send Bind Mux Data Port request and parse response
+-   Release WDS client
+-
+-PARAMETERS:
+-   pDev     [ I ] - Device specific memory
+-
+-RETURN VALUE:
+-   None
+-===========================================================================*/
+-int QMIWDSBindMuxData( sGobiUSBNet * pDev )
+-{
+-   int result;
+-   void * pWriteBuffer;
+-   u16 writeBufferSize;
+-   void * pReadBuffer;
+-   u16 readBufferSize;
+-   u16 WDSClientID;
+-
+-   DBG("\n");
+-
+-   if (IsDeviceValid( pDev ) == false)
+-   {
+-      DBG( "Invalid device\n" );
+-      return -EFAULT;
+-   }
+-
+-   result = GetClientID( pDev, QMIWDS );
+-   if (result < 0)
+-   {
+-      return result;
+-   }
+-   WDSClientID = result;
+-
+-   // QMI WDS Bind Mux Data Request
+-   writeBufferSize = QMIWDSBindMuxDataPortReqSize();
+-   pWriteBuffer = kmalloc( writeBufferSize, GFP_KERNEL );
+-   if (pWriteBuffer == NULL)
+-   {
+-      return -ENOMEM;
+-   }
+-
+-   result = QMIWDSBindMuxDataPortReq( pWriteBuffer,
+-                              writeBufferSize,
+-                                    1 );
+-   if (result < 0)
+-   {
+-      kfree( pWriteBuffer );
+-      return result;
+-   }
+-
+-   result = WriteSync( pDev,
+-                       pWriteBuffer,
+-                       writeBufferSize,
+-                       WDSClientID );
+-   kfree( pWriteBuffer );
+-
+-   if (result < 0)
+-   {
+-      return result;
+-   }
+-
+-   // QMI DMS Get Serial numbers Resp
+-   result = ReadSync( pDev,
+-                      &pReadBuffer,
+-                      WDSClientID,
+-                      1 );
+-   if (result < 0)
+-   {
+-      return result;
+-   }
+-   readBufferSize = result;
+-
+-   result = QMIWDSBindMuxDataPortResp( pReadBuffer,
+-                                     readBufferSize );
++                                     readBufferSize, pDev->mbRawIPMode );
+ 
+    kfree( pReadBuffer );
+ 
+-   if (result < 0)
+-   {
+-      DBG( "Data Format Cannot be set\n" );
+-   }
+-
+-   ReleaseClientID( pDev, WDSClientID );
+-
+-   // Success
+-    return 0;
+-}
+-
+-/*===========================================================================
+-METHOD:
+-   QMIWDSBindMuxDataPre (Public Method)
+-
+-DESCRIPTION:
+-   Register WDS client
+-   send Bind Mux Data Port request and parse response
+-   Release WDS client
+-
+-PARAMETERS:
+-   pDev     [ I ] - Device specific memory
+-
+-RETURN VALUE:
+-   None
+-===========================================================================*/
+-int QMIWDSBindMuxDataPre( sGobiUSBNet * pDev, unsigned int index )
+-{
+-   int result;
+-   void * pWriteBuffer;
+-   u16 writeBufferSize;
+-   void * pReadBuffer;
+-   u16 readBufferSize;
+-   u16 WDSClientID;
+-
+-   DBG("\n");
+-
+-   if (IsDeviceValid( pDev ) == false)
+-   {
+-      DBG( "Invalid device\n" );
+-      return -EFAULT;
+-   }
+-
+-   result = GetClientID( pDev, QMIWDS );
+-   if (result < 0)
+-   {
+-      return result;
+-   }
+-   WDSClientID = result;
+-
+-   // QMI WDS Bind Mux Data Request
+-   writeBufferSize = QMIWDSBindMuxDataPortPreReqSize();
+-   pWriteBuffer = kmalloc( writeBufferSize, GFP_KERNEL );
+-   if (pWriteBuffer == NULL)
+-   {
+-      return -ENOMEM;
+-   }
+-
+-   result = QMIWDSBindMuxDataPortPreReq( pWriteBuffer,
+-                              writeBufferSize,
+-                                    1, index);
+-   if (result < 0)
+-   {
+-      kfree( pWriteBuffer );
+-      return result;
+-   }
+-
+-   result = WriteSync( pDev,
+-                       pWriteBuffer,
+-                       writeBufferSize,
+-                       WDSClientID );
+-   kfree( pWriteBuffer );
+-
+-   if (result < 0)
+-   {
+-      return result;
+-   }
+-
+-   // QMI DMS Get Serial numbers Resp
+-   result = ReadSync( pDev,
+-                      &pReadBuffer,
+-                      WDSClientID,
+-                      1 );
+-   if (result < 0)
+-   {
+-      return result;
++#if 1 //def DATA_MODE_RP
++   pDev->mbRawIPMode = (result == 2);    /* LinkProt: 0x1 - ETH; 0x2 - rawIP */
++   if (pDev->mbRawIPMode) {
++       pDev->mpNetDev->net->flags |= IFF_NOARP;
+    }
+-   readBufferSize = result;
+-
+-   result = QMIWDSBindMuxDataPortResp( pReadBuffer,
+-                                     readBufferSize );
+-
+-   kfree( pReadBuffer );
++#endif
+ 
+    if (result < 0)
+    {
+       DBG( "Data Format Cannot be set\n" );
+    }
+ 
+-   ReleaseClientID( pDev, WDSClientID );
++   ReleaseClientID( pDev, WDAClientID );
+ 
+    // Success
+     return 0;
+ }
+-
+-
+diff -uNr driver_xinfeng/QMIDevice.h driver_yiyuan/QMIDevice.h
+--- driver_xinfeng/QMIDevice.h	2017-04-13 17:22:28.000000000 +0800
++++ driver_yiyuan/QMIDevice.h	2016-11-05 10:22:34.000000000 +0800
+@@ -134,7 +134,7 @@
+ 
+ // Read callback
+ //    Put the data in storage and notify anyone waiting for data
+-#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,14 ))
++#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,18 ))
+ void ReadCallback( struct urb * pReadURB );
+ #else
+ void ReadCallback(struct urb *pReadURB, struct pt_regs *regs);
+@@ -142,7 +142,7 @@
+ 
+ // Inturrupt callback
+ //    Data is available, start a read URB
+-#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,14 ))
++#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,18 ))
+ void IntCallback( struct urb * pIntURB );
+ #else
+ void IntCallback(struct urb *pIntURB, struct pt_regs *regs);
+@@ -182,7 +182,7 @@
+    u16                transactionID );
+ 
+ // Write callback
+-#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,14 ))
++#if (LINUX_VERSION_CODE > KERNEL_VERSION( 2,6,18 ))
+ void WriteSyncCallback( struct urb * pWriteURB );
+ #else
+ void WriteSyncCallback(struct urb *pWriteURB, struct pt_regs *regs);
+@@ -343,9 +343,3 @@
+ 
+ // Register client, send req and parse Data format response, release client
+ int QMIWDASetDataFormat( sGobiUSBNet * pDev );
+-
+-// Register client, send req and parse Bind Mux Data Port response, release client
+-int QMIWDSBindMuxData( sGobiUSBNet * pDev );
+-
+-// Register client, send req and parse Bind Mux Data Port Pre response, release client
+-int QMIWDSBindMuxDataPre( sGobiUSBNet * pDev, unsigned int index );
+diff -uNr driver_xinfeng/QMI.h driver_yiyuan/QMI.h
+--- driver_xinfeng/QMI.h	2017-04-13 17:25:30.000000000 +0800
++++ driver_yiyuan/QMI.h	2016-11-05 10:22:34.000000000 +0800
+@@ -93,6 +93,10 @@
+ #define VDBG( format, arg... ) do { } while(0)
+ #endif
+ 
++#define INFO( format, arg... ) do { \
++      printk( KERN_INFO "GobiNet::%s " format, __FUNCTION__, ## arg ); \
++   }while(0)
++
+ // QMI Service Types
+ #define QMICTL 0
+ #define QMIWDS 1
+@@ -204,6 +208,8 @@
+ // Get size of buffer needed for QMUX + QMIWDSGetPKGSRVCStatusReq
+ u16 QMIWDSGetPKGSRVCStatusReqSize( void );
+ 
++u16 QMIWDSSetQMUXBindMuxDataPortSize( void );
++
+ // Get size of buffer needed for QMUX + QMIDMSGetMEIDReq
+ u16 QMIDMSGetMEIDReqSize( void );
+ 
+@@ -249,6 +255,11 @@
+    u16      buffSize,
+    u16      transactionID );
+ 
++u16 QMIWDSSetQMUXBindMuxDataPortReq(
++   void *   pBuffer,
++   u16      buffSize,
++   u16      transactionID );
++
+ // Fill buffer with QMI DMS Get Serial Numbers Request
+ int QMIDMSGetMEIDReq(
+    void *   pBuffer,
+@@ -259,6 +270,7 @@
+ int QMIWDASetDataFormatReq(
+    void *   pBuffer,
+    u16      buffSize,
++   bool     bRawIPMode,
+    u16      transactionID );
+ 
+ int QMICTLSyncReq(
+@@ -307,33 +319,10 @@
+ // Parse the QMI DMS Get Serial Numbers Resp
+ int QMIWDASetDataFormatResp(
+    void *   pBuffer,
+-   u16      buffSize );
++   u16      buffSize, bool bRawIPMode );
+ 
+ // Pasre the QMI CTL Sync Response
+ int QMICTLSyncResp(
+    void *pBuffer,
+    u16  buffSize );
+ 
+-// Get size of buffer needed for QMUX + QMIWDSBindMuxDataPortReq
+-u16 QMIWDSBindMuxDataPortReqSize( void );
+-
+-// Fill buffer with QMI WDS Bind Mux Data Port Request
+-int QMIWDSBindMuxDataPortReq(
+-   void *   pBuffer,
+-   u16      buffSize,
+-   u16      transactionID );
+-
+-// Parse the QMI WDS Bind Mux Data Port Resp
+-int QMIWDSBindMuxDataPortResp(
+-   void *   pBuffer,
+-   u16      buffSize );
+-
+-// Get size of buffer needed for QMUX + QMIWDSBindMuxDataPortPreReq
+-u16 QMIWDSBindMuxDataPortPreReqSize( void );
+-
+-// Fill buffer with QMI WDS Bind Mux Data Port Request
+-int QMIWDSBindMuxDataPortPreReq(
+-   void *   pBuffer,
+-   u16      buffSize,
+-   u16      transactionID,
+-   unsigned int index );
+diff -uNr driver_xinfeng/Structs.h driver_yiyuan/Structs.h
+--- driver_xinfeng/Structs.h	2017-01-19 10:09:22.000000000 +0800
++++ driver_yiyuan/Structs.h	2016-11-05 10:22:34.000000000 +0800
+@@ -54,9 +54,19 @@
+ #include <linux/poll.h>
+ #include <linux/completion.h>
+ 
++#if (LINUX_VERSION_CODE <= KERNEL_VERSION( 2,6,21 ))
++static inline void skb_reset_mac_header(struct sk_buff *skb)
++{
++    skb->mac.raw = skb->data;
++}
++#endif
++
+ #if (LINUX_VERSION_CODE <= KERNEL_VERSION( 2,6,22 ))
+ #define bool      u8
++#ifndef URB_FREE_BUFFER
++#define URB_FREE_BUFFER_BY_SELF //usb_free_urb will not free, should free by self
+ #define URB_FREE_BUFFER		0x0100	/* Free transfer buffer with the URB */
++#endif
+ 
+ /**
+  * usb_endpoint_type - get the endpoint's transfer type
+@@ -71,7 +81,7 @@
+ }
+ #endif
+ 
+-#if (LINUX_VERSION_CODE <= KERNEL_VERSION( 2,6,14 ))
++#if (LINUX_VERSION_CODE <= KERNEL_VERSION( 2,6,18 ))
+ /**
+  * usb_endpoint_dir_in - check if the endpoint has IN direction
+  * @epd: endpoint to be checked
+@@ -327,6 +337,11 @@
+    /* Pointer to read URB */
+    struct urb *               mpReadURB;
+ 
++//#define READ_QMI_URB_ERROR
++#ifdef READ_QMI_URB_ERROR
++   struct timer_list mReadUrbTimer;
++#endif
++
+    /* Read setup packet */
+    sURBSetupPacket *          mpReadSetupPacket;
+ 
+@@ -364,6 +379,7 @@
+    struct usbnet *        mpNetDev;
+ 
+ #if 1 //def DATA_MODE_RP
++    bool                   mbMdm9x07;  
+    /* QMI "device" work in IP Mode or ETH Mode */
+    bool                   mbRawIPMode;
+ #endif

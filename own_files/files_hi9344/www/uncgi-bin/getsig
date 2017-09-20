@@ -1,0 +1,13 @@
+#!/bin/sh
+echo 'Content-type: text/html'
+echo ''
+
+#iwinfo wlan0 assoclist |grep [0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]>/tmp/sta.txt
+#cat /tmp/sta.txt |while read LINE
+#do   
+#        echo $LINE 
+#        echo "<br />" 
+#done
+sta_info=`iwinfo |grep Signal`
+echo $sta_info
+

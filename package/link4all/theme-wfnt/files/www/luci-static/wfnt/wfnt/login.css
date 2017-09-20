@@ -1,0 +1,203 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+/**
+ * User agent default config.
+ */
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, 
+pre, form, fieldset, input, textarea, p, blockquote, th, td {
+    margin: 0;
+    padding: 0;
+}
+body {
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
+	background: #fff;
+	font-family: "宋体", Arial, sans-serif;
+	color: #000;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+fieldset, img, hr {
+    border: 0 none;
+}
+address, caption, cite, code, dfn, em, th, var {
+    font-style: normal;
+    font-weight: normal;
+}
+ol, ul {
+    list-style: none outside none;
+}
+h5, h6 {
+	font-size: 12px;
+}
+h4 {
+	font-size: 14px;
+}
+h3 {
+	font-size: 16px;
+}
+h2 {
+	font-size: 18px;
+}
+h1 {
+	font-size: 24px;
+}
+input {
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
+}
+select {
+	height: 20px;
+}
+label {
+	border: none;
+	cursor: default;
+}
+
+
+.soof_icon{
+	display:inline-block;
+	vertical-align:text-bottom;
+	background-repeat:no-repeat;
+	width:16px;
+	height:16px;
+	background-image:url(login/icons.png);
+}
+.soof_icon.lock_24{
+	width:24px;
+	height:24px;
+	background-position:0 -100px;
+}
+
+.soof_icon.triangle_white{
+	width:20px;
+	height:24px;
+	background-position:-100px 0;
+}
+
+
+body.soof_login{
+	background:#007EA7 url(login/bg_main.jpg) repeat;
+	height:100%;
+	overflow:hidden;
+	font-size:14px;
+}
+.soof_login > .viewport{
+	width:800px;
+	height:800px;
+	margin:0 auto;
+	min-height:100%;
+	background:url(login/bg_center.jpg) no-repeat center;
+}
+.soof_login > .viewport > .main{
+	position:absolute;
+	z-index:1;
+	top:0;
+	width:800px;
+}
+.soof_login .login_panel{
+	position:relative;
+	top:300px;
+	margin:0 auto;
+	width:630px;
+	border:solid 1px #007EA7;
+	border-radius:10px;
+	background-color:rgba(242, 242, 242, 0.8);
+}
+.soof_login .login_panel .logo_wrap{
+	position:absolute;
+	top:-100px;
+	width:100%;
+	text-align:center;
+}
+.soof_login .login_panel .inputs_wrap{
+	padding:40px 100px;
+}
+.soof_login .inputs_wrap .tip, 
+.soof_login .inputs_wrap .err{
+	height:30px;
+	width:400px;
+	margin:0 auto;
+	line-height:30px;
+	color:#999;
+}
+.soof_login .inputs_wrap .err{
+	color:red;
+}
+.soof_login .inputs_wrap .tip{
+	height:30px;
+	width:400px;
+	margin:0 auto;
+	line-height:30px;
+	color:#999;
+}
+.soof_login .inp{
+	position:relative;
+	left:0;
+	top:0;
+	margin:0 auto;
+	width:400px;
+	height:45px;
+	line-height:45px;
+	border:solid 1px #007EA7;
+	border-radius:5px;
+	background-color:#fff;
+}
+.soof_login .inp input,
+.soof_login .inp .mask{
+	position:absolute;
+	left:48px;
+	top:0;
+	font-size:14px;
+}
+.soof_login .inp input{
+	width:300px;
+	border:0 none;
+	height:100%;
+	line-height:100%;
+	background-color:#fff;/* force some system custom bg set */
+}
+.soof_login .inp .mask{
+	display:none;
+	color:#999;
+	cursor:text;
+}
+.soof_login .inp .lock_24{
+	position:absolute;
+	left:12px;
+	top:12px;
+}
+.soof_login .show_mask .mask{
+	display:inline;
+}
+
+
+.soof_login .isubmit .submit{
+	position:absolute;
+	right:0;
+	display:inline-block;
+	width:45px;
+	height:45px;
+	line-height:45px;
+	text-align:center;
+	borer-top-right-radius:5px;
+	borer-bottom-right-radius:5px;
+	background-color:#007EA7;
+	cursor:pointer;
+	border:none;
+}
+.soof_login .foot{
+	position:absolute;
+	z-index:0;
+	left:0;
+	bottom:10px;
+	width:100%;
+	text-align:center;
+	color:#666;
+}

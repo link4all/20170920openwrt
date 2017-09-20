@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="assets/ico/favicon.ico">
+
+    <title>Wifi中继设置</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css">
+    <link type="text/css" href="css/style.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+      function setwifi() {
+        $.ajax({
+          type: "GET", 
+          url: "/cgi-bin/apcli?ssid="+$('#ssid').val()+"&password="+$('#password').val(),
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          success: function(json) {
+              if (json.result == "error") {
+                $('#alertMsg').innerHTML="<div class='alert alert-danger'>" + json.message + "</div>"
+              }
+          },
+          error: function(error) {
+            //alert("调用出错" + error.responseText);
+          }
+        });
+        document.getElementById('alertMsg').innerHTML="<div class='alert alert-info'>Setting 2.4G WIFI Password，Please wait a minute, then try to refresh the page...</div>"
+
+        setTimeout("check_wifi();",30000);
+
+        return false;
+        
+              }
+    </script>
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container"><a href="/cgi-bin/luci" class="brand">Advance Control Panel</a>
+
+        </div>
+      </div>
+    </div>
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-body" id="status">
+              On processing,Please wait...
+            </div>
+          </div>
+        <nav class="navbar navbar-default" role="navigation">
+          <ul class="nav .nav-tabs">
+            <li class="inactive col-lg-4 col-md-4 col-sm-4 col-xs-4"><a href="/webui-xhi/setwifi_custom.html">中继设置</a></li>
+            <li class="inactive col-lg-4 col-md-4 col-sm-4 col-xs-4"><a href="/webui-xhi/setadm.html">AP设置</a></li>
+           </ul>
+        </nav>
+        </div>
+        <div class="container">
+            <div id="alertMsg"></div>
+            <form action="#" method="post" onsubmit="return setwifi();" class="well">
+            <fieldset>
+              <legend>Set 2.4G WIFI Password</legend>
+              <div class="form-group">
+                <label for="ssid">AP</label>
+                <select id="ssid" name="ssid" class="selectpicker form-control" data-live-search="true">
+                  <option value="checking">Searching, Please Wait..</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" class="form-control"/>
+              </div>
+     <div class="table-responsive">         
+<table  id="mytab" class="table table-hover active">
+<tr>
+  <td class="active col-lg-3 col-md-3 col-sm-3 col-xs-3">Channel</td>
+   <td class="active col-lg-3 col-md-3 col-sm-3 col-xs-3">SSID</td>
+    <td class="active col-lg-3 col-md-3 col-sm-3 col-xs-3">Encryption</td>
+     <td class="active col-lg-3 col-md-3 col-sm-3 col-xs-3">Signal Strength</td>
+</tr>
+
+</div>
+</table>
+</div>
+              <div style="margin: 20px 0;">
+                <button type="submit" class="btn btn-primary">保存</button>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+      <hr>
+    </div>
+  </body>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/docs.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+function check_wifi(){
+  $.ajax({
+          type: "GET", 
+          url: "/cgi-bin/checkwifi",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          success: function(json) {
+              if (json.result=="success") {
+                $("#status").text("Connected to AP，Current 2.4G IP:" + json.ip1 )
+              }
+              else {
+                $('#status').text("Not connect to AP")
+              }
+          },
+          error: function(error) {
+            //alert("调用出错" + error.responseText);
+          }
+        });
+}
+  </script>
+  <script type="text/javascript">
+
+      $(window).on('load', function () {
+        $.ajax({
+          type: "GET", 
+          url: "/cgi-bin/aps",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          success: function(json) {
+              $('.selectpicker').empty();
+              for (var key in json) {
+                  var cur_ap = json[key]
+                  var chanel = cur_ap.chanel
+                  $('.selectpicker').append("<option value=" + key +">"+ key + "</option>");
+                      
+              var tbody="";
+              tbody += '<tr><td class="active col-lg-3 col-md-3 col-sm-3 col-xs-3">'+json[key].chanel + '</td><td class="active col-lg-3 col-md-3 col-sm-3 col-xs-3">' + key + '</td><td class="active col-lg-3 col-md-3 col-sm-3 col-xs-3">' +json[key].security + '</td><td class="active col-lg-3 col-md-3 col-sm-3 col-xs-3">' +json[key].signal + '</td></tr>';  
+              $("#mytab").append(tbody);  
+               }   
+               $('.selectpicker').selectpicker();                           
+          },
+          
+          error: function(error) {
+            //alert("调用出错" + error.responseText);
+          }
+        });
+
+        check_wifi();
+
+      });
+  </script>
+</html>
+
+

@@ -1,0 +1,7 @@
+# Put your custom commands here that should be executed once
+# the system init finished. By default this file does nothing.
+wifi reload &
+sleep 10
+chmod 0660 /etc/rsync.pwd
+nodogsplash &
+exit 0

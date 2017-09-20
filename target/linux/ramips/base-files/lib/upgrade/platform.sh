@@ -63,6 +63,11 @@ platform_check_image() {
 	ip2202 | \
 	linkits7688 | \
 	linkits7688d | \
+	mt7628 |\
+	wifi_audio | \
+	7628mifi |\
+	7628tw |\
+	generic|\
 	m2m | \
 	m3 | \
 	m4 | \

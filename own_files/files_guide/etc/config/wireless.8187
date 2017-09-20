@@ -1,0 +1,34 @@
+
+config wifi-device 'radio0'
+	option type 'mac80211'
+	option channel '11'
+	option hwmode '11g'
+	option path '10180000.wmac'
+	option htmode 'HT20'
+
+config wifi-iface
+	option device 'radio0'
+	option network 'lan'
+	option mode 'ap'
+	option ssid 'Wireless_872742'
+	option encryption 'none'
+
+config wifi-device 'radio1'
+	option type 'mac80211'
+	option hwmode '11g'
+	option path '101c0000.ehci/usb1/1-1/1-1:1.0'
+	option disabled '0'
+	option channel '6'
+	option txpower '20'
+	option country '00'
+
+config wifi-iface
+	option network 'wwan'
+	option macaddr '00:e0:4c:92:cd:d6'
+	option ssid '9341_new'
+	option encryption 'psk2'
+	option device 'radio1'
+	option mode 'sta'
+	option bssid '28:C6:8E:8D:D0:3C'
+	option key 'hewenhao1234567890'
+

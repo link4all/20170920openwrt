@@ -1,0 +1,24 @@
+#!/bin/sh
+
+[ "${ACTION}" = "released" ] || exit 0
+. /lib/functions.sh
+
+#exec /sbin/poweroff
+logger "$BUTTON pressed for $SEEN seconds"
+
+if [ "$SEEN" -lt 1 ]
+then
+        echo "power button pressed, please keep for 5sec to power off" > /dev/console
+	#/etc/led.sh
+elif [ "$SEEN" -gt 3 ] && [ "$SEEN" -lt 8 ]
+then
+        echo "Power OFF!" > /dev/console
+        #/etc/shutdown.sh
+	reboot
+elif [ "$SEEN" -gt 15  ]
+then
+        echo "restore to factory"
+        firstboot -y && reboot
+fi
+
+return 0

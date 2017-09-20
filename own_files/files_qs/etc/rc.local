@@ -1,0 +1,8 @@
+# Put your custom commands here that should be executed once
+# the system init finished. By default this file does nothing.
+echo 8192 > /proc/sys/vm/min_free_kbytes &
+echo 40 > /proc/sys/vm/swappiness &
+echo 200 > /proc/sys/vm/vfs_cache_pressure &
+echo 11 > /sys/class/gpio/export
+echo out > /sys/class/gpio/gpio11/direction
+exit 0

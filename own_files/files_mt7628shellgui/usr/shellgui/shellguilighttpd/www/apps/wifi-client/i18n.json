@@ -1,0 +1,58 @@
+{
+  "zh-cn": {
+	"_LANG_App_name": "无线客户端",
+	"_LANG_App_type": "网络",
+	"_LANG_App_desc": "app1",
+	"_LANG_App_detail": "app1",
+
+	"_LANG_Form_Back": "返回",
+	"_LANG_Form_Flash": "刷新",
+	"_LANG_Form_Client_configuration_does_not_exist": "客户端配置不存在",
+	"_LANG_Form_Client_configuration_droped": "客户端配置已舍弃",
+	"_LANG_Form_Global_mode_has_been_occupied_by": "全局模式已被占用--",
+	"_LANG_Form_Modify_success": "编辑成功",
+	"_LANG_Form_Password_length_not_enough": "密码长度不足",
+	"_LANG_Form_This_nic_can_not_run_in_sta_mode": "网卡不能使用客户端模式运行",
+
+	"_LANG_JsUI_Available": "可用",
+	"_LANG_JsUI_Unailable": "不可用",
+	"_LANG_JsUI_Wireless_Channel": "无线信道",
+	"_LANG_JsUI_Hardware_Mode": "硬件模式",
+	"_LANG_Form_Scan": "搜索",
+	"_LANG_JsUI_Scan": "搜索",
+	"_LANG_JsUI_Drop": "舍弃",
+	"_LANG_JsUI_There_is_no_AP_avaible": "没有热点",
+	"_LANG_JsUI_Enter_the_password_here": "请输入密码",
+	"_LANG_JsUI_Save": "确定",
+	"_LANG_JsUI_Cancel": "取消",
+	"_LANG_JsUI_Join": "加入"
+  },
+  "en": {
+	"_LANG_App_name": "WiFi Client",
+	"_LANG_App_type": "Network",
+	"_LANG_App_desc": "app1",
+	"_LANG_App_detail": "app1",
+
+	"_LANG_Form_Back": "Back",
+	"_LANG_Form_Flash": "Flash",
+	"_LANG_Form_Client_configuration_does_not_exist": "Client configuration does not exist",
+	"_LANG_Form_Client_configuration_droped": "Client configuration droped",
+	"_LANG_Form_Global_mode_has_been_occupied_by": "Global mode has been occupied by",
+	"_LANG_Form_Modify_success": "Modify success",
+	"_LANG_Form_Password_length_not_enough": "Password length not enough",
+	"_LANG_Form_This_nic_can_not_run_in_sta_mode": "网卡不能使用客户端模式运行",
+
+	"_LANG_JsUI_Available": "Available",
+	"_LANG_JsUI_Unailable": "Unailable",
+	"_LANG_JsUI_Wireless_Channel": "Wireless Channel",
+	"_LANG_JsUI_Hardware_Mode": "Hardware Mode",
+	"_LANG_Form_Scan": "Scan",
+	"_LANG_JsUI_Scan": "Scan",
+	"_LANG_JsUI_Drop": "Drop",
+	"_LANG_JsUI_There_is_no_AP_avaible": "There is no AP avaible",
+	"_LANG_JsUI_Enter_the_password_here": "Enter the password here",
+	"_LANG_JsUI_Save": "Save",
+	"_LANG_JsUI_Cancel": "Cancel",
+	"_LANG_JsUI_Join": "Join"
+  }
+}

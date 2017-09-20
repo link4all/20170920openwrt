@@ -1,0 +1,9 @@
+#!/bin/sh
+case $1 in
+start)
+/usr/shellgui/shellguilighttpd/www/apps/adbyby-save/adbyby-save.sbin start
+;;
+stop)
+/usr/shellgui/shellguilighttpd/www/apps/adbyby-save/adbyby-save.sbin stop
+;;
+esac

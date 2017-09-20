@@ -1,0 +1,92 @@
+#!/bin/sh
+
+[ "${ACTION}" = "released" ] || exit 0
+
+. /lib/functions.sh
+. /etc/setled.sh
+H_off
+volume=`cat /etc/play/volume`
+logger "$BUTTON pressed for $SEEN seconds"
+echo "$BUTTON pressed for $SEEN seconds" > /dev/console
+
+if [ "$SEEN" -lt 1 ]
+then
+
+#0,45,73,86,100,106,115,118,120,123
+MIN_VOLUME=$(amixer cget numid=9,iface=MIXER,name='Headphone Playback Volume' | grep '; type' |sed 's/^.*min=//g' | sed 's/,.*$//g')
+#MAX_VOLUME=$(amixer cget numid=9,iface=MIXER,name='Headphone Playback Volume' | grep '; type' |sed 's/^.*max=//g' | sed 's/,.*$//g')
+ALSA_VOLUME=$(amixer cget numid=9,iface=MIXER,name='Headphone Playback Volume' | grep ': values' |sed 's/^.*values=//g' | sed 's/,.*$//g')
+let MIN_VOLUME+=40
+if [ "$ALSA_VOLUME" -gt "$MIN_VOLUME" ]
+then
+case $volume in
+  "9")
+  let ALSA_VOLUME=120
+  echo "volume is 8"  > /dev/console
+  echo 8 > /etc/play/volume
+  write8
+  ;;
+  "8")
+  let ALSA_VOLUME=118
+  echo "volume is max 7"  > /dev/console
+  echo 7 > /etc/play/volume
+  write7
+  ;;
+  "7")
+  let ALSA_VOLUME=115
+  echo "volume is 6"  > /dev/console
+  echo 6 > /etc/play/volume
+  write6
+  ;;
+  "6")
+  let ALSA_VOLUME=106
+  echo "volume is 5"  > /dev/console
+  echo 5 > /etc/play/volume
+  write5
+  ;;
+  "5")
+  let ALSA_VOLUME=100
+  echo "volume is 4"  > /dev/console
+  echo 4 > /etc/play/volume
+  write4
+  ;;
+  "4")
+  let ALSA_VOLUME=86
+  echo "volume is 3"  > /dev/console
+  echo 3 > /etc/play/volume
+  write3
+  ;;
+  "3")
+  let ALSA_VOLUME=73
+  echo "volume is 2"  > /dev/console
+  echo 2 > /etc/play/volume
+  write2
+  ;;
+  "2")
+  let ALSA_VOLUME=45
+  echo "volume is 1"  > /dev/console
+  echo 1 > /etc/play/volume
+  write1
+  ;;
+  "1")
+  let ALSA_VOLUME=0
+  echo "volume is 0"  > /dev/console
+  echo 0 > /etc/play/volume
+  write0
+  ;;
+  "0")
+  let ALSA_VOLUME=0
+  echo "volume is 0"  > /dev/console
+  echo 0 > /etc/play/volume
+  write1
+  ;;
+esac
+
+fi
+#echo $ALSA_VOLUME >/dev/console; echo $MAX_VOLUME >/dev/console
+amixer cset numid=9,iface=MIXER,name='Headphone Playback Volume' $ALSA_VOLUME
+
+fi
+
+
+
