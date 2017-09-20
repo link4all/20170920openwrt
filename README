@@ -4,8 +4,8 @@ ubuntu编译openwrt环境搭建:
 sudo apt-get update
 
 下载编译：
-1. git clone https://github.com/link4all/20170325openwrt
-2. cd 20170325openwrt
+1. git clone https://github.com/link4all/20170920openwrt
+2. cd 20170920openwrt
 3. ./scripts/feeds update -a && ./scripts/feeds install -a
 4. cp 7628.config .config
 5. make V=s 
