@@ -17,3 +17,16 @@ define Profile/HW550-3G/Description
 endef
 
 $(eval $(call Profile,HW550-3G))
+
+define Profile/AIR3GII
+	NAME:=Aztech AIR3GII
+	PACKAGES:=\
+		kmod-usb-core kmod-usb-dwc2 \
+		kmod-ledtrig-usbdev
+endef
+
+define Profile/AIR3GII/Description
+	Package set for Aztech AIR3GII
+endef
+
+$(eval $(call Profile,AIR3GII))
