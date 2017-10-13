@@ -36,6 +36,31 @@ hostapd_set_bss_options() {
 		append "$var" "preamble=$preamble" "$N"
 	fi
 
+        config_get ifname "$vif" ifname
+        local macfile="/var/run/hostapd-${phy}-${ifname}-mac"
+        config_get macfilter "$vif" macfilter
+        config_get maclist "$vif" maclist
+        test -e $macfile.* && rm -f $macfile.*
+        case "$macfilter" in
+                allow|2)
+                        append "$var" "macaddr_acl=1" "$N"
+                        for mac in $maclist; do
+                                echo "$mac" >> $macfile.allow
+                        done
+                        append "$var" "accept_mac_file=$macfile.allow" "$N"
+                ;;
+                deny|1)
+                        append "$var" "macaddr_acl=0" "$N"
+                        for mac in $maclist; do
+                                echo "$mac" >> $macfile.deny
+                        done
+                        append "$var" "deny_mac_file=$macfile.deny" "$N"
+                ;;
+                radius|3)
+                        append "$var" "macaddr_acl=3" "$N"
+                ;;
+        esac
+
 	# Examples:
 	# psk-mixed/tkip 	=> WPA1+2 PSK, TKIP
 	# wpa-psk2/tkip+aes	=> WPA2 PSK, CCMP+TKIP
