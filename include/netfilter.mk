@@ -103,6 +103,13 @@ $(eval $(call nf_add,IPT_EXTRA,CONFIG_NETFILTER_XT_MATCH_QUOTA, $(P_XT)xt_quota)
 $(eval $(call nf_add,IPT_FILTER,CONFIG_NETFILTER_XT_MATCH_STRING, $(P_XT)xt_string))
 
 
+# imq
+
+$(eval $(call nf_add,IPT_IMQ,CONFIG_IP_NF_TARGET_IMQ, $(P_V4)ipt_IMQ))
+$(eval $(call nf_add,IPT_IMQ,CONFIG_NETFILTER_XT_TARGET_IMQ, $(P_XT)xt_IMQ))
+
+
+
 # ipopt
 
 $(eval $(call nf_add,IPT_IPOPT,CONFIG_NETFILTER_XT_MATCH_DSCP, $(P_XT)xt_dscp))
@@ -375,3 +382,28 @@ IPT_BUILTIN += $(EBTABLES_IP6-y)
 IPT_BUILTIN += $(EBTABLES_WATCHERS-y)
 
 endif # __inc_netfilter
+
+
+IPT_WEBURL-m :=
+IPT_WEBURL-$(CONFIG_IP_NF_MATCH_WEBURL) += $(P_V4)ipt_weburl
+IPT_BUILTIN += $(IPT_WEBURL-y)
+
+
+IPT_WEBMON-m :=
+IPT_WEBMON-$(CONFIG_IP_NF_MATCH_WEBMON) += $(P_V4)ipt_webmon
+IPT_BUILTIN += $(IPT_WEBMON-y)
+
+
+IPT_TIMERANGE-m :=
+IPT_TIMERANGE-$(CONFIG_IP_NF_MATCH_TIMERANGE) += $(P_V4)ipt_timerange
+IPT_BUILTIN += $(IPT_TIMERANGE-y)
+
+
+IPT_LAYER7-m :=
+IPT_LAYER7-$(CONFIG_IP_NF_MATCH_LAYER7) += $(P_V4)ipt_layer7
+IPT_BUILTIN += $(IPT_LAYER7-y)
+
+
+IPT_BANDWIDTH-m :=
+IPT_BANDWIDTH-$(CONFIG_IP_NF_MATCH_BANDWIDTH) += $(P_V4)ipt_bandwidth
+IPT_BUILTIN += $(IPT_BANDWIDTH-y)

@@ -5,6 +5,7 @@
 # See /LICENSE for more information.
 #
 
+
 define KernelPackage/rdm
   CATEGORY:=MTK Properties
   SUBMENU:=Drivers

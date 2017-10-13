@@ -1,0 +1,120 @@
+config global global
+	option web_root		'/www'
+	option bin_root		'.'
+	option js_root		'js'
+	option theme_root	'themes'
+	option theme		'Gargoyle'
+	option common_css	'common.css'
+	option common_js	'common.js'
+	option require_web_password	'1'
+	option is_first_boot		'1'
+	option session_timeout		'15'
+
+config display display
+	option firewall			'Firewall'
+	option firewall_portforwarding	'Port Forwarding'
+	option firewall_connlimits	'Connection Limits'
+	option firewall_restriction	'Restrictions'
+	option firewall_quotas		'Quotas'
+	option firewall_qosupload	'QoS (Upload)'
+	option firewall_qosdownload	'QoS (Download)'
+	option status			'Status'
+	option status_overview		'Overview'
+	option status_bandwidth		'Bandwidth Usage'
+	option status_bdist		'B/W Distribution'
+	option status_webmon		'Web Usage'
+	option status_quotause		'Quota Usage'
+	option status_qos		'QoS Distribution'
+	option status_hosts		'Connected Hosts'
+	option status_connections	'Connection List'
+	option connection		'Connection'
+	option connection_dyndns	'Dynamic DNS'
+	option connection_dhcp		'DHCP'
+	option connection_basic		'Basic'
+	option connection_routing	'Routing'
+	option connection_wol		'Wake on LAN'
+	option system			'System'
+	option system_access		'Router Access'
+	option system_ident		'Identification'
+	option system_time		'Time'
+	option system_plugins		'Plugins'
+	option system_backup		'Backup / Restore'
+	option system_update		'Update Firmware'
+	option system_reboot		'Reboot'
+	option system_about		'About'
+	option logout			'Logout'
+
+config scripts scripts
+	option firewall_portforwarding	'port_forwarding.asp'
+	option firewall_connlimits	'connlimits.asp'
+	option firewall_restriction	'restriction.asp'
+	option firewall_quotas		'quotas.asp'
+	option firewall_qosupload	'qos_upload.asp'
+	option firewall_qosdownload	'qos_download.asp'
+	option status_overview		'overview.asp'
+	option status_bandwidth		'bandwidth.asp'
+	option status_bdist		'bandwidth_distribution.asp'
+	option status_quotause		'quota_usage.asp'
+	option status_webmon		'webmon.asp'
+	option status_qos		'qos_distribution.asp'
+	option status_hosts		'hosts.asp'
+	option status_connections	'conntrack.asp'
+	option connection_dyndns	'ddns.asp'
+	option connection_basic		'basic.asp'
+	option connection_dhcp		'dhcp.asp'
+	option connection_routing	'routing.asp'
+	option connection_wol		'wol.asp'
+	option system_access		'access.asp'
+	option system_ident		'identification.asp'
+	option system_time		'time.asp'
+	option system_plugins		'plugins.asp'
+	option system_backup		'backup.asp'
+	option system_update		'update.asp'
+	option system_reboot		'reboot.asp'
+	option system_about		'about.asp'
+	option logout			'logout.asp'
+
+config 300 firewall
+	option portforwarding	'100'
+	option connlimits	'115'
+	option restriction	'125'
+	option quotas		'175'
+	option qosupload	'200'
+	option qosdownload	'300'
+
+config 100 status
+	option overview		'100'
+	option bandwidth	'200'
+	option bdist		'220'
+	option webmon		'250'
+	option hosts		'400'
+	option connections	'500'
+
+config 200 connection
+	option basic	'100'
+	option dhcp	'200'
+	option dyndns	'300'
+	option routing	'400'
+	option wol	'500'
+
+config 400 system
+	option access	'100'
+	option ident	'200'
+	option time	'300'
+	option plugins  '312'
+	option backup	'400'
+	option update	'500'
+	option reboot	'600'
+	option about	'1000'
+
+config 500 logout
+
+config bandwidth_display bandwidth_display
+#	option time_frame "15m"
+#	option plot1_type "total"
+#	option plot2_type "none"
+#	option plot3_type "none"
+
+config help help
+	option ddns_1		1
+

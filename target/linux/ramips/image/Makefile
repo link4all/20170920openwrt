@@ -999,7 +999,7 @@ endef
 
 define Device/pbr-m1
   DTS := PBR-M1
-  IMAGE_SIZE := $(ralink_default_fw_size_16M)
+  IMAGE_SIZE := $(ralink_default_fw_size_32M)
 endef
 
 define Device/zbt-wg2626
