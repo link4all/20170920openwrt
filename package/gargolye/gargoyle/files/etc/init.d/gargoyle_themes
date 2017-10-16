@@ -46,7 +46,7 @@ start()
 				[ -n "$translation" ] && menu_name="$translation"
 			}
 			uci set gargoyle.display.system_themes="$menu_name"
-			uci set gargoyle.scripts.system_themes='themes.sh'
+			uci set gargoyle.scripts.system_themes='themes.asp'
 			uci set gargoyle.system.themes='311'
 			uci commit gargoyle
 		fi

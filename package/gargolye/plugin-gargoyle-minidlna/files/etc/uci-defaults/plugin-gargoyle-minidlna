@@ -8,6 +8,6 @@ if [ -z "$plugin_exists" ] ; then
 fi
 
 uci set gargoyle.display.system_minidlna='DLNA'
-uci set gargoyle.scripts.system_minidlna='minidlna.sh'
+uci set gargoyle.scripts.system_minidlna='minidlna.asp'
 uci set gargoyle.system.minidlna='352'
 uci commit gargoyle
