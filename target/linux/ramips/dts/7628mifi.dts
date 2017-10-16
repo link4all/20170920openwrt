@@ -24,7 +24,10 @@
 				ralink,group = "wled_an";
 				ralink,function = "wled_an";
 			};
-
+			i2s {
+				ralink,group = "i2s";
+				ralink,function = "i2s";
+			};
 			i2c {
 				ralink,group = "i2c";
 				ralink,function = "i2c";
@@ -81,6 +84,10 @@
 		};
 
 		i2c@900 {
+			status = "okay";
+		};
+
+		i2s: i2s@a00 {
 			status = "okay";
 		};
 
