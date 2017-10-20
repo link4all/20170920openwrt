@@ -58,7 +58,7 @@ background: -webkit-gradient(
 }
 .avatar
 {
-	display: none;
+	display: inline;
 }
 fieldset
 {
@@ -202,11 +202,11 @@ li.sidebar-header span
 }
 span#garg_host
 {
-	color: #E0E0E0;
+	color: #fff;
 }
 span#garg_title
 {
-	color:#789;
+	color:#fff;
 	font-size:40px;
 	text-shadow: 3px 3px 3px #222;
 }
@@ -636,3 +636,4 @@ input.form-control
 {
 	color: #8585b3;
 }
+

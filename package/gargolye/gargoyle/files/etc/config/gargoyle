@@ -3,11 +3,11 @@ config global global
 	option bin_root		'.'
 	option js_root		'js'
 	option theme_root	'themes'
-	option theme		'Gargoyle'
+	option theme		'Dark-One'
 	option common_css	'common.css'
 	option common_js	'common.js'
 	option require_web_password	'1'
-	option is_first_boot		'1'
+	option is_first_boot		'0'
 	option session_timeout		'15'
 
 config display display

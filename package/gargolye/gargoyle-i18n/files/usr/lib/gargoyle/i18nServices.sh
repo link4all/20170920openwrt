@@ -107,7 +107,7 @@ restart_lang_services() {
 		# only use translation if not "" - it was something before, so lets keep it
 		# uci set gargoyle.display.system_languages="$translation"
 		[ ! -z "$translation" ] && uci set gargoyle.display.system_languages="$translation"
-		uci set gargoyle.scripts.system_languages='languages.sh'
+		uci set gargoyle.scripts.system_languages='languages.asp'
 		uci set gargoyle.system.languages='307'
 		uci commit gargoyle
 	fi
