@@ -66,6 +66,7 @@ platform_check_image() {
 	mt7628 |\
 	wifi_audio | \
 	7628mifi |\
+	mtb |\
 	7628tw |\
 	generic|\
 	m2m | \

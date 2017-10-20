@@ -86,6 +86,26 @@ endef
 
 $(eval $(call KernelPackage,sound-mt7620))
 
+define KernelPackage/sound-soc-mt7628
+  DEPENDS:=@TARGET_ramips_mt7628||@TARGET_ramips_mt7688 +kmod-sound-soc-core +kmod-regmap +kmod-i2c-ralink
+  TITLE:=Support for i2s alsa sound on Mediatek mt7628/mt7688
+  KCONFIG:=CONFIG_SND_MT7628_SOC_I2S \
+	  CONFIG_SND_MT7628_SOC_AUDIO\
+	  CONFIG_SND_SOC_ES8388=m
+  FILES:=\
+	$(LINUX_DIR)/sound/soc/ralink/snd-soc-mt7628-audio.ko \
+	$(LINUX_DIR)/sound/soc/ralink/snd-soc-mt7628-i2s.ko\
+	$(LINUX_DIR)/sound/soc/codecs/snd-soc-es8388.ko
+  AUTOLOAD:=$(call AutoLoad,90,snd-soc-es8388 snd-soc-mt7628-i2s snd-soc-mt7628-audio)
+  $(call AddDepends/sound)
+endef
+
+define KernelPackage/sound-soc-mt7628/description
+ Support for i2s codecs on Mediatek mt7628/mt7688 based boards
+endef
+
+$(eval $(call KernelPackage,sound-soc-mt7628))
+
 
 define KernelPackage/sound-mtk
   TITLE:=Mediatek I2S Alsa Driver

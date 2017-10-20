@@ -1028,10 +1028,11 @@ endif
 #Image/Build/Profile/MT7688=$(call BuildFirmware/Default4M/$(1),$(1),mt7628,MT7628)
 Image/Build/Profile/MT7688=$(call BuildFirmware/Default16M/$(1),$(1),mt7628,MT7628)
 Image/Build/Profile/LinkIt7688=$(call BuildFirmware/Default32M/$(1),$(1),LinkIt7688,LINKIT7688)
-#add wifi_audio 7628mifi
+#add wifi_audio 7628mifi mtb
 Image/Build/Profile/wifi_audio=$(call BuildFirmware/Default16M/$(1),$(1),wifi_audio,wifi_audio)
 Image/Build/Profile/7628mifi=$(call BuildFirmware/Default16M/$(1),$(1),7628mifi,7628mifi)
 Image/Build/Profile/7628tw=$(call BuildFirmware/Default16M/$(1),$(1),7628tw,7628tw)
+Image/Build/Profile/mtb=$(call BuildFirmware/Default16M/$(1),$(1),mtb,mtb)
 
 
 ifeq ($(SUBTARGET),mt7628)
