@@ -19,7 +19,7 @@
 		state_default: pinctrl0 {
 			gpio {
 				ralink,group = "gpio";
-				ralink,function = "refclk";
+				ralink,function = "gpio";
 			};
 			perst {
 				ralink,group = "perst";
@@ -27,7 +27,7 @@
 			};
 			refclk {
 				ralink,group = "refclk";
-				ralink,function = "gpio";
+				ralink,function = "refclk";
 			};
 			i2s {
 				ralink,group = "i2s";
@@ -117,11 +117,10 @@
 		};
 
 		i2c@900 {
-			//status = "okay";
+			status = "okay";
 		};
 
 		i2s: i2s@a00 {
-			compatible = "mediatek,mt7628-i2s";
 			status = "okay";
 		};
 		uart1@d00 {
@@ -132,10 +131,6 @@
 		};
 
 		pwm@5000 {
-			status = "okay";
-		};
-		gdma@2800 {
-			compatible = "mediatek,mt7628-gdma";
 			status = "okay";
 		};
 	};
@@ -174,37 +169,9 @@
 			gpios = <&gpio1 10 0>;
 			linux,code = <0x102>;
 		};
-		reset {
-			label = "reset";
-			gpios = <&gpio0 17 0>;
-			linux,code = <0x198>;
-		};
+
 	};
 
-	i2c-gpio {
-		compatible = "i2c-gpio";
-
-		gpios = <&gpio0 5 0 &gpio0 4 0>;
-		i2c-gpio,delay-us = <5>;
-
-		codec: es8388@10 {
-			compatible = "everest,es8388";
-			model = "es8388";
-			reg = <0x10>;
-		};
-        };
-
-	audio-card {
-		compatible = "mediatek,mt7628-audio";
-
-		i2s-node = <&i2s>;
-		codec-node = <&codec>;
-		codec-dai-name = "es8388-hifi";
-	};
-	sdhci@10130000 {
-		mediatek,cd-poll;
-		status = "okay";
-	};
 
 
 };

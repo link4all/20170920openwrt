@@ -39,8 +39,8 @@ settings_not_preserved=$(uci get gargoyle.global.is_first_boot 2>/dev/null)
 if [ "$settings_not_preserved" == "1" ] ; then
 
 	# Set hostname to Gargoyle
-	uci set system.@system[0].hostname="Gargoyle" 2>/dev/null
-	echo "Gargoyle" > /proc/sys/kernel/hostname   2>/dev/null
+	uci set system.@system[0].hostname="LINK4ALL" 2>/dev/null
+	echo "LINK4ALL" > /proc/sys/kernel/hostname   2>/dev/null
 
 	# disable logging for cron -- it tends to clutter up logs, and it logs all jobs at "error" level, which is wrong
 	uci set system.@system[0].cronloglevel=9
