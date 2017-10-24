@@ -415,8 +415,8 @@ diff -Nura a/sound/soc/ralink/mt7628-i2s.c b/sound/soc/ralink/mt7628-i2s.c
 +
 +	/* set share pins to reference clock mode */
 +	reg = rt_sysc_r32(0x60);
-+	reg &= 0xfffffffc;
-+	reg |= 0x00000002;
++	reg &= 0xfffbffff;//clear bit18 //reg &= 0xfffffffc;//clear bit0 bit1
++	 //now refclk pin is refclk mode//reg |= 0x00000002;// set gpio0 pin refclk mode
 +	rt_sysc_w32(reg, 0x60);
 +
 +	mt7628_i2s_write(i2s, I2S_REG_CFG0, I2S_REG_CFG0_DFT_THRES);

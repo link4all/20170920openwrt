@@ -63,7 +63,7 @@
 			};
 			i2c {
 				ralink,group = "i2c";
-				ralink,function = "i2c";
+				ralink,function = "gpio";
 			};
 		};
 	};
@@ -116,11 +116,9 @@
 			};
 		};
 
-		i2c@900 {
-			status = "okay";
-		};
 
 		i2s: i2s@a00 {
+			compatible = "mediatek,mt7628-i2s";
 			status = "okay";
 		};
 		uart1@d00 {
@@ -172,6 +170,25 @@
 
 	};
 
+	i2c-gpio {
+		compatible = "i2c-gpio";
 
+		gpios = <&gpio0 5 0 &gpio0 4 0>;
+		i2c-gpio,delay-us = <5>;
+
+		codec: es8388@10 {
+			compatible = "everest,es8388";
+			model = "es8388";
+			reg = <0x10>;
+		};
+        };
+
+	audio-card {
+		compatible = "mediatek,mt7628-audio";
+
+		i2s-node = <&i2s>;
+		codec-node = <&codec>;
+		codec-dai-name = "es8388-hifi";
+	};
 
 };

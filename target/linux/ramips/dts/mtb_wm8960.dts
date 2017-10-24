@@ -169,11 +169,7 @@
 			gpios = <&gpio1 10 0>;
 			linux,code = <0x102>;
 		};
-		reset {
-			label = "reset";
-			gpios = <&gpio0 17 0>;
-			linux,code = <0x198>;
-		};
+
 	};
 
 
