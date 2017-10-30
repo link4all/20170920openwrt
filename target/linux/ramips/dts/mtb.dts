@@ -12,7 +12,7 @@
 
 	memory@0 {
 		device_type = "memory";
-		reg = <0x0 0x4000000>;
+		reg = <0x0 0x10000000>;
 	};
 
 	pinctrl {
@@ -27,7 +27,7 @@
 			};
 			refclk {
 				ralink,group = "refclk";
-				ralink,function = "refclk";
+				ralink,function = "gpio";
 			};
 			i2s {
 				ralink,group = "i2s";
@@ -39,7 +39,7 @@
 			};
 			wled_an {
 				ralink,group = "wled_an";
-				ralink,function = "wled_an";
+				ralink,function = "gpio";
 			};
 			ephy_p1 {
 				ralink,group = "ephy_p1";
@@ -63,7 +63,23 @@
 			};
 			i2c {
 				ralink,group = "i2c";
-				ralink,function = "gpio";
+				ralink,function = "i2c";
+			};
+			agpio {
+				ralink,group = "agpio";
+				ralink,function = "uart2";
+			};
+			led4 {
+				ralink,group = "p4led_an";
+				ralink,function = "gpio";  //gpio39
+			};
+			led3 {
+				ralink,group = "p3led_an";
+				ralink,function = "gpio";  //gpio40
+			};
+			led2 {
+				ralink,group = "p2led_an";
+				ralink,function = "gpio";  //gpio41
 			};
 		};
 	};
@@ -116,9 +132,15 @@
 			};
 		};
 
+		i2c@900 {
+			status = "okay";
+    			pcf8563@51 {//pcf8563为挂在该i2c总线的rtc芯片型号
+				compatible = "nxp,pcf8563";
+				reg = <0x51>;
+				}; 
+		};
 
 		i2s: i2s@a00 {
-			compatible = "mediatek,mt7628-i2s";
 			status = "okay";
 		};
 		uart1@d00 {
@@ -152,43 +174,35 @@
 		#size-cells = <0>;
 		poll-interval = <20>;
 
-		play {
-			label = "play";
-			gpios = <&gpio1 8 0>;
+		mode {
+			label = "mode";
+			gpios = <&gpio1 12 0>; //gpio44 wled_n
 			linux,code = <0x100>;
 		};
-		up {
-			label = "up";
-			gpios = <&gpio1 9 0>;
+		play {
+			label = "play";
+			gpios = <&gpio1 10 0>; //gpio42
 			linux,code = <0x101>;
 		};
-		down {
-			label = "down";
-			gpios = <&gpio1 10 0>;
+		batdet {
+			label = "batdet";
+			gpios = <&gpio1 11 0>; //gpio43 battery detect
 			linux,code = <0x102>;
 		};
-
-	};
-
-	i2c-gpio {
-		compatible = "i2c-gpio";
-
-		gpios = <&gpio0 5 0 &gpio0 4 0>;
-		i2c-gpio,delay-us = <5>;
-
-		codec: es8388@10 {
-			compatible = "everest,es8388";
-			model = "es8388";
-			reg = <0x10>;
+		vup {
+			label = "vup";
+			gpios = <&gpio1 6 0>; //gpio38
+			linux,code = <0x103>;
 		};
-        };
+		vdown {
+			label = "vdown";
+			gpios = <&gpio1 4 0>; //gpio36
+			linux,code = <0x103>;
+		};
 
-	audio-card {
-		compatible = "mediatek,mt7628-audio";
 
-		i2s-node = <&i2s>;
-		codec-node = <&codec>;
-		codec-dai-name = "es8388-hifi";
 	};
+
+
 
 };
