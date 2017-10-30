@@ -600,7 +600,7 @@ define KernelPackage/rtc-pcf8563
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Philips PCF8563/Epson RTC8564 RTC support
   DEPENDS:=@RTC_SUPPORT +kmod-i2c-core
-  KCONFIG:=CONFIG_RTC_DRV_PCF8563
+  KCONFIG:=CONFIG_RTC_DRV_PCF8563 CONFIG_RTC_CLASS=y
   FILES:=$(LINUX_DIR)/drivers/rtc/rtc-pcf8563.ko
   AUTOLOAD:=$(call AutoProbe,rtc-pcf8563)
 endef

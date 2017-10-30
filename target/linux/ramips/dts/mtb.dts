@@ -134,10 +134,11 @@
 
 		i2c@900 {
 			status = "okay";
-    			pcf8563@51 {//pcf8563为挂在该i2c总线的rtc芯片型号
+			pcf8563: rtc@51 {
+				status = "okay";
 				compatible = "nxp,pcf8563";
 				reg = <0x51>;
-				}; 
+            };
 		};
 
 		i2s: i2s@a00 {
