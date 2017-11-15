@@ -12,7 +12,7 @@
 
 	memory@0 {
 		device_type = "memory";
-		reg = <0x0 0x10000000>;
+		reg = <0x0 0x8000000>;
 	};
 
 	pinctrl {
@@ -29,58 +29,20 @@
 				ralink,group = "refclk";
 				ralink,function = "gpio";
 			};
-			i2s {
-				ralink,group = "i2s";
-				ralink,function = "i2s";
-			};
-			spis {
-				ralink,group = "spis";
-				ralink,function = "gpio";
-			};
-			wled_an {
-				ralink,group = "wled_an";
-				ralink,function = "gpio";
-			};
-			ephy_p1 {
-				ralink,group = "ephy_p1";
-				ralink,function = "gpio";
-			};
-			ephy_p2 {
-				ralink,group = "ephy_p2";
-				ralink,function = "gpio";
-			};
-			ephy_p3 {
-				ralink,group = "ephy_p3";
-				ralink,function = "gpio";
-			};
-			ephy_p4 {
-				ralink,group = "ephy_p4";
-				ralink,function = "gpio";
-			};
+			
 			wdt {
 				ralink,group = "wdt";
 				ralink,function = "gpio";
 			};
 			i2c {
 				ralink,group = "i2c";
-				ralink,function = "i2c";
+				ralink,function = "gpio";
 			};
-			agpio {
-				ralink,group = "agpio";
-				ralink,function = "uart2";
+			i2s {
+				ralink,group = "i2s";
+				ralink,function = "gpio";
 			};
-			led4 {
-				ralink,group = "p4led_an";
-				ralink,function = "gpio";  //gpio39
-			};
-			led3 {
-				ralink,group = "p3led_an";
-				ralink,function = "gpio";  //gpio40
-			};
-			led2 {
-				ralink,group = "p2led_an";
-				ralink,function = "gpio";  //gpio41
-			};
+
 		};
 	};
 
@@ -144,16 +106,7 @@
 		i2s: i2s@a00 {
 			status = "okay";
 		};
-		uart1@d00 {
-			status = "okay";
-		};
-		uart2@e00 {
-			status = "okay";
-		};
 
-		pwm@5000 {
-			status = "okay";
-		};
 	};
 
 
@@ -162,48 +115,6 @@
 	ethernet@10100000 {
 		mtd-mac-address = <&factory 0x28>;
 	};
-
-	sdhci@10130000 {
-		status = "okay";
-		mediatek,cd-low;
-//		mediatek,cd-poll;
-	};
-
-	gpio-keys-polled {
-		compatible = "gpio-keys-polled";
-		#address-cells = <1>;
-		#size-cells = <0>;
-		poll-interval = <20>;
-
-		mode {
-			label = "mode";
-			gpios = <&gpio1 12 0>; //gpio44 wled_n
-			linux,code = <0x100>;
-		};
-		play {
-			label = "play";
-			gpios = <&gpio1 10 0>; //gpio42
-			linux,code = <0x101>;
-		};
-		batdet {
-			label = "batdet";
-			gpios = <&gpio1 11 0>; //gpio43 battery detect
-			linux,code = <0x102>;
-		};
-		vup {
-			label = "vup";
-			gpios = <&gpio1 6 0>; //gpio38
-			linux,code = <0x103>;
-		};
-		vdown {
-			label = "vdown";
-			gpios = <&gpio1 4 0>; //gpio36
-			linux,code = <0x103>;
-		};
-
-
-	};
-
 
 
 };

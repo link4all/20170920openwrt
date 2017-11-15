@@ -1,0 +1,24 @@
+config uhttpd main
+	list listen_http	0.0.0.0:80
+	option 'index_file'	'login1.asp'
+	option 'index_page'	'login1.asp'
+	option 'error_page'	'/login1.asp'
+	option 'no_dirlists'	'1'
+	
+	list listen_https	0.0.0.0:443
+	option home		/www
+	option rfc1918_filter	1
+	option max_requests	50
+	option max_connections	200
+	option cert		/etc/uhttpd.crt
+	option key		/etc/uhttpd.key
+	option cgi_prefix	/cgi-bin
+	list interpreter	".asp=/usr/bin/run_haserl"
+	list interpreter	".sh=/usr/bin/run_haserl"
+	list interpreter	".csv=/usr/bin/run_haserl"
+	option script_timeout	900
+	option network_timeout	30
+	option http_keepalive	20
+	option tcp_keepalive	1
+
+

@@ -29,6 +29,11 @@
 
 #define ALIGN(x,a) ({ typeof(a) __a = (a); (((x) + __a - 1) & ~(__a - 1)); })
 
+//add db120 and ap147
+#define HWID_DB120_8M		0x35000001
+#define HWID_AP147_8M		0x35000001
+#define HWID_AP147_16M		0x35000001
+
 #define HEADER_VERSION_V1	0x01000000
 #define HWID_ANTMINER_S1	0x04440101
 #define HWID_ANTMINER_S3	0x04440301
@@ -221,7 +226,23 @@ static struct flash_layout layouts[] = {
 };
 
 static struct board_info boards[] = {
+//add db120 and ap147
 	{
+		.id		= "DB120",
+		.hw_id		= HWID_DB120_8M,
+		.hw_rev		= 1,
+		.layout_id	= "8Mlzma",
+	},{
+		.id		= "AP147_8M",
+		.hw_id		= HWID_AP147_8M,
+		.hw_rev		= 1,
+		.layout_id	= "8Mlzma",
+	},{
+		.id		= "AP147_16M",
+		.hw_id		= HWID_AP147_16M,
+		.hw_rev		= 1,
+		.layout_id	= "16Mlzma",
+	},{
 		.id		= "TL-MR10Uv1",
 		.hw_id		= HWID_TL_MR10U_V1,
 		.hw_rev		= 1,
