@@ -211,7 +211,7 @@ ath79_setup_ar934x_eth_cfg(AR934X_ETH_CFG_SW_ONLY_MODE);
 	ath79_register_eth(0);
 
 
-	ath79_register_nfc();
+	//ath79_register_nfc();
 }
 
 MIPS_MACHINE(ATH79_MACH_DB120, "DB120", "Atheros DB120 reference board",
