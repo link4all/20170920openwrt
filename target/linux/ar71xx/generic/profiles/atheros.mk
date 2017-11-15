@@ -107,7 +107,7 @@ $(eval $(call Profile,AP96))
 
 define Profile/DB120
 	NAME:=Atheros DB120 reference board
-	PACKAGES:=kmod-usb-core kmod-usb2 kmod-usb-storage
+	PACKAGES:=
 endef
 
 define Profile/DB120/Description
