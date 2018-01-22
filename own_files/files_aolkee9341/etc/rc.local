@@ -1,5 +1,5 @@
 # Put your custom commands here that should be executed once
 # the system init finished. By default this file does nothing.
-/bin/4g_init.sh&
+/etc/gpioloop.sh &
 /etc/modem_info.sh &
 exit 0
