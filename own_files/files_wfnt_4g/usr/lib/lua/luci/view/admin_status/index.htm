@@ -597,7 +597,7 @@
 	<table width="100%" cellspacing="10">
 		<tr><td width="33%"><%:Model Name%></td><td><%=luci.sys.exec("uci get 4g.modem.model")%></td></tr>
 		<tr><td width="33%"><%:SIM Card%></td><td><%=luci.sys.exec("uci get 4g.modem.sim_status")%></td></tr>
-	  <tr><td width="33%"><%:Signal Strength%></td><td><%=luci.sys.exec("uci get 4g.modem.rssi")%></td></tr>
+	  	<tr><td width="33%"><%:Signal Strength%></td><td><%=luci.sys.exec("uci get 4g.modem.rssi")%></td></tr>
 		<tr><td width="33%"><%:Online Status%></td><td><%=luci.sys.exec("uci get 4g.modem.reg_net")%></td></tr>
 		<tr><td width="33%"><%:IMEI%></td><td><%=luci.sys.exec("uci get 4g.modem.imei")%></td></tr>
 		<tr><td width="33%"><%:IMSI%></td><td><%=luci.sys.exec("uci get 4g.modem.imsi")%></td></tr>

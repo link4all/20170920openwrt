@@ -1,0 +1,15 @@
+config global 'global'
+        option session_timeout '60'
+        option lang 'zh_cn'
+        option soft_ver 'V2.2.10'
+        option model_name '4G Industrial Router'
+        option powerH '17'
+        option powerM '14'
+        option powerL '11'
+	option company_en_us	'Shenzhen HongXin IOT Co., Ltd'
+	option company_zh_cn  '深圳市鸿信物联有限公司'
+
+
+
+
+

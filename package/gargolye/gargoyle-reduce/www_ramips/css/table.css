@@ -1,0 +1,21 @@
+@charset "utf-8";
+/* CSS Document */
+
+table{width:100%;border-top:solid #ebecf2 1px;border-left:solid #ebecf2 1px;cellpadding:0;}
+table tr:hover{background:#f2f9ff;}
+table th{height:49px;border-right:solid #ebecf2 1px;border-bottom:solid #ebecf2 1px;font-weight:normal;}
+table td{height:49px;border-right:solid #ebecf2 1px;border-bottom:solid #ebecf2 1px;color:#000000;text-align: center;}
+
+.base-info th{font-size:16px;color:#888888;text-align:right;padding-right:15px;}
+.base-info td{padding-left:15px;text-align:left;}
+
+.table-con{}
+.table-con th{font-size:16px;color:#888888;text-align:center;padding-right:15px;background:#f5f5f5;}
+.table-con td{padding:0 10px;}
+
+/*--------按钮----------*/
+.action-btn{text-align:center;}
+.action-btn a{padding:3px 15px;border:solid #4fc5fb 1px;margin:0 5px;border-radius:3px;color:#03a9f4;text-decoration:none;}
+.action-btn a:hover{background:#fff;}
+
+

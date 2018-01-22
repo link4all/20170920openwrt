@@ -4,6 +4,7 @@
 START=70
 
 start () {
+	echo 0       4       0      7 > /proc/sys/kernel/printk
 	stty -F /dev/ttyS0 115200
 	ser2net -c /etc/ser2net.conf
 	#sleep 2

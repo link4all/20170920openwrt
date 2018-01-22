@@ -1,0 +1,12 @@
+processing="Uploading firmware..."
+processing2="Upgrade firmware Now, please wait 2-3 minutes!"
+error="Setting error, please refresh this page and retry！"
+wait="Firmware upload finished, Please click 'Upgrade' button! "
+illegal="Firmware illegal! Please upload the right firmware!"
+location="Current Location：System Admin > Firmware Upgrade"
+page="Firmware Upgrade"
+up_firm="Upload firmware"
+nofile="Please upload firmware first!"
+save="Upload"
+upgrade="Upgrade"
+

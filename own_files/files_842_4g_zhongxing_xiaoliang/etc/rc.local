@@ -1,5 +1,0 @@
-# Put your custom commands here that should be executed once
-# the system init finished. By default this file does nothing.
-sleep 20
-/etc/chatscripts/4g.chat&
-exit 0

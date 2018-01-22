@@ -1,0 +1,32 @@
+@charset "utf-8";
+/*共用样式*/
+body, html
+{
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    font-family: "微软雅黑","宋体","Helvetica Neue",Helvetica Neue,Helvetica,Arial,Hiragino Sans GB,Microsoft Yahei,sans-serif;
+    font-size: 14px;
+}
+a{text-decoration:none;}
+.sys-icon{background:url(../images/icon.png) no-repeat;}
+/*-----------layout-------------------------*/
+
+.wrap-main{padding:30px;}
+.wrap{width:100%;background:#fff;min-height:40px;_height:40px; overflow:hidden; padding-bottom:50px;}
+.wrap-table,.wrap-form{padding:20px;}
+
+
+/*---------title----------------------*/
+.title{font-size:14px;color:#000;height:45px;border-bottom:solid #ebecf2 1px;line-height:45px;padding-left:20px;}
+
+/*--------toolbar----------------*/
+.toolbar{padding-top:15px;margin-left:10px;}
+.toolbar a{padding:5px 15px;color:#fff;background:#1fbf86;border-radius:3px;margin-left:10px;}
+
+.toolbar-btn{}
+.toolbar-btn a{padding:5px 25px;color:#fff;background:#1fbf86;border-radius:3px;}
+
+
+
+

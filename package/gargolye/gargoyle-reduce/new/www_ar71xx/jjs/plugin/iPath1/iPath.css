@@ -1,0 +1,27 @@
+*{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box; }
+body, html
+{
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    font-family: "Helvetica Neue",Helvetica Neue,Helvetica,Arial,Hiragino Sans GB,Microsoft Yahei,sans-serif;
+    font-size: 16px;
+}
+li, ul
+{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.loadingmask
+{
+    position: fixed; 
+    top: 0px; 
+    left: 0px; 
+    right: 0px; 
+    bottom: 0px; 
+    background: url(loading.gif) no-repeat 50% 50%;
+    background-size: 50px;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}

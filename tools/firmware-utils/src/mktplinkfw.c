@@ -231,7 +231,7 @@ static struct board_info boards[] = {
 		.id		= "DB120",
 		.hw_id		= HWID_DB120_8M,
 		.hw_rev		= 1,
-		.layout_id	= "4Mlzma",
+		.layout_id	= "8Mlzma",
 	},{
 		.id		= "AP147_8M",
 		.hw_id		= HWID_AP147_8M,

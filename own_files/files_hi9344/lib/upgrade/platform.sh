@@ -181,7 +181,7 @@ platform_check_image() {
 	ap135-020 | \
 	ap96 | \
 	bxu2000n-2-a1 | \
-	db120 | \
+	dw33d | \
 	f9k1115v2 |\
 	hornet-ub | \
 	mr12 | \
@@ -191,7 +191,7 @@ platform_check_image() {
 	zcn-1523h-5)
 		[ "$magic_long" != "68737173" -a "$magic_long" != "19852003" ] && {
 			echo "Invalid image type."
-			return 0
+			return 1
 		}
 		return 0
 		;;
@@ -269,6 +269,7 @@ platform_check_image() {
 		;;
 
 	mynet-rext|\
+	e2100l|\
 	wrt160nl)
 		cybertan_check_image "$1" && return 0
 		return 1
@@ -290,6 +291,8 @@ platform_check_image() {
 
 		return 0;
 		;;
+	mr1750 | \
+	mr1750v2 | \
 	mr600 | \
 	mr600v2 | \
 	mr900 | \
@@ -298,9 +301,12 @@ platform_check_image() {
 	om2pv2 | \
 	om2p-hs | \
 	om2p-hsv2 | \
+	om2p-hsv3 | \
 	om2p-lc | \
 	om5p | \
-	om5p-an)
+	om5p-an | \
+	om5p-ac | \
+	om5p-acv2)
 		platform_check_image_openmesh "$magic_long" "$1" && return 0
 		return 1
 		;;
@@ -338,8 +344,10 @@ platform_check_image() {
 	tl-wa901nd | \
 	tl-wa901nd-v2 | \
 	tl-wa901nd-v3 | \
+	tl-wa901nd-v4 | \
 	tl-wdr3500 | \
 	tl-wdr4300 | \
+	db120 | \
 	tl-wdr4900-v2 | \
 	tl-wr703n | \
 	tl-wr710n | \
@@ -351,16 +359,18 @@ platform_check_image() {
 	tl-wr841n-v7 | \
 	tl-wr841n-v8 | \
 	tl-wr841n-v9 | \
+	tl-wr841n-v11 | \
 	tl-wr842n-v2 | \
 	tl-wr941nd | \
 	tl-wr941nd-v5 | \
+	tl-wr941nd-v6 | \
 	tl-wr1041n-v2 | \
 	tl-wr1043nd | \
 	tl-wr1043nd-v2 | \
 	tl-wr2543n)
 		[ "$magic" != "0100" ] && {
 			echo "Invalid image type."
-			return 0
+			return 1
 		}
 
 		local hwid
@@ -401,7 +411,8 @@ platform_check_image() {
 	wndr3700 | \
 	wnr2000-v3 | \
 	wnr612-v2 | \
-	wnr1000-v2)
+	wnr1000-v2 | \
+	wpn824n)
 		local hw_magic
 
 		hw_magic="$(ar71xx_get_mtd_part_magic firmware)"
@@ -515,6 +526,8 @@ platform_do_upgrade() {
 	tew-673gru)
 		platform_do_upgrade_dir825b "$ARGV"
 		;;
+	mr1750 | \
+	mr1750v2 | \
 	mr600 | \
 	mr600v2 | \
 	mr900 | \
@@ -523,9 +536,12 @@ platform_do_upgrade() {
 	om2pv2 | \
 	om2p-hs | \
 	om2p-hsv2 | \
+	om2p-hsv3 | \
 	om2p-lc | \
 	om5p | \
-	om5p-an)
+	om5p-an | \
+	om5p-ac | \
+	om5p-acv2)
 		platform_do_upgrade_openmesh "$ARGV"
 		;;
 	unifi-outdoor-plus | \
@@ -548,4 +564,3 @@ disable_watchdog() {
 }
 
 append sysupgrade_pre_upgrade disable_watchdog
-

@@ -11,7 +11,7 @@ gargoyle_header_footer.o: gargoyle_header_footer.c
 gargoyle_session_validator: gargoyle_session_validator.o sha256.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@ $(GSV_LIBS)
 
-gargoyle_session_validator.o: gargoyle_session_validator.c
+gargoyle_session_validator.o: gargoyle_session_validator.admin.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 sha256.o: sha256.c
 	$(CC) $(CFLAGS) -c $^ -o $@

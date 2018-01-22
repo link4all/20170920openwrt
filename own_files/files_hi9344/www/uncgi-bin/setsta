@@ -44,6 +44,7 @@ if [ "\`ifconfig ath01 |grep 192.168\`" ];then
 else
 {
  uci delete wireless.@wifi-iface[1]
+uci commit wireless
  /etc/init.d/network restart
  echo "" > /etc/setaponly
 }

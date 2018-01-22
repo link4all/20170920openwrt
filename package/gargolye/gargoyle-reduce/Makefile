@@ -44,7 +44,13 @@ define Package/gargoyle-reduce/install
 	$(INSTALL_DIR) $(1)
 	$(CP) ./files/* $(1)/
 	mkdir -p $(1)/www/data/
-
+	if [ "$$(CONFIG_TARGET_ar71xx)" = "y" ]; then \
+		$(CP)  ./www_ar71xx/*   $(1)/www; \
+	elif [ "$$(CONFIG_TARGET_ramips)" = "y" ]; then \
+		$(CP)  ./www_ramips/*   $(1)/www; \
+	else \
+		echo "NO target platform found!"; \
+	fi
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/gargoyle_session_validator $(1)/usr/bin
 endef

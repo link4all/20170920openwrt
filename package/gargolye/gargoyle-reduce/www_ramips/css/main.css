@@ -1,0 +1,206 @@
+*{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box; }
+li, ul{padding: 0;margin: 0;list-style: none;width: 100%; overflow: hidden;}
+
+body, html
+{
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    font-family: "微软雅黑","宋体","Helvetica Neue",Helvetica Neue,Helvetica,Arial,Hiragino Sans GB,Microsoft Yahei,sans-serif;
+    font-size: 14px;
+}
+a{text-decoration:none;}
+.sys-icon{background:url(../images/icon.png) no-repeat;}
+.layout
+{
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    background-color: #3C4857;
+    position: absolute;
+    overflow: hidden;
+}
+.layout_title
+{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 70px;
+	background:#05afff;
+}
+.layout_title .logo
+    {
+        float: left;
+        width: 318px;
+        height: 70px;
+        background-size: 100%;
+
+    }
+.layout_title .logo img{width:318px;height:60px;margin-top:6px;margin-left:10px;}/*新增*/
+.layout_title .sysname
+    {
+        float: right;
+        margin: 23px 30px 0 20px;/*修改*/
+        vertical-align: text-top;
+        font-size: 15px;
+        line-height: 28px;
+
+        color: #fff;
+    }
+.systoolbar{float:right;margin-right:20px;margin-top:25px;}/*修改*/
+.systoolbar div{width:80px;float:left;position:relative;}
+.systoolbar div .mes-count{position:absolute;z-index:999;width:18px;height:18px;line-height:18px;background:#fe5621;border-radius:10px;float:left;text-align:center;color:#fff;margin-top:-10px;margin-left:10px; font-size: 14px;font-style: normal;}
+.systoolbar div a{color:#fff;}
+.systoolbar div a:hover{color:#00fcff;}
+.mes-ico{width:21px;height:18px;background-position:-210px 0;display:inline-block;float:left;margin-right:6px;}
+.quit-ico{width:21px;height:22px;background-position:-233px 0;display:inline-block;float:left;margin-right:6px;}
+
+.layout_left
+{
+    position: absolute;
+    top: 70px;  /*修改*/
+    left: 0px;
+    bottom: 0px;
+    width: 246px;
+    font-size: 16px;
+	border-right:solid #dee3e9 1px;
+	background:#fff;
+}
+.menuname a
+{
+    display: block;
+    color: #04121d;
+	text-decoration:none;
+}
+.checked a
+{
+    color: #4a90e2;
+}
+.checked .home{color:#fff;}
+.home:hover{color:#fff;}
+.layout_left .menu > li
+    {
+
+        border-bottom: 1px solid #e8ebf0;
+    }
+.layout_left .menu > li > .menuname
+    {
+        background-image: url(../images/right.png);
+        background-position: 95% 50%;
+        background-repeat: no-repeat;
+        background-size: 15px;
+    }
+.layout_left .menu > li > .menuname.checked
+    {
+        background-image: url(../images/down.png) !important;
+        background-position: 95% 50% !important;
+        background-repeat: no-repeat !important;
+        background-size: 15px;
+		background:#03a9f5;
+		color:#fff;
+    }
+.layout_left .menuname
+    {   height:50px;
+        cursor: pointer;
+        line-height:50px;
+        color: #04121d;
+		padding-left: 25px;
+    }
+.layout_left .menuname:hover
+        {
+            background-color: #03a9f4;
+            color: #ffffff;
+        }
+.layout_left .checked
+    {
+        padding-left: 25px;
+        color: #4a90e2;
+        background-color: #333d4a;
+    }
+.layout_left .children
+    {
+        display: none;
+		text-decoration:none;
+    }
+.layout_left .children .menuname
+        {
+		    height:40px;
+			line-height:40px;
+            border: none;
+            padding-left: 78px;
+            font-size: 14px;
+			text-decoration:none;
+        }
+.layout_left .children .menuname:hover
+        {
+		   background:#e1f7ff;
+		   color:#0288d1;
+
+        }
+.layout_left .children .menuname .checked
+        {
+		   background:#e1f7ff;
+		   color:#0288d1;
+
+        }
+
+.layout_left .children .checked
+        {
+            padding-left: 78px;
+            background-color: #e1f7ff;
+			color:#0288d1;
+        }
+
+.layout_main {
+    position: absolute;
+    top: 70px;/*修改*/
+    left: 246px;
+    right: 0px;
+    bottom: 0px;
+    background-color: #ebecf2;
+}
+
+
+.current{
+    height:50px;width:100%;background:#fff;color:#000;border-bottom:solid #e3e9ed 1px;font-size:14px;line-height:50px;text-indent:20px;
+
+}
+
+.layout_main .main_frame
+{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+#main_frame
+{
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    border: 0px;
+}
+
+
+
+
+.m-icon01,.m-icon02,.m-icon03,.m-icon04,.m-icon05,.m-icon06,.m-icon07,.m-icon08{width:30px;height:28px;display:inline-block;float:left;}
+.m-icon01{background-position:0 -30px;margin-top:13px;margin-right:22px;}
+.layout_left .menu > li > .menuname.checked >.m-icon01, .layout_left .menuname:hover >.m-icon01{background-position:0 0;margin-top:13px;margin-right:22px;}
+.m-icon02{background-position:-30px -30px;margin-top:15px;margin-right:22px;}
+.layout_left .menu > li > .menuname.checked >.m-icon02, .layout_left .menuname:hover >.m-icon02{background-position:-30px 0;margin-top:15px;margin-right:22px;}
+.m-icon03{background-position:-60px -30px;margin-top:13px;margin-right:22px;}
+.layout_left .menu > li > .menuname.checked >.m-icon03, .layout_left .menuname:hover >.m-icon03{background-position:-60px 0;margin-top:13px;margin-right:22px;}
+.m-icon04{background-position:-90px -30px;margin-top:13px;margin-right:22px;}
+.layout_left .menu > li > .menuname.checked >.m-icon04, .layout_left .menuname:hover >.m-icon04{background-position:-90px 0;margin-top:13px;margin-right:22px;}
+.m-icon05{background-position:-120px -30px;margin-top:11px;margin-right:22px;}
+.layout_left .menu > li > .menuname.checked >.m-icon05, .layout_left .menuname:hover >.m-icon05{background-position:-120px 0;margin-top:11px;margin-right:22px;}
+.m-icon06{background-position:-150px -30px;margin-top:11px;margin-right:22px;}
+.layout_left .menu > li > .menuname.checked >.m-icon06, .layout_left .menuname:hover >.m-icon06{background-position:-150px 0;margin-top:11px;margin-right:22px;}
+.m-icon07{background-position:-180px -30px;margin-top:11px;margin-right:22px;}
+.layout_left .menu > li > .menuname.checked >.m-icon07, .layout_left .menuname:hover >.m-icon07{background-position:-180px 0;margin-top:11px;margin-right:22px;}
+.m-icon08{background-position:-211px -30px;margin-top:11px;margin-right:22px;}
+.layout_left .menu > li > .menuname.checked >.m-icon08, .layout_left .menuname:hover >.m-icon08{background-position:-240px -30px;margin-top:11px;margin-right:22px;}

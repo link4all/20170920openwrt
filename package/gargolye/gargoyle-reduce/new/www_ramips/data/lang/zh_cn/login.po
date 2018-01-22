@@ -1,0 +1,3 @@
+welcome_greeting="欢迎登录-路由器管理界面"
+login="登录"
+login_tip="密码输入错误，请重新输入"

@@ -24,7 +24,7 @@ Index: linux-3.18.45/drivers/usb/serial/option.c
  
 +//add qc9x07 blacklist
 +static const struct option_blacklist_info qc9x07_blacklist = {
-+	.reserved = BIT(4),
++	.reserved = BIT(4)|BIT(5),
 +};
 +//add zte 7520
 +static const struct option_blacklist_info net_7520_blacklist = {
@@ -59,7 +59,7 @@ Index: linux-3.18.45/drivers/usb/serial/option.c
 +//add forege 630b
 +	{ USB_DEVICE(0x05c6, 0x9025) },
 +//add forege 730
-+	{ USB_DEVICE(0x05c6, 0xf601) },
++	{ USB_DEVICE(0x05c6, 0xf601), .driver_info = (kernel_ulong_t)&qc9x07_blacklist },
 +//add end
  	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_COLT) },
  	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_RICOLA) },

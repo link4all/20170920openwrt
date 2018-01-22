@@ -1,0 +1,28 @@
+opengt
+set com 115200n81
+    set senddelay 0.03
+    waitquiet 2 0.1
+    let c=0
+:signal
+
+        send "ATE1\r\n"
+        waitfor 10 "OK","ERR","ERROR"
+        if % = -1 goto error
+        if % = 0 goto atnext
+        if % = 1 goto error
+        if % = 2 goto error
+        :atnext
+
+
+
+
+    waitquiet 1 0.05
+    send "AT+ICCID\r\n"
+    get 2 "\r\n" $s
+    get 2 "\r\n" $s
+    print $s
+    waitquiet 1 0.05
+    exit 0\n"
+:error
+	print ""
+	exit 0

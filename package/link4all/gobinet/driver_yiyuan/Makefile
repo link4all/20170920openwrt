@@ -1,3 +1,3 @@
-obj-m += gobinet.o
-gobinet-objs := GobiUSBNet.o QMIDevice.o QMI.o
+obj-m += gobinet_yy.o
+gobinet_yy-objs := GobiUSBNet.o QMIDevice.o QMI.o
 

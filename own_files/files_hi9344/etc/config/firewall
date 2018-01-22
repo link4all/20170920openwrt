@@ -110,3 +110,13 @@ config redirect
 	option dest_port '2018'
 	option name '2018'
 
+config redirect
+	option target 'DNAT'
+	option src 'wan'
+	option dest 'lan'
+	option proto 'tcp udp'
+	option src_dport '554'
+	option dest_ip '192.168.1.120'
+	option dest_port '554'
+	option name '554'
+

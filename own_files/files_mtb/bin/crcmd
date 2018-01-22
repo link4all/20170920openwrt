@@ -22,7 +22,7 @@ cmdstatus=1 #已执行
 #set -e
 interface=3g-4g
 old_all_byte=`uci get 4g.modem.4g_byte`
-#while true; do
+
 if ifconfig |grep -q $interface; then
   rec_byte=`cat /proc/net/dev |grep $interface |awk '{print $2}'`
   tran_byte=`cat /proc/net/dev |grep $interface |awk '{print $10}'`
@@ -36,9 +36,25 @@ if ifconfig |grep -q $interface; then
      #echo $old_all_byte > /etc/4g_byte
      uci set 4g.modem.4g_byte=$old_all_byte
   fi
- #sleep 300
+
 fi
-#done
+
+interface="eth1"
+if ifconfig |grep -q $interface; then
+  rec_byte=`cat /proc/net/dev |grep $interface |awk '{print $2}'`
+  tran_byte=`cat /proc/net/dev |grep $interface |awk '{print $10}'`
+  all_byte=$(($rec_byte+$tran_byte))
+  if [ $all_byte -ge $old_all_byte ];then
+    old_all_byte=$all_byte
+    #echo $old_all_byte > /etc/4g_byte
+    uci set 4g.modem.4g_byte=$old_all_byte
+  else
+     old_all_byte=$(($all_byte+$old_all_byte))
+     #echo $old_all_byte > /etc/4g_byte
+     uci set 4g.modem.4g_byte=$old_all_byte
+  fi
+fi
+
 
 uci commit 4g
 

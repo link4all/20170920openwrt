@@ -725,6 +725,22 @@ end
 mode = s:taboption("general", ListValue, "mode", translate("Mode"))
 mode.override_values = true
 mode:value("ap", translate("Access Point"))
+--add by david
+ApCliEnable = s:taboption("general", ListValue, "ApCliEnable", translate("APCli Enable"))
+ApCliEnable:value("1",translate("on"))
+ApCliEnable:value("0",translate("off"))
+ApCliEnable.default = 1
+ApCliSsid=s:taboption("general", Value, "ApCliSsid", translate("APCli_SSID"))
+ApCliWPAPSK=s:taboption("general", Value, "ApCliWPAPSK", translate("APCli_KEY"))
+ApCliAuthMode=s:taboption("general", ListValue, "ApCliAuthMode", translate("APCli_AuthMode"))
+ApCliAuthMode:value("WEP","WEP")
+ApCliAuthMode:value("WPAPSK","WPAPSK")
+ApCliAuthMode:value("WPA2PSK","WPA2PSK")
+ApCliEncrypType=s:taboption("general", ListValue, "ApCliEncrypType", translate("APCli_EncrypType"))
+ApCliEncrypType:value("WEP","WEP")
+ApCliEncrypType:value("AES","AES")
+ApCliEncrypType:value("TKIP","TKIP")
+--add by david
 if vendor ~= "ralink" then
 	mode:value("sta", translate("Client"))
 	mode:value("adhoc", translate("Ad-Hoc"))

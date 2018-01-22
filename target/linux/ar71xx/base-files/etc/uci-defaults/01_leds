@@ -514,11 +514,17 @@ tl-wr841n-v11)
 
 tl-wr842n-v2)
 	ucidef_set_led_netdev "wan" "WAN" "tp-link:green:wan" "eth0"
+	ucidef_set_led_netdev "link0" "LINK0" "tp-link:green:link0" "eth0"
 	ucidef_set_led_switch "lan1" "LAN1" "tp-link:green:lan1" "switch0" "0x04"
+	ucidef_set_led_switch "link1" "LINK1" "tp-link:green:link1" "switch0" "0x04"
 	ucidef_set_led_switch "lan2" "LAN2" "tp-link:green:lan2" "switch0" "0x08"
+	ucidef_set_led_switch "link2" "LINK2" "tp-link:green:link2" "switch0" "0x08"
 	ucidef_set_led_switch "lan3" "LAN3" "tp-link:green:lan3" "switch0" "0x10"
+	ucidef_set_led_switch "link3" "LINK3" "tp-link:green:link3" "switch0" "0x10"
 	ucidef_set_led_switch "lan4" "LAN4" "tp-link:green:lan4" "switch0" "0x02"
+	ucidef_set_led_switch "link4" "LINK4" "tp-link:green:link4" "switch0" "0x02"
 	ucidef_set_led_wlan "wlan" "WLAN" "tp-link:green:wlan" "phy0tpt"
+	ucidef_set_led_usbdev "usb" "USB" "tp-link:green:3g" "1-1"
 	;;
 
 tl-wa801nd-v2 | \

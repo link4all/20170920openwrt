@@ -12,7 +12,7 @@ fi
 
 security=`echo $QUERY_STRING | cut -d'&' -f 3 | cut -d'=' -f 2`
 channel=`echo $QUERY_STRING | cut -d'&' -f 4 | cut -d'=' -f 2`
-if [ -z $channel ]; then 
+if [ -z $channel ]; then
    if [ `echo "$QUERY_STRING" |grep 5g` ]; then
 	channel=`cat /tmp/ssids5 |grep $ssid |cut -f 1 -d" "`
 	security=`cat /tmp/ssids5 |grep $ssid | cut  -b 58-80 |sed s/[[:space:]]//g`
@@ -20,7 +20,7 @@ if [ -z $channel ]; then
 	  #security=`echo $QUERY_STRING | cut -d'&' -f 4 | cut -d'=' -f 2`
 	  #enctype=`echo $QUERY_STRING | cut -d'&' -f 5 | cut -d'=' -f 2`
       else
-      	channel=`cat /tmp/ssids |grep $ssid |cut -f 1 -d" "`
+  channel=`cat /tmp/ssids |grep $ssid |cut -f 1 -d" "`
 	security=`cat /tmp/ssids |grep $ssid | cut  -b 58-80 |sed s/[[:space:]]//g`
    fi
   fi
@@ -60,12 +60,11 @@ if [ -z $channel ]; then
 		uci set wireless.@wifi-iface[0].ApCliSsid=$ssid
 		uci set wireless.@wifi-iface[0].ApCliEnable=1
 		uci set wireless.@wifi-iface[0].ApCliWPAPSK=$passwd
-		uci set wireless.@wifi-iface[0].ApCliAuthMode=$umode	
+		uci set wireless.@wifi-iface[0].ApCliAuthMode=$umode
 		uci set wireless.@wifi-iface[0].ApCliEncrypType=$uencryp
 		uci delete wireless.mt7628.htmode
 		uci commit
-		
+
 
 		echo "network will be restarted in 1 minute!"
 		/etc/init.d/network restart 1>&- 2>&-
-		

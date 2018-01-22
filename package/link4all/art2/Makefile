@@ -94,11 +94,16 @@ define KernelPackage/art2/install/Default
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/*.out $(1)/usr/sbin
-	#$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/*.so $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/libanwi.so $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/libfield.so $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/libpart.so $(1)/usr/lib
-	#$(INSTALL_BIN) $(PKG_BUILD_DIR)/BoardData/*.bin $(1)/usr/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/*.so $(1)/usr/lib
+#	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/libanwi.so $(1)/usr/lib
+#	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/libfield.so $(1)/usr/lib
+#	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/libpart.so $(1)/usr/lib
+#	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/libar9300.so $(1)/usr/lib
+#	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/libcal-2p.so $(1)/usr/lib
+#	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/liblinkAr9k.so $(1)/usr/lib
+#	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/libtlvtemplate.so $(1)/usr/lib
+#	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nartbuild/libtlvutil.so $(1)/usr/lib
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/BoardData/*.bin $(1)/usr/sbin
 	$(INSTALL_BIN) ./files/art.init $(1)/etc/init.d/art
 endef
 
