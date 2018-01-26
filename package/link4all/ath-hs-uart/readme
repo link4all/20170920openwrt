@@ -1,0 +1,5 @@
+gpio11: uart1_tx
+gpio21: uart1_rx
+
+modify fuction ath_hs_uart_init in ath-hs-uart.c to change IO of uart1, please check with ar9344_datasheet!
+

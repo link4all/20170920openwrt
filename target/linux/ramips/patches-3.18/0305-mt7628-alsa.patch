@@ -193,7 +193,7 @@ diff -Nura a/sound/soc/ralink/mt7628-i2s.c b/sound/soc/ralink/mt7628-i2s.c
 +#include <sound/initval.h>
 +#include <sound/dmaengine_pcm.h>
 +
-+#include <ralink_regs.h>
++#include <asm/mach-ralink/ralink_regs.h>
 +
 +#define I2S_REG_CFG0		0x00
 +#define I2S_REG_CFG0_EN		BIT(31)

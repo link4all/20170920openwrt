@@ -15,6 +15,7 @@ uci set wireless.@wifi-iface[1].device="radio0"
 uci set wireless.@wifi-iface[1].mode="sta"
 uci set network.wwan=interface
 uci set network.wwan.proto="dhcp"
+uci commit network
 uci commit wireless
 
 echo "{"
