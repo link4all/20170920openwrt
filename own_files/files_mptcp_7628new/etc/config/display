@@ -1,0 +1,47 @@
+
+config display 'other'
+	option wifi_enable '1'
+	option power '7'
+	option interval '3'
+	option rx_t '0KB'
+	option tx_t '0KB'
+
+config display 'wan'
+	option rx1_b '0'
+	option rx '0'
+	option tx1_b '117322'
+	option tx '684'
+
+config display 'wan1'
+	option m_operator 'ct'
+	option m_rssi '4'
+	option rx '76'
+	option tx '76'
+	option rx1_b '10037'
+	option tx1_b '10448'
+
+config display 'wan2'
+	option rx1_b '0'
+	option tx1_b '0'
+	option rx '0'
+	option tx '0'
+	option m_operator 'no'
+	option m_rssi '0'
+
+config display 'wan3'
+	option rx1_b '0'
+	option tx1_b '0'
+	option rx '0'
+	option tx '0'
+	option m_operator 'no'
+	option m_rssi '0'
+
+config display 'wan4'
+	option rx1_b '0'
+	option tx1_b '0'
+	option rx '0'
+	option tx '0'
+	option m_operator 'no'
+	option m_rssi '0'
+
+

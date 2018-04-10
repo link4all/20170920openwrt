@@ -111,24 +111,17 @@ $.ajax({
 												<td colspan="3"><% gcom -d `uci get 4g.modem.device` -s /etc/gcom/getstrength.gcom  |grep  "," |cut -d: -f2|cut -d, -f1 2>/dev/null %></td>
 										</tr>
 										<tr>
-												<td ><%= $net_status%></td>
-												<td colspan="3"><%= `uci get 4g.modem.reg_net 2>/dev/null` %></td>
-										</tr>
-																				<tr>
-												<td >IMEI</td>
-												<td colspan="3"><%= `uci get 4g.modem.imei 2>/dev/null` %></td>
-										</tr>
-										<tr>
-												<td >IMSI</td>
-												<td colspan="3"><%= `uci get 4g.modem.imsi 2>/dev/null` %></td>
-										</tr>
-										<tr>
-												<td >ICCID</td>
-												<td colspan="3"><%= `uci get 4g.modem.iccid 2>/dev/null` %></td>
-										</tr>
-										<tr>
 												<td ><%= $used_byte%></td>
-												<td id="used_byte"  colspan="2"><%= `uci get 4g.modem.4g_byte 2>/dev/null` %></td>
+												<td id="used_byte"  colspan="2">                          
+			<% g4byte=`uci get 4g.modem.4g_byte`
+                          if [ $g4byte -ge 1000000000 ];then
+                           g4byte=`awk -v x=$g4byte  'BEGIN{printf "%.2fGB",x/1024/1024/1024}'`
+                          elif [ $g4byte -ge 1000000 ]; then
+                           g4byte=`awk -v x=$g4byte  'BEGIN{printf "%.2fMB",x/1024/1024}'`
+                          else
+                           g4byte=`awk -v x=$g4byte   'BEGIN{printf "%dKB",x/1024}'`
+                          fi %>
+                          <%= $g4byte %></td>
                         </tr>
 							</table>
               <br />

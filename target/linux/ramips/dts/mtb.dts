@@ -32,11 +32,11 @@
 			
 			wdt {
 				ralink,group = "wdt";
-				ralink,function = "gpio";
+				ralink,function = "wdt";
 			};
 			i2c {
 				ralink,group = "i2c";
-				ralink,function = "gpio";
+				ralink,function = "i2c";
 			};
 			i2s {
 				ralink,group = "i2s";
@@ -94,6 +94,9 @@
 			};
 		};
 
+		uart1@d00 {
+			status = "okay";
+		};
 		i2c@900 {
 			status = "okay";
 			pcf8563: rtc@51 {
@@ -101,10 +104,6 @@
 				compatible = "nxp,pcf8563";
 				reg = <0x51>;
             };
-		};
-
-		i2s: i2s@a00 {
-			status = "okay";
 		};
 
 	};

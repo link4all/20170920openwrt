@@ -39,12 +39,12 @@ uci set network.mtsw.enable_vlan='1'
 uci set network.sw1=switch_vlan
 uci set network.sw1.device='switch0'
 uci set network.sw1.vlan='1'
-uci set network.sw1.ports='0 1 2 3 6t'
+uci set network.sw1.ports='4 1 2 3 6t'
 
 uci set network.sw2=switch_vlan
 uci set network.sw2.device='switch0'
 uci set network.sw2.vlan='2'
-uci set network.sw2.ports='4 6t'
+uci set network.sw2.ports='0 6t'
 uci commit network
 #####5 ports######
 

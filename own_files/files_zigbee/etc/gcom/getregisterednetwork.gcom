@@ -1,0 +1,54 @@
+opengt
+set com 115200n81
+set senddelay 0.03
+waitquiet 2 0.1
+
+
+
+send "ATE1\r\n"
+waitfor 10 "OK","ERR","ERROR"
+if % = -1 goto regtimeout
+if % = 0 goto atnext
+if % = 1 goto regtimeout
+if % = 2 goto regtimeout
+:atnext
+
+
+
+send "AT+CREG?\r\n"
+waitfor 2 "+CREG: 0,1","+CREG: 0,5","+CREG: 0,2","+CREG: 0,3","+CREG: 0,4"
+if % = -1 goto regtimeout
+if % = 0 goto homereg
+if % = 1 goto roamreg
+if % = 2 goto rereg
+if % = 3 goto rereg
+if % = 4 goto rereg
+:regtimeout
+print "Failed to register"
+exit 1
+
+:rereg
+waitquiet 1 0.05
+send "AT+CEREG?\r\n"
+waitfor 2 "+CEREG: 0,1","+CEREG: 0,5"
+if % = -1 goto regtimeout
+if % = 0 goto homereg
+if % = 1 goto roamreg
+
+:homereg
+print "Registered on Home network: \""
+goto registered
+:roamreg
+print "Registered on Roaming network: \""
+goto registered
+:registered
+waitquiet 1 0.05
+send "AT+COPS?\r\n"
+get 2 "\r\n" $s
+get 2 "\r\n" $s
+let a=len($s)
+let b=a-12
+if b < 1 goto regtimeout
+let $c=$right($s,b)
+print $c,""
+

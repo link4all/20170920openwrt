@@ -1,0 +1,27 @@
+
+config ss_redir 'hi'
+	option server 'sss0'
+	option local_address '0.0.0.0'
+	option local_port '1100'
+	option mode 'tcp_and_udp'
+	option timeout '60'
+	option fast_open '1'
+	option verbose '1'
+	option reuse_port '1'
+	option mptcp '1'
+
+config ss_rules 'ss_rules'
+	option redir_udp 'hi'
+	option src_default 'bypass'
+	option local_default 'checkdst'
+	list src_ips_forward '192.168.1.4'
+	list dst_ips_forward '8.8.8.8'
+	option dst_default 'bypass'
+
+config server 'sss0'
+	option server_port '443'
+	option server '120.79.154.90'
+	option method 'none'
+	option password 'hewenhao12345'
+
+

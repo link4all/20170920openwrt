@@ -1,0 +1,12 @@
+#!/bin/sh
+
+telnetd&
+/etc/exportgpio.sh &
+sleep 10
+#/etc/modem_info.sh 
+/etc/display.sh 2>&1 >/dev/null &
+while true; do
+sleep 300;
+/bin/crcmd;
+#sleep 300;
+done

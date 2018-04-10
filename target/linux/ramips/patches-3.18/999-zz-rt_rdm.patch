@@ -1,0 +1,9 @@
+--- linux-3.18.45.orig/drivers/net/Makefile	2017-11-16 15:43:54.518820000 +0800
++++ linux-3.18.45/drivers/net/Makefile	2018-01-12 15:46:56.427166036 +0800
+@@ -61,6 +61,7 @@
+ obj-$(CONFIG_VMXNET3) += vmxnet3/
+ obj-$(CONFIG_XEN_NETDEV_FRONTEND) += xen-netfront.o
+ obj-$(CONFIG_XEN_NETDEV_BACKEND) += xen-netback/
++obj-$(CONFIG_RALINK_RDM) += rt_rdm/
+ 
+ obj-$(CONFIG_USB_NET_DRIVERS) += usb/

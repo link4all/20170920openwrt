@@ -68,6 +68,7 @@ platform_check_image() {
 	7628mifi |\
 	mtb |\
 	7628tw |\
+	*linkall|\
 	generic|\
 	m2m | \
 	m3 | \

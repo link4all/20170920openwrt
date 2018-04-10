@@ -1,0 +1,147 @@
+/dts-v1/;
+
+/include/ "mt7628an.dtsi"
+
+/ {
+	compatible = "mediatek,76x8linkall", "mediatek,mt7628an-soc";
+	model = "76x8linkall";
+
+	chosen {
+		bootargs = "console=ttyS0,57600";
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x8000000>;
+	};
+
+	pinctrl {
+		state_default: pinctrl0 {
+			gpio {
+				ralink,group = "gpio";
+				ralink,function = "gpio";
+			};
+			perst {
+				ralink,group = "perst";
+				ralink,function = "gpio";
+			};
+			refclk {
+				ralink,group = "refclk";
+				ralink,function = "gpio";
+			};
+			
+			wdt {
+				ralink,group = "wdt";
+				ralink,function = "wdt";
+			};
+			i2c {
+				ralink,group = "i2c";
+				ralink,function = "gpio";
+			};
+			i2s {
+				ralink,group = "i2s";
+				ralink,function = "gpio";
+			};
+			wled_an {
+				ralink,group = "wled_an";
+				ralink,function = "gpio";
+			};
+			p4led_an{
+				ralink,group = "p4led_an";
+				ralink,function = "p4led_an";
+			};
+			p0led_an{
+				ralink,group = "p0led_an";
+				ralink,function = "p0led_an";
+			};
+
+		};
+	};
+
+	palmbus@10000000 {
+		spi@b00 {
+			status = "okay";
+
+			pinctrl-names = "default";
+			pinctrl-0 = <&spi_pins>, <&spi_cs1_pins>;
+
+			m25p80@0 {
+				#address-cells = <1>;
+				#size-cells = <1>;
+				compatible = "w25q128";
+				reg = <0 0>;
+				linux,modalias = "m25p80", "w25q128";
+				spi-max-frequency = <40000000>;
+				m25p,chunked-io = <31>;
+
+				partition@0 {
+					label = "u-boot";
+					reg = <0x0 0x30000>;
+					#read-only;
+				};
+
+				partition@30000 {
+					label = "u-boot-env";
+					reg = <0x30000 0x10000>;
+				};
+
+				factory: partition@40000 {
+					label = "factory";
+					reg = <0x40000 0x10000>;
+					#read-only;
+				};
+
+				partition@50000 {
+					label = "firmware";
+					reg = <0x50000 0xfb0000>;
+				};
+			};
+
+		};
+
+		uart1@d00 {
+			status = "okay";
+		};
+		i2c@900 {
+			status = "okay";
+			pcf8563: rtc@51 {
+				status = "okay";
+				compatible = "nxp,pcf8563";
+				reg = <0x51>;
+            };
+		};
+
+	};
+
+
+
+
+	ethernet@10100000 {
+		mtd-mac-address = <&factory 0x28>;
+	};
+	gpio-leds {
+		compatible = "gpio-leds";
+		wifi {
+			label = "linkall:wifi";
+			gpios = <&gpio0 11 1>; //gpio11
+		};
+		sys {
+			label = "linkall:sys";
+			gpios = <&gpio1 12 1>;//gpio44
+		};
+	};
+	gpio-keys-polled {
+		compatible = "gpio-keys-polled";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		poll-interval = <20>;
+		reset {
+			label = "reset";
+			gpios = <&gpio0 5 1>; //gpio38 uart1_tx
+			linux,code = <0x198>;
+			
+		};
+	};
+
+
+};

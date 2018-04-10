@@ -436,6 +436,9 @@ ramips_board_detect() {
 			name="linkits7688"
 		fi
 		;;
+	*"linkall")
+		name="linkall"
+		;;
 	*)
 		name="generic"
 		;;

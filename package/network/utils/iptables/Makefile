@@ -335,6 +335,7 @@ endef
 define Package/iptables-mod-tproxy
 $(call Package/iptables/Module, +kmod-ipt-tproxy)
   TITLE:=Transparent proxy iptables extensions
+  DEPENDS:= +kmod-ipv6
 endef
 
 define Package/iptables-mod-tproxy/description

@@ -67,6 +67,35 @@ uci set network.wwan.metric='6'
 
 uci set network.wan.metric='5'
 
+#####5 ports######
+uci set network.mtsw=switch
+uci set network.mtsw.name='switch0'
+uci set network.mtsw.reset='1'
+uci set network.mtsw.enable_vlan='1'
+
+uci set network.sw1=switch_vlan
+uci set network.sw1.device='switch0'
+uci set network.sw1.vlan='1'
+uci set network.sw1.ports='1 2 3 4 6t'
+
+uci set network.sw2=switch_vlan
+uci set network.sw2.device='switch0'
+uci set network.sw2.vlan='2'
+uci set network.sw2.ports='0 6t'
+#uci commit network
+#####5 ports######
+### enable mptcp#####
+uci set network.globals=globals
+uci set network.globals.multipath=enable
+uci set network.wwan.multipath='on'
+uci set network.wan1.multipath='on'
+uci set network.wan2.multipath='on'
+uci set network.wan3.multipath='on'
+uci set network.wan4.multipath='on'
+uci set network.wan.multipath='on'
+
+### enable mptcp#####
+
 uci commit network
 
 uci set luci.main.mediaurlbase='/luci-static/wfnt'
@@ -77,6 +106,7 @@ uci commit firewall
 uci set system.@system[0].zonename='Asia/Shanghai'
 uci set system.@system[0].timezone='CST-8'
 uci commit system
+cp /etc/config/uhttpd_gar.conf /etc/config/uhttpd
 
 
 #mac=`cat /sys/class/net/ra0/address |tr -d  ':'`
@@ -98,7 +128,7 @@ reg_net=$(gcom -d ${device_at1} -s /etc/gcom/getregisterednetwork.gcom |cut -d: 
 
 uci set 4g.server.name='router.link-4all.com'
 uci set 4g.server.sn="${mac}"
-uci set 4g.modem.device="${device_at}"
+uci set 4g.modem.device="${device_at1}"
 uci set 4g.modem.rssi="$rssi_percent"
 uci set 4g.modem.sim_status="$sim_status"
 uci set 4g.modem.model="$model"
@@ -111,6 +141,7 @@ uci set 4g.modem.lac="$lac"
 uci set 4g.modem.reg_net="$reg_net"
 uci commit 4g
 
+uci set network.globals.multipath='enable'
 
 
 

@@ -3,6 +3,7 @@
 eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
 lang=`uci get gargoyle.global.lang`
 . /www/data/lang/$lang/baseinfo.po
+. /etc/openwrt_release
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -24,7 +25,10 @@ lang=`uci get gargoyle.global.lang`
        processData:false,
        contentType:false,
        success: function(json) {
-         $("#uptime").html(json.uptime+" <%= $sec%>");
+         $("#uptime").html(parseInt(json.uptime/86400) +" <%= $day%> "
+         +parseInt(json.uptime%86400/3600)+" <%= $hour%> "
+         +parseInt(json.uptime%3600/60)+" <%= $minute%> "
+         +parseInt(json.uptime%60)+" <%= $sec%>");
          $("#loadavg").html(json.loadavg+"--(1,5,15 <%= $load_avg%>)");
          $("#time").html(json.time);
          }
@@ -46,7 +50,7 @@ lang=`uci get gargoyle.global.lang`
 								<tbody id="sysinfobody">
 										<tr>
 												<th width="20%"><%= $sys_ver%></th>
-												<td><% uci get gargoyle.global.soft_ver %></td>
+												<td><%= $DISTRIB_BULDTIME %></td>
 										</tr>
 										<tr>
 												<th width="20%"><%= $model%></th>
@@ -62,7 +66,10 @@ lang=`uci get gargoyle.global.lang`
 										</tr>
 										<tr>
 												<th width="20%"><%= $run_time%></th>
-												<td id="uptime" ><%= `cut -d. -f1  /proc/uptime` %> <%= $sec %></td>
+												<td id="uptime" >
+			<%  secs=`cut -d. -f1  /proc/uptime`  %>
+                        <%= "$(($secs/86400)) $day $(($secs%86400/3600)) $hour $(($secs%3600/60)) $minute $(($secs%60)) $sec" %>
+												</td>
 										</tr>
 										<tr>
 												<th width="20%"><%= $sys_load%></th>

@@ -51,7 +51,7 @@ uci commit 4g
 
 proto_3g_setup() {
 
-  init_4g
+#init_4g
   
 	local interface="$1"
 	local chat

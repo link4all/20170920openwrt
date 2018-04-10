@@ -90,6 +90,10 @@
 		ralink,port-map = "llllw";
 	};
 
+	sdhci@10130000 {
+		status = "okay";
+	};
+
 	wmac@10180000 {
 		ralink,mtd-eeprom = <&factory 0>;
 	};
@@ -142,7 +146,7 @@
 		poll-interval = <20>;
 		reset {
 			label = "reset";
-			gpios = <&gpio1 6 0>;
+			gpios = <&gpio0 1 1>;
 			linux,code = <0x198>;
 		};
 	};

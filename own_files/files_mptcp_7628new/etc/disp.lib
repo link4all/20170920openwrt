@@ -1,0 +1,304 @@
+#!/bin/sh
+
+dev_s="/dev/ttyS1"
+stty -F $dev_s speed 115200 2>&1 >/dev/null
+bg=2097152
+sim_cm=2250752
+sim_cu=2252320
+sim_ct=2253888
+sim_no=2255456
+sig0=2257024
+sig1=2258592
+sig2=2260160
+sig3=2261728
+sig4=2263296
+sig5=2264864
+bat0=2266432
+bat1=2269432
+bat2=2272432
+bat3=2275432
+bat4=2278432
+bat5=2281432
+bat6=2284432
+bat7=2287432
+wifi0=2290432
+wifi1=2292000
+
+delayms(){
+  i=0
+  k=0
+  while [ $k -le $1 ]; do
+      while [ $i -le 1000 ]; do
+        i=$(($i+1))
+      done
+      k=$(($k+1))
+  done
+}
+
+wifi(){
+    wifi=wifi$1
+    wifi=`eval echo '$'$wifi`
+    echo  "FSIMG($wifi,260,207,28,28,0);"> $dev_s
+}
+
+rxtx_t(){
+    echo  "BOXF(88,6,148,22,0);DC16(90,6,"$1",5);BOXF(180,6,236,22,0);DC16(180,6,"$2",5);"> $dev_s
+}
+
+bat(){
+  bat=bat$1
+  bat=`eval echo '$'$bat`
+  echo  "FSIMG($bat,258,0,50,30,0);"> $dev_s
+
+}
+
+sim(){
+  delayms 10
+  sim=sim_$1
+  sim=`eval echo '$'$sim`
+  pos=$((37+$2*34-34))
+  echo  "FSIMG($sim,40,$pos,28,28,0);BOXF(68,37,70,64,0);"> $dev_s
+}
+
+sig(){
+  sig=sig$1
+  sig=`eval echo '$'$sig`
+  pos=$((37+$2*34-34))
+  echo  "FSIMG($sig,85,$pos,28,28,0);"> $dev_s
+}
+
+rxtx_n(){
+  pos=$((42+$3*34-34))
+  pos2=$(($pos + 16))
+  echo  "BOXF(142,$pos,198,$pos2,0);DC16(142,$pos,"$1",15);BOXF(232,$pos,288,$pos2,0);DC16(232,$pos,"$2",15);"> $dev_s
+}
+
+ip_show(){
+  echo  "BOXF(60,212,65,228,0);DCV16(65,212,"$1",4);" > $dev_s
+}
+
+switch_b(){
+  if [ $1 -ge 1000000 ];then
+   rx=`awk -v x=$1  'BEGIN{printf "%.1fMB",x/1000000}'`
+   echo $rx
+  elif [ $1 -ge 1000 ]; then
+   rx=`awk -v x=$1  'BEGIN{printf "%dKB",x/1000}'`
+   echo $rx
+  else
+   rx=`awk -v x=$1   'BEGIN{printf "%dKB",x/1000}'`
+   echo $rx
+  fi
+}
+
+if_speed(){
+  if ifconfig $1 2>&1 >/dev/null;then
+   rx2=`cat /proc/net/dev |grep $1: |awk '{print $2}'`
+   tx2=`cat /proc/net/dev |grep $1: |awk '{print $10}'`
+   rx1=`uci get display.$2.rx1_b`
+   tx1=`uci get display.$2.tx1_b`
+   rx=$(($rx2-$rx1))
+   tx=$(($tx2-$tx1))
+   uci set display.$2.rx="$rx"
+   uci set display.$2.tx="$tx"
+  else
+    uci set display.$2.rx='0'
+    uci set display.$2.tx='0'
+  fi
+}
+
+if_used_byte(){
+  if ifconfig $1 2>&1 >/dev/null;then
+   rx1_b=`cat /proc/net/dev |grep $1: |awk '{print $2}'`
+   tx1_b=`cat /proc/net/dev |grep $1: |awk '{print $10}'`
+   uci set display.$2.rx1_b=$rx1_b
+   uci set display.$2.tx1_b=$tx1_b
+ else
+   uci set display.$2.rx1_b='0'
+   uci set display.$2.tx1_b='0'
+  fi
+}
+
+ speed_t(){
+   rx1=`uci get display.wan.rx`
+   rx2=`uci get display.wan1.rx`
+   rx3=`uci get display.wan2.rx`
+   rx4=`uci get display.wan3.rx`
+   rx5=`uci get display.wan4.rx`
+   rx_t=$(($rx1+$rx2+$rx3+$rx4+$rx5))
+   rx_t=`switch_b $rx_t`
+   uci set display.other.rx_t=$rx_t
+
+   tx1=`uci get display.wan.tx`
+   tx2=`uci get display.wan1.tx`
+   tx3=`uci get display.wan2.tx`
+   tx4=`uci get display.wan3.tx`
+   tx5=`uci get display.wan4.tx`
+   tx_t=$(($tx1+$tx2+$tx3+$tx4+$tx5))
+   tx_t=`switch_b $tx_t`
+   uci set display.other.tx_t=$tx_t
+ }
+
+
+
+mobile_rssi(){
+  dev=$1
+    if ls $dev 2>&1 > /dev/null;then
+          rssi=`gcom -d $dev -s /etc/gcom/getstrength.gcom`
+          rssi=`echo $rssi |awk '{print $3}' |cut -d, -f1`
+        if [ $rssi -le 31 ];then
+          if [ $rssi -ge 26 ];then
+            uci set display.$2.m_rssi=5
+          elif [ $rssi -ge 20 -a $rssi -le 31 ];then
+            uci set display.$2.m_rssi=4
+          elif [ $rssi -ge 14 -a $rssi -le 31 ];then
+            uci set display.$2.m_rssi=3
+          elif [ $rssi -ge 8 -a $rssi -le 31 ];then
+            uci set display.$2.m_rssi=2
+          elif [ $rssi -ge 4 -a $rssi -le 31 ];then
+            uci set display.$2.m_rssi=1
+          else
+            uci set display.$2.m_rssi=0
+          fi
+        else
+          uci set display.$2.m_rssi=0
+        fi
+      else
+        uci set display.$2.m_rssi=0
+      fi
+}
+
+initx(){
+echo  "DIR(1);SBC(0);FSIMG($bg,0,0,320,240,0);"> $dev_s
+}
+
+
+
+ mobile_op(){
+   dev="$1"
+   if ls $dev 2>&1 >/dev/null;then
+   imsi=`gcom -d $dev -s /etc/gcom/getimsi.gcom`
+   imsi=${imsi:3:2}
+   case $imsi in
+     03|05|11)
+       uci set display.$2.m_operator="ct"
+       ;;
+     01|06)
+       uci set display.$2.m_operator="cu"
+       ;;
+     00|02|07)
+       uci set display.$2.m_operator="cm"
+       ;;
+     *)
+     uci set display.$2.m_operator="no"
+     ;;
+   esac
+ else
+   uci set display.$2.m_operator="no"
+ fi
+ }
+
+
+
+disp_once(){
+  m_operator1=`uci get display.wan1.m_operator`
+  sim $m_operator1 1
+  m_operator2=`uci get display.wan2.m_operator`
+  sim $m_operator2 2
+  m_operator3=`uci get display.wan3.m_operator`
+  sim $m_operator3 3
+  m_operator4=`uci get display.wan4.m_operator`
+  sim $m_operator4 4
+  ip_serv=`uci get shadowsocks-libev.sss0.server`
+  ip_show IP:$ip_serv
+}
+
+update_once(){
+  mobile_op "/dev/ttyUSB2" wan1
+  mobile_op "/dev/ttyUSB6" wan2
+  mobile_op "/dev/ttyUSB10" wan3
+  mobile_op "/dev/ttyUSB14" wan4
+
+  disp_once
+  }
+
+disp_timer(){
+  wifi `uci get display.other.wifi_enable`
+  sig `uci get display.wan1.m_rssi` 1
+  sig `uci get display.wan2.m_rssi` 2
+  sig `uci get display.wan3.m_rssi` 3
+  sig `uci get display.wan4.m_rssi` 4
+  t=`uci get display.other.interval`
+  rx1=$(($rx1/$t))
+  tx1=$(($tx1/$t))
+  rx1=`switch_b $(uci get display.wan1.rx)`
+  tx1=`switch_b $(uci get display.wan1.tx)`
+  rxtx_n $tx1 $rx1 1
+  rx2=$(($rx2/$t))
+  tx2=$(($tx2/$t))
+  rx2=`switch_b $(uci get display.wan2.rx)`
+  tx2=`switch_b $(uci get display.wan2.tx)`
+  rxtx_n $tx2 $rx2 2
+  rx3=$(($rx3/$t))
+  tx3=$(($tx3/$t))
+  rx3=`switch_b $(uci get display.wan3.rx)`
+  tx3=`switch_b $(uci get display.wan3.tx)`
+  rxtx_n $tx3 $rx3 3
+  rx4=$(($rx4/$t))
+  tx4=$(($tx4/$t))
+  rx4=`switch_b $(uci get display.wan4.rx)`
+  tx4=`switch_b $(uci get display.wan4.tx)`
+  rxtx_n $tx4 $rx4 4
+  rx5=`switch_b $(uci get display.wan.rx)`
+  tx5=`switch_b $(uci get display.wan.tx)`
+  rxtx_n $tx5 $rx5 5
+  rxtx_t `uci get display.other.tx_t` `uci get display.other.rx_t`
+  bat `uci get display.other.power`
+}
+
+update_timer(){
+  if ifconfig |grep wlan0 2>&1 >/dev/null;then
+    uci set display.other.wifi_enable=1
+  else
+    uci set display.other.wifi_enable=0
+  fi
+
+  power=$(($(i2cget -y 0 0x3c 0x4f)&0x7f))
+   if [ $(($power)) -gt 86 ];then
+     power=7
+   elif [ $(($power)) -gt 82 ];then
+     power=6
+   elif [ $(($power)) -gt 68 ];then
+     power=5
+   elif [ $(($power)) -gt 54 ];then
+     power=4
+   elif [ $(($power)) -gt 42 ];then
+     power=3
+   elif [ $(($power)) -gt 28 ];then
+     power=2
+   elif [ $(($power)) -gt 14 ];then
+     power=1
+   else
+     power=0
+   fi
+   uci set display.other.power=$power
+if_used_byte 3g-wan1 wan1
+if_used_byte 3g-wan2 wan2
+if_used_byte 3g-wan3 wan3
+if_used_byte 3g-wan4 wan4
+if_used_byte eth0.2 wan
+  sleep `uci get display.other.interval`
+if_speed 3g-wan1 wan1
+if_speed 3g-wan2 wan2
+if_speed 3g-wan3 wan3
+if_speed 3g-wan4 wan4
+if_speed eth0.2 wan
+speed_t
+mobile_rssi "/dev/ttyUSB2" wan1
+mobile_rssi "/dev/ttyUSB6" wan2
+mobile_rssi "/dev/ttyUSB10" wan3
+mobile_rssi "/dev/ttyUSB14" wan4
+
+disp_timer
+update_once
+}
+

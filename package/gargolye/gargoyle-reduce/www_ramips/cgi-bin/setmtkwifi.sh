@@ -22,6 +22,9 @@ uci set wireless.mt7628.channel="$FORM_channel"
 uci set wireless.mt7628.ht="$FORM_bw"
 uci set wireless.mt7628.txpower="$FORM_txpower"
 uci commit wireless
+uci set network.wwan=interface
+uci set network.wwan.proto="dhcp"
+uci commit network
 
 echo "{"
 echo "\"success\":\"ok\""

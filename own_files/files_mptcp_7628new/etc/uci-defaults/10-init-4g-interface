@@ -1,0 +1,148 @@
+#!/bin/sh
+#
+# Copyright (C) 2011 OpenWrt.org
+#
+device_modem1=/dev/ttyUSB1
+device_at1=/dev/ttyUSB2
+device_modem2=/dev/ttyUSB5
+device_at2=/dev/ttyUSB6
+device_modem3=/dev/ttyUSB9
+device_at3=/dev/ttyUSB10
+device_modem4=/dev/ttyUSB13
+device_at4=/dev/ttyUSB14
+
+uci set network.wan1=interface
+uci set network.wan1.device=${device_modem1}
+uci set network.wan1.proto='3g'
+uci set network.wan1.service='umts'
+uci set network.wan1.apn='3gnet'
+uci set network.wan1.pincode=''
+uci set network.wan1.username=''
+uci set network.wan1.password=''
+uci set network.wan1.dialnumber='*99#'
+#uci set network.wan1.metric='1'
+
+uci set network.wan2=interface
+uci set network.wan2.device=${device_modem2}
+uci set network.wan2.proto='3g'
+uci set network.wan2.service='umts'
+uci set network.wan2.apn='3gnet'
+uci set network.wan2.pincode=''
+uci set network.wan2.username=''
+uci set network.wan2.password=''
+uci set network.wan2.dialnumber='*99#'
+#uci set network.wan2.metric='2'
+
+uci set network.wan3=interface
+uci set network.wan3.device=${device_modem3}
+uci set network.wan3.proto='3g'
+uci set network.wan3.service='umts'
+uci set network.wan3.apn='3gnet'
+uci set network.wan3.pincode=''
+uci set network.wan3.username=''
+uci set network.wan3.password=''
+uci set network.wan3.dialnumber='*99#'
+#uci set network.wan3.metric='3'
+
+uci set network.wan4=interface
+uci set network.wan4.device=${device_modem4}
+uci set network.wan4.proto='3g'
+uci set network.wan4.service='umts'
+uci set network.wan4.apn='3gnet'
+uci set network.wan4.pincode=''
+uci set network.wan4.username=''
+uci set network.wan4.password=''
+uci set network.wan4.dialnumber='*99#'
+#uci set network.wan4.metric='4'
+
+#uci set network.pptp=interface
+#uci set network.pptp.proto=pptp
+#uci set network.l2tp=interface
+#uci set network.l2tp.proto=l2tp
+
+uci set network.wwan=interface
+uci set network.wwan.ifname=apcli0
+uci set network.wwan.proto=dhcp
+#uci set network.wwan.metric='6'
+
+#uci set network.wan.metric='5'
+
+#####5 ports######
+uci set network.mtsw=switch
+uci set network.mtsw.name='switch0'
+uci set network.mtsw.reset='1'
+uci set network.mtsw.enable_vlan='1'
+
+uci set network.sw1=switch_vlan
+uci set network.sw1.device='switch0'
+uci set network.sw1.vlan='1'
+uci set network.sw1.ports='1 2 3 4 6t'
+
+uci set network.sw2=switch_vlan
+uci set network.sw2.device='switch0'
+uci set network.sw2.vlan='2'
+uci set network.sw2.ports='0 6t'
+uci commit network
+#####5 ports######
+### enable mptcp#####
+uci set network.globals=globals
+uci set network.globals.multipath=enable
+uci set network.wwan.multipath='on'
+uci set network.wan1.multipath='on'
+uci set network.wan2.multipath='on'
+uci set network.wan3.multipath='on'
+uci set network.wan4.multipath='on'
+uci set network.wan.multipath='on'
+
+### enable mptcp#####
+
+uci commit network
+
+#uci set luci.main.mediaurlbase='/luci-static/wfnt'
+#uci commit luci
+uci set firewall.@zone[1].network="wan wan6 wwan wan1 wan2 wan3 wan4"
+uci commit firewall
+
+uci set system.@system[0].hostname='LINK4ALL'
+uci set system.@system[0].zonename='Asia/Shanghai'
+uci set system.@system[0].timezone='CST-8'
+uci commit system
+cp /etc/config/uhttpd_gar.conf /etc/config/uhttpd
+
+
+#mac=`cat /sys/class/net/ra0/address |tr -d  ':'`
+. /lib/functions.sh
+. /lib/functions/system.sh
+mac=`mtd_get_mac_binary factory 46 |tr -d ':'`
+#4g modem info：
+a=$(gcom -d ${device_at1} -s /etc/gcom/getstrength.gcom  |grep  "," |cut -d: -f2|cut -d, -f1)
+rssi_percent=$(printf "%d%%\n" $((a*100/31)))
+sim_status=$(gcom -d ${device_at1} -s /etc/gcom/getsimstatus.gcom )
+model=$(gcom -d ${device_at1} -s /etc/gcom/getcardinfo.gcom |head -n3|tail -n1|tr -d '\r')
+rev=$(gcom -d ${device_at1} -s /etc/gcom/getcardinfo.gcom |grep -i rev |cut -d: -f2-|tr -d '\r')
+imei=$(gcom -d ${device_at1} -s /etc/gcom/getimei.gcom)
+imsi=$(gcom -d ${device_at1} -s /etc/gcom/getimsi.gcom)
+iccid=$(gcom -d ${device_at1} -s /etc/gcom/iccid_forge.gcom|cut -d: -f2)
+roam=$(gcom -d ${device_at1} -s /etc/gcom/checkregister.gcom )
+lac=$(gcom -d ${device_at1} -s /etc/gcom/getlaccellid.gcom )
+reg_net=$(gcom -d ${device_at1} -s /etc/gcom/getregisterednetwork.gcom |cut -d: -f2- )
+
+uci set 4g.server.name='router.link-4all.com'
+uci set 4g.server.sn="${mac}"
+uci set 4g.modem.device="${device_at1}"
+uci set 4g.modem.rssi="$rssi_percent"
+uci set 4g.modem.sim_status="$sim_status"
+uci set 4g.modem.model="$model"
+uci set 4g.modem.rev="$rev"
+uci set 4g.modem.imei="$imei"
+uci set 4g.modem.imsi="$imsi"
+uci set 4g.modem.iccid="$iccid"
+uci set 4g.modem.roam="$roam"
+uci set 4g.modem.lac="$lac"
+uci set 4g.modem.reg_net="$reg_net"
+uci commit 4g
+
+uci set network.globals.multipath='enable'
+
+
+

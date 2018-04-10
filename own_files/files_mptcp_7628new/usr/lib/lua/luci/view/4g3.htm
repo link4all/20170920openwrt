@@ -1,0 +1,18 @@
+<%+header%>
+
+
+<fieldset class="cbi-section">
+	<legend><%:4G Modem3 Status %></legend>
+  <table width="100%" cellspacing="10">
+		<tr><td width="33%"><%:Model Name%></td><td><%=luci.sys.exec("gcom -d /dev/ttyUSB10 -s /etc/gcom/getcardinfo.gcom |head -n3|tail -n2|tr -d '\r'")%></td></tr>
+		<tr><td width="33%"><%:SIM Card%></td><td><%=luci.sys.exec("gcom -d /dev/ttyUSB10 -s /etc/gcom/getsimstatus.gcom")%></td></tr>
+  	<tr><td width="33%"><%:Signal Strength%></td><td><%=luci.sys.exec("gcom -d /dev/ttyUSB10 -s /etc/gcom/getstrength.gcom  |grep  ',' |cut -d: -f2|cut -d, -f1")%></td></tr>
+		<tr><td width="33%"><%:Online Status%></td><td><%=luci.sys.exec("gcom -d /dev/ttyUSB10 -s /etc/gcom/getregisterednetwork.gcom |cut -d: -f2-")%></td></tr>
+
+		<tr><td width="33%"><%:IMSI%></td><td><%=luci.sys.exec("gcom -d /dev/ttyUSB10 -s /etc/gcom/getimsi.gcom")%></td></tr>
+
+ </table>
+</fieldset>
+
+<%+footer%>
+

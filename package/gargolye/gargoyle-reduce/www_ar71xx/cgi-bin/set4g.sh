@@ -15,6 +15,9 @@ uci set network.4g.username="$FORM_username"
 uci set network.4g.dialnumber="$FORM_dialnumber"
 uci set network.4g.password="$FORM_password"
 uci commit network
+  uci set system.led_sys.dev="3g-4g"
+  uci commit system
+  /etc/init.d/led restart
 uci set config4g.@4G[0].enable="0"
 uci commit config4g
 uci set 4g.modem.device=$FORM_at
@@ -33,6 +36,9 @@ else
   uci del network.4g.dialnumber
   uci del network.4g.password
   uci commit network
+  uci set system.led_sys.dev="eth2"
+  uci commit system
+  /etc/init.d/led restart
   uci set config4g.@4G[0].enable="1"
   uci set config4g.@4G[0].apn="$FORM_apn"
   uci set config4g.@4G[0].pincode="$FORM_pincode"
