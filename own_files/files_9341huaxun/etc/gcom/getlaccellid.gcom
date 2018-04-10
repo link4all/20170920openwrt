@@ -1,0 +1,29 @@
+opengt
+set com 115200n81
+set senddelay 0.05
+waitquiet 1 0.2
+
+send "AT+CGREG=2\r\n"
+waitfor 10 "OK","ERR","ERROR"
+if % = -1 goto timeerror
+if % = 0 goto GETINFO
+if % = 1 goto error
+if % = 2 goto error
+:GETINFO
+send "AT+CGREG?\r\n"
+get 1 "^m" $s
+get 1 "^m" $s
+let a=len($s)
+let b=a-13
+if b < 1 goto timeerror
+let $c=$right($s,b)
+print $c
+send "AT+CGREG=0\r\n"
+exit 0
+:error
+send "AT+CGREG=0\r\n"
+exit 1
+:timeerror
+send "AT+CGREG=0\r\n"
+exit 1
+
