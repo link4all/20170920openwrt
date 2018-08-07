@@ -119,6 +119,12 @@
 	ethernet@10100000 {
 		mtd-mac-address = <&factory 0x28>;
 	};
+
+		sdhci@10130000 {
+		status = "okay";
+		mediatek,cd-high;
+//		mediatek,cd-poll;
+	};
 	gpio-leds {
 		compatible = "gpio-leds";
 		wifi {
@@ -127,7 +133,7 @@
 		};
 		sys {
 			label = "linkall:sys";
-			gpios = <&gpio1 12 1>;//gpio44
+			gpios = <&gpio1 12 0>;//gpio44
 		};
 	};
 	gpio-keys-polled {

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--
+A client is authenticated by requesting the page $authtarget.
+	So, href to it here, with an img or link text the user can click on.
+	Alternatively submit an HTTP form method=get, passing $authaction, $tok and $redir
+	Also, note that any images you reference must reside in the
+	subdirectory that is the value of $imagesdir (default: "images").
+
+Available variables:
+	error_msg: $error_msg
+	gatewayname: $gatewayname
+	tok: $tok
+	redir: $redir
+	authaction: $authaction
+	denyaction: $denyaction
+	authtarget: $authtarget
+	clientip: $clientip
+	clientmac: $clientmac
+	gatewaymac: $gatewaymac
+	nclients: $nclients
+	maxclients: $maxclients
+	uptime: $uptime
+	imagesdir: $imagesdir
+	pagesdir: $pagesdir
+
+Additional Variables that can also be passed back via HTTP get.
+Or just append them to the authentication link:
+	nodoguser
+	nodogpass
+	info
+	voucher
+-->
+	
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta HTTP-EQUIV="Pragma" CONTENT="no-cache" CHARSET="utf-8">
+<meta http-equiv="Expires" content="0" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel='shortcut icon' href='$imagesdir/splash.jpg' type='image/x-icon' />
+<title>$gatewayname Entry</title>
+<script>
+	window.onload= function(){
+   //document.getElementById('myForm').submit();
+}
+</script>
+<style>
+html{  
+            height: 100%;  
+        }  
+
+body
+{
+            padding: 0;  
+            margin: 0;  
+            background: url("images/bg.png") no-repeat;  
+            background-size: 100% 100%;  
+            position: absolute;  
+}
+.botCenter
+{
+      width:100%; height:35px; 
+      line-height:35px; background:#ccc; 
+      position:fixed; bottom:30px; 
+      left:0px;font-size:20px; color:#f00; 
+      text-align:center;
+      border-radius:25px;border:2px solid
+      }
+
+img
+{
+width: 40%;
+max-width: 180px;
+margin-left: 0%;
+margin-right: 5%;
+}
+
+input[type=submit]
+{
+left:0px;font-size:20px; color:#00f;
+text-align:center;
+border-radius:5px;border:2px solid
+}
+</style>
+</head>
+
+<body >
+<b>$gatewayname Hotspot Gateway.</b>
+
+
+<!--<form id="myForm" method='get' action='$authaction'>
+<input type='hidden' name='tok' value='$tok'>
+<input type='hidden' name='redir' value='$redir'>
+<div class="botCenter"><input type='submit' value='Continue'></div>
+</form>-->
+
+<div id="show1" class="botCenter"></div>  
+   
+<div id="commit" class="botCenter" >
+ <form id="myForm" method='get' action='$authaction'>
+<input type='hidden' name='tok' value='$tok'>
+<input type='hidden' name='redir' value='$redir'>
+<input  type='submit' value='Go To Internet' >
+</form>
+</div>
+
+	
+<script type="text/javascript">   
+    var time = 15;
+    function closeWindow() {
+
+        if (time > 0) {
+            window.setTimeout('closeWindow()',1000);
+            document.getElementById("show1").innerHTML = "Wait "+time;
+            document.getElementById("commit").style.display="none"
+            time--;
+        } else {
+            //document.getElementById("show1").innerHTML = "";
+            document.getElementById("commit").style.display="none"
+            //document.getElementById("commit").innerHTML = "Go To Internet";
+            document.getElementById("commit").style.display="block"
+
+        }
+
+    }
+   closeWindow();
+
+</script> 
+
+</body>
+</html>
+

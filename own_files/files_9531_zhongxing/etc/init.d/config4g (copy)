@@ -1,0 +1,50 @@
+#!/bin/sh /etc/rc.common
+START=99
+
+run_4g()
+{
+    local enable
+    config_get_bool enable $1 enable
+
+    echo "run 4G" >> /tmp/log4g
+    
+    if [ $enable ]; then
+        local user
+        local password
+        local apn
+        local auth
+        local pincode
+
+	echo "enable 4G" >> /tmp/log4g
+        config_get user $1 user
+        config_get password $1 password
+        config_get apn $1 apn
+        config_get auth $1 auth
+        config_get pincode $1 pincode
+
+        
+        if [ "$pincode" != "" ]; then
+            quectel-CM -s $apn  $user $password $auth -p $pincode -f /tmp/4g.log &
+        elif [ "$apn" != "" ]; then
+            quectel-CM -s $apn -f /tmp/4g.log &
+        else
+            quectel-CM -f /tmp/4g.log &
+        fi
+        
+        echo "quectel-CM has started."
+    fi
+}
+
+start()
+{
+    config_load config4g
+    echo "4G setting" >> /tmp/log4g
+    config_foreach run_4g 4G
+}
+
+stop()
+{
+    echo "4G stop" >> /tmp/log4g
+    killall quectel-CM
+    echo "quectel-CM has stoped."
+}

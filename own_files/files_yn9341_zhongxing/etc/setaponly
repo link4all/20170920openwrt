@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ "`uci get wireless.@wifi-iface[1].mode 2>/dev/null`" = "sta" ];then
+	if [ -n "`ifconfig wlan0 |grep 192.168`" ];then
+		echo "wwan ip is `ifconfig wlan0 |grep 'inet addr' |cut -d: -f2 | cut -d " " -f1`"
+		else
+		{
+		 uci delete wireless.@wifi-iface[1]
+		 uci commit wireless
+		 /etc/init.d/network restart
+		}
+	fi
+fi

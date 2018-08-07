@@ -1,0 +1,24 @@
+opengt
+set com 115200n81
+set senddelay 0.03
+waitquiet 2 0.1
+
+send "AT+CREG?\r\n"
+waitfor 2 "+CREG: 0,1","+CREG: 0,5","+CREG: 0,2","+CREG: 0,3","+CREG: 0,4"
+if % = -1 goto regtimeout
+if % = 0 goto homereg
+if % = 1 goto roamreg
+if % = 2 goto regtimeout
+if % = 3 goto regtimeout
+if % = 4 goto regtimeout
+:homereg
+print "Home"
+exit 0
+:roamreg
+print "Roaming"
+goto registered
+exit 0
+:regtimeout
+print "None"
+exit 0
+

@@ -120,17 +120,13 @@ lang=`uci get gargoyle.global.lang`
                     <label class="">
                         <div class="name"><%= $apn_setting%></div>
                         <div id="apn">
-              <select class="apn" name="apn" onchange="mask_method()">
-								<option value="3gnet" <% [ `uci get network.4g.apn |grep "3gnet"` ] && echo 'selected="true"' %> ><%= $g3net%></option>
-								<option value="ctnet" <% [ `uci get network.4g.apn |grep "ctnet"` ] && echo 'selected="true"' %> ><%= $ctnet%></option>
-								<option value=""  ><%= $custom%></option>
-							</select>
+				<input class="apn" name="apn" type="text" value="<% uci get config4g.@4G[0].apn %>" placeholder="apn" />
                         </div>
                     </label>
                     <label class="">
                         <div class="name"><%= $dialnumber%>:</div>
                         <div>
-                            <input id="dialnumber" name="dialnumber" type="text" value="<% uci get network.4g.dialnumber %>" placeholder="*99#" />
+                            <input id="dialnumber" name="dialnumber" type="text" value="<% uci get config4g.@4G[0].dialnumber %>" placeholder="*99#" />
                         </div>
                     </label>
                     <label class="auth_mode">
@@ -145,19 +141,19 @@ lang=`uci get gargoyle.global.lang`
                     <label class="">
                         <div class="name"><%= $username%></div>
                         <div>
-                            <input id="username" name="username" type="text" value="<% uci get network.4g.username %>" placeholder="<%= $place_hold%>" />
+                            <input id="username" name="username" type="text" value="<% uci get config4g.@4G[0].user %>" placeholder="<%= $place_hold%>" />
                         </div>
                     </label>
                     <label class="">
                         <div class="name"><%= $passwd%></div>
                         <div>
-                            <input id="password" name="password" type="text" value="<% uci get network.4g.password %>"  placeholder="<%= $place_hold%>" />
+                            <input id="password" name="password" type="text" value="<% uci get config4g.@4G[0].password %>"  placeholder="<%= $place_hold%>" />
                         </div>
                     </label>
                     <label class="">
                         <div class="name"><%= $pincode%></div>
                         <div>
-                            <input id="pincode" name="pincode" type="text" value="<% uci get network.4g.pincode %>" placeholder="<%= $place_hold%>" />
+                            <input id="pincode" name="pincode" type="text" value="<% uci get config4g.@4G[0].pincode %>" placeholder="<%= $place_hold%>" />
                         </div>
                     </label>
             </form>

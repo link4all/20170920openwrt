@@ -5,11 +5,11 @@ echo "Content-Type: application/json"
 echo ""
 
 if [ "$FORM_enable" -eq 1 ] ;then
-uci del wireless.mt7628.disable >/dev/null 2>&1 
+uci del wireless.mt7628.disabled >/dev/null 2>&1 
 else
-uci set wireless.mt7628.disable=1
+uci set wireless.mt7628.disabled=1
 fi
-if [ "$FORM_hidden" -eq 1 ] ;then
+if [ "$FORM_hidssid" -eq 1 ] ;then
 uci set wireless.ap.hidden=1
 else
 uci del wireless.ap.hidden >/dev/null 2>&1 
@@ -31,3 +31,4 @@ echo "\"success\":\"ok\""
 echo "}"
 /etc/init.d/network restart
 %>
+

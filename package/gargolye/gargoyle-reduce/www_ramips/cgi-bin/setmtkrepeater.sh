@@ -4,7 +4,7 @@ eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_
 echo "Content-Type: application/json"
 echo ""
 
-
+if [ $FORM_setrepeater = 1 ];then
 	if [ "$FORM_etype"x = "WPA1PSKWPA2PSK/TKIPAES"x ]; then
 			      umode="WPA2PSK"
         		uencryp="AES"
@@ -37,10 +37,16 @@ uci set wireless.ap.ApCliWPAPSK="$FORM_epwd"
 uci set wireless.mt7628.channel="$FORM_channel"
 uci set wireless.ap.ApCliAuthMode="$umode"
 uci set wireless.ap.ApCliEncrypType="$uencryp"
-uci commit wireless
+uci set wireless.ap.ApCliEnable='1'
+else
+uci set wireless.ap.ApCliEnable='0'
+fi
+
+
 
 echo "{"
 echo "\"success\":\"ok\",\"enc\":\"$FORM_etype $FORM_essid $FORM_channel\""
 echo "}"
+uci commit wireless
 /etc/init.d/network restart
 %>

@@ -5,11 +5,11 @@ echo "Content-Type: application/json"
 echo ""
 
 if [ "$FORM_enable" -eq 1 ] ;then
-uci del wireless.radio0.disable >/dev/null 2>&1
+uci del wireless.radio0.disabled >/dev/null 2>&1
 else
-uci set wireless.radio0.disable=1
+uci set wireless.radio0.disabled=1
 fi
-if [ "$FORM_hidden" -eq 1 ] ;then
+if [ "$FORM_hidssid" -eq 1 ] ;then
 uci set wireless.@wifi-iface[0].hidden=1
 else
 uci del wireless.@wifi-iface[0].hidden >/dev/null 2>&1

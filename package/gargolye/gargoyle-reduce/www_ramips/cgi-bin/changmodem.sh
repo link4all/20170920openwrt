@@ -28,5 +28,13 @@ echo "\"stat\":\"Gobinet driver is for MeiGe Now,Please reboot!\""
 echo "}"
 fi
 
+if [ "$FORM_vendor" = "ls" ];then
+   rm /etc/modules.d/AutoProbe-usb-net-gobinet*
+   echo "gobinet_ls.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+echo "{"
+echo "\"stat\":\"Gobinet driver is for Longsung Now,Please reboot!\""
+echo "}"
+fi
+
 %>
 

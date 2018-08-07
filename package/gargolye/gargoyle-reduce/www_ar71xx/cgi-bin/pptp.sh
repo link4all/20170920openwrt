@@ -5,11 +5,17 @@ echo "Content-Type: application/json"
 echo ""
 
 if [ "$FORM_setclient" = "1" ];then
+    uci set network.pptp=interface
     uci set network.pptp.server="$FORM_server_ip"
     uci set network.pptp.username="$FORM_username"
     uci set network.pptp.password="$FORM_password"
+    uci set network.pptp.proto='pptp'
     uci commit network
     /etc/init.d/network restart 
+else
+    uci del network.pptp
+    uci commit network
+    /etc/init.d/network restart
 fi
 
 if [ "$FORM_setserver" = "1" ];then
@@ -23,7 +29,7 @@ if [ "$FORM_setserver" = "1" ];then
     uci set pptpd.pptpd.enabled='0'
   fi
   uci commit pptpd
-  /etc/init.d/pptpd restart 
+  /etc/init.d/pptpd restart 2>&1 >/dev/null
 fi
 
 

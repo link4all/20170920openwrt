@@ -1,0 +1,9 @@
+#!/bin/sh
+
+uci set 4g.modem.old_4g_byte=`uci get 4g.modem.4g_byte`
+uci commit 4g
+while true; do
+sleep 300;
+/bin/crcmd;
+#sleep 300;
+done

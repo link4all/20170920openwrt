@@ -37,6 +37,9 @@ lang=`uci get gargoyle.global.lang`
                             <li>
                                 <a href="#tab-2"><%= $pptp%></a>
                             </li>
+                            <li>
+                                <a href="#tab-3"><%= $l2tp%></a>
+                            </li>
                         </ul>
                     </div>
                     <div class="tab-body ">
@@ -154,8 +157,14 @@ lang=`uci get gargoyle.global.lang`
                           <form class="form-info" id="form2">
                             <fieldset>
                               <legend>PPTP<%= $client %></legend>
+                              <label>
+                                <div class="name">PPTP<%= $client%>:</div>
+                                <div>
+                                    <input type="checkbox"  name="setclient" value="1" <% uci get network.pptp.server && echo -n checked %> />
+                                </div>
+                            </label>
                             <label>
-                                <div class="name">PPTP<%= $server%>:</div>
+                                <div class="name">PPTP<%= $client%>:</div>
                                 <div>
                                     <input type="text"  name="server_ip" value="<% uci get network.pptp.server %>" placeholder="120.120.120.120" />
                                 </div>
@@ -172,7 +181,7 @@ lang=`uci get gargoyle.global.lang`
                                     <input type="text"   name="password" value="<% uci get network.pptp.password %>" placeholder="test"  />
                                 </div>
                             </label>
-                            <input type="text"  value="1" name="setclient" hidden  />
+                            
                            <div class="btn-wrap">
                             <div class="save-btn fr"><a href="javascript:set_pptp_client()"><%= $save%></a></div>
                             </div>
@@ -217,7 +226,43 @@ lang=`uci get gargoyle.global.lang`
                             <div class="save-btn fr"><a href="javascript:set_pptp_server()"><%= $save%></a></div>
                             </div>
                           </fieldset>
+                          </form>
                         </div>
+                        <div class="tab-panel" id="tab-3">
+                            <form class="form-info" id="form4">
+                              <fieldset>
+                                <legend>L2TP<%= $client %></legend>
+                                <label>
+                                    <div class="name">L2TP<%= $client%>:</div>
+                                    <div>
+                                        <input type="checkbox"  name="setclient" value="1" <% uci get network.l2tp.server && echo -n checked %> />
+                                    </div>
+                                </label>
+                              <label>
+                                  <div class="name">L2TP<%= $client%>:</div>
+                                  <div>
+                                      <input type="text"  name="server_ip" value="<% uci get network.l2tp.server %>" placeholder="120.120.120.120" />
+                                  </div>
+                              </label>
+                              <label>
+                                  <div class="name"><%= $username %>:</div>
+                                  <div>
+                                      <input type="text"   name="username" value="<% uci get network.l2tp.username %>" placeholder="test"  />
+                                  </div>
+                              </label>
+                              <label>
+                                  <div class="name"><%= $passwd %>:</div>
+                                  <div>
+                                      <input type="text"   name="password" value="<% uci get network.l2tp.password %>" placeholder="test"  />
+                                  </div>
+                              </label>
+                              
+                             <div class="btn-wrap">
+                              <div class="save-btn fr"><a href="javascript:set_l2tp_client()"><%= $save%></a></div>
+                              </div>
+                            </fieldset>
+                             </form>
+                             </div>
                     </div>
                 </div>
            </div>
@@ -225,3 +270,4 @@ lang=`uci get gargoyle.global.lang`
     </div>
 </body>
 </html>
+

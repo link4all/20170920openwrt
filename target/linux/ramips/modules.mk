@@ -10,7 +10,7 @@ define KernelPackage/rdm
   CATEGORY:=MTK Properties
   SUBMENU:=Drivers
   TITLE:=Register Debug Module
-  KCONFIG:=CONFIG_RALINK_RDM=m
+  KCONFIG:=CONFIG_RALINK_RDM
   FILES:=$(LINUX_DIR)/drivers/net/rt_rdm/rt_rdm.ko
   AUTOLOAD:=$(call AutoProbe,rt_rdm)
 endef

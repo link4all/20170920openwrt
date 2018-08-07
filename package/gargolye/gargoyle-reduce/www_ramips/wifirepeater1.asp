@@ -120,6 +120,12 @@ lang=`uci get gargoyle.global.lang`
             <div class="title"><%= $page%><p style="display:inline;color:#e81717;font-size:16px;margin-left: 100px;" id="status"></p></div>
             <div class="wrap-form">
                 <form class="form-info" id="form0" >
+		     <label>
+                                    <div class="name"><%= $enable_repeater%>:</div>
+                                    <div>
+                                        <input type="checkbox"  name="setrepeater" value="1" <% [ `uci get wireless.ap.ApCliEnable` = 1 ] && echo -n checked %> />
+                                    </div>
+                     </label>
                     <label>
                         <div class="name"><%= $conn_status%></div> 
                         <div>

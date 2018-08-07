@@ -125,7 +125,7 @@ lang=`uci get gargoyle.global.lang`
           if (d.type==undefined){
             $("#status").html("<%= $error%>");
             }else{
-              $("#status").html("<%= %finish%>");
+              $("#status").html("<%= $finish%>");
             }
          }, 'json');
     }

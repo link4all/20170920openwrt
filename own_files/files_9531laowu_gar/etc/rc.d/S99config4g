@@ -1,1 +1,66 @@
-../init.d/config4g
+#!/bin/sh /etc/rc.common
+START=99
+
+USE_PROCD=1  
+#使用procd启动
+CM="/bin/quectel-CM" 
+
+run_4g()
+{
+    local enable
+    config_get_bool enable $1 enable
+
+    echo "run 4G" >> /tmp/log4g
+    
+    if [ "$enable" = "1" ]; then
+        local user
+        local password
+        local apn
+        local auth
+        local pincode
+
+	echo "enable 4G" >> /tmp/log4g
+        config_get user $1 user
+        config_get password $1 password
+        config_get apn $1 apn
+        config_get auth $1 auth
+        config_get pincode $1 pincode
+
+    procd_open_instance  
+    #创建一个实例， 在procd看来一个应用程序可以多个实例  
+    #ubus call service list 可以查看实例 
+
+        
+        if [ "$pincode" != "" ]; then
+	    #定义respawn参数，告知procd当CM程序退出后尝试进行重启  
+    	procd_set_param command $CM -s $apn  $user $password $auth -p $pincode -f /tmp/4g.log  
+         elif [ "$apn" != "" ]; then
+        procd_set_param command $CM -s $apn -f /tmp/4g.log 
+         else
+            procd_set_param command $CM -f /tmp/4g.log 
+        fi
+        procd_set_param respawn
+        echo "quectel-CM has started."
+    	procd_close_instance  
+    	#关闭实例  
+	
+    fi
+}
+
+
+service_triggers()
+{
+	procd_add_reload_trigger "config4g"
+}
+
+start_service() {
+	config_load config4g
+	config_foreach run_4g 4G
+}
+
+stop_service()
+{
+    echo "4G stop" >> /tmp/log4g
+    killall quectel-CM
+    echo "quectel-CM has stoped."
+}

@@ -1218,6 +1218,24 @@ static const struct usb_device_id GobiVIDPIDTable [] =
       USB_DEVICE( 0x1508, 0x1001 ),
       .driver_info = (unsigned long)&GobiNetInfo 
    },
+//longsung
+	{
+		USB_DEVICE( 0x2df3, 0x9b2f ),
+		.driver_info = (unsigned long)&GobiNetInfo
+	},
+	{
+		USB_DEVICE( 0x2df3, 0x9b3e ),
+		.driver_info = (unsigned long)&GobiNetInfo
+	},
+	{
+		USB_DEVICE( 0x1c9e, 0x9b05 ),
+		.driver_info = (unsigned long)&GobiNetInfo
+	},
+	{
+		USB_DEVICE( 0x1c9e, 0x9b3c ),
+		.driver_info = (unsigned long)&GobiNetInfo
+	},
+
    //Terminating entry
    { }
 };

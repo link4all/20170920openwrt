@@ -1,0 +1,15 @@
+config edge
+	option mode 'static'
+	option enabled '1'
+	option tunname 'n2n0'
+	option ipaddr '10.0.0.2'
+	option netmask '255.255.0.0'
+	option supernode '120.77.43.135'
+	option port '8989'
+	option community 'zhonglian1'
+	option key '12345678'
+	option route '1'
+
+config supernode
+	option enabled '0'
+	option port '1235'

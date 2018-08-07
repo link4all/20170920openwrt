@@ -1,1 +1,23 @@
-../init.d/sysup
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006-2011 OpenWrt.org
+
+START=50
+
+USE_PROCD=1
+PROG=/bin/loop_crcmd
+
+start_service () {
+	procd_open_instance
+	procd_set_param command "$PROG" 
+	procd_set_param respawn 
+	procd_close_instance
+}
+
+stop_service() {  
+     killall loop_crcmd
+}  
+
+restart() {  
+    stop  
+    start  
+}  

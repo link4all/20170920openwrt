@@ -61,7 +61,7 @@ lang=`uci get gargoyle.global.lang`
                     <label>
                         <div class="name"></div>
                         <div>
-                            <input type="checkbox" value="1" name="enable" <%= `uci get wireless.radio0.disable >/dev/null 2>&1  || echo checked` %>/><%= $enable_wifi%>
+                            <input type="checkbox" value="1" name="enable" <%= `uci get wireless.radio0.disabled >/dev/null 2>&1  || echo checked` %>/><%= $enable_wifi%>
                         </div>
                     </label>
                       <label>

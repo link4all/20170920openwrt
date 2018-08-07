@@ -1,9 +1,26 @@
---- linux-3.18.45.orig/drivers/net/Makefile	2017-11-16 15:43:54.518820000 +0800
-+++ linux-3.18.45/drivers/net/Makefile	2018-01-12 15:46:56.427166036 +0800
-@@ -61,6 +61,7 @@
- obj-$(CONFIG_VMXNET3) += vmxnet3/
- obj-$(CONFIG_XEN_NETDEV_FRONTEND) += xen-netfront.o
- obj-$(CONFIG_XEN_NETDEV_BACKEND) += xen-netback/
-+obj-$(CONFIG_RALINK_RDM) += rt_rdm/
+Index: b/drivers/net/Kconfig
+===================================================================
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -25,6 +25,9 @@ menuconfig NETDEVICES
+ # that for each of the symbols.
+ if NETDEVICES
  
- obj-$(CONFIG_USB_NET_DRIVERS) += usb/
++config RALINK_RDM
++	tristate "Ralink rdm support"
++
+ config MII
+ 	tristate
+ 
+Index: b/drivers/net/Makefile
+===================================================================
+--- a/drivers/net/Makefile
++++ b/drivers/net/Makefile
+@@ -5,6 +5,7 @@
+ #
+ # Networking Core Drivers
+ #
++obj-$(CONFIG_RALINK_RDM)  +=rt_rdm/
+ obj-$(CONFIG_BONDING) += bonding/
+ obj-$(CONFIG_DUMMY) += dummy.o
+ obj-$(CONFIG_EQUALIZER) += eql.o

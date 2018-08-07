@@ -1,0 +1,79 @@
+#!/bin/sh
+#
+# Copyright (C) 2011 OpenWrt.org
+#
+device_modem=/dev/ttyUSB1
+
+uci set network.4g=interface
+#uci set network.4g.device=${device_modem}
+#uci set network.4g.proto='3g'
+#uci set network.4g.service='umts'
+#uci set network.4g.apn='3gnet'
+#uci set network.4g.pincode=''
+#uci set network.4g.username=''
+#uci set network.4g.password=''
+#uci set network.4g.dialnumber='*99#'
+uci set network.4g.proto='dhcp'
+uci set network.4g.ifname='eth2'
+
+uci set network.pptp=interface
+uci set network.pptp.proto=pptp
+uci set network.l2tp=interface
+uci set network.l2tp.proto=l2tp
+
+uci set network.n2n0=interface
+uci set network.n2n0.proto='static'
+uci set network.n2n0.ifname='n2n0'
+uci set network.lan.ipaddr='192.168.1.1'
+uci commit network
+
+#uci set luci.main.mediaurlbase='/luci-static/wfnt'
+#uci commit luci
+uci set firewall.@zone[1].network="wan wan6 wwan 4g pptp l2tp n2n0"
+uci set firewall.n2n0=redirect
+uci set firewall.n2n0.src=wan
+uci set firewall.n2n0.proto=all
+uci set firewall.n2n0.dest_ip='192.168.1.251'
+uci set firewall.n2n0.target='DNAT'
+uci commit firewall
+
+uci set system.@system[0].zonename='Asia/Shanghai'
+uci set system.@system[0].timezone='CST-8'
+uci commit system
+
+#####5 ports######
+#uci set network.mtsw=switch
+#uci set mtsw.name='switch0'
+#uci set mtsw.reset='1'
+#uci set mtsw.enable_vlan='1'
+
+#uci set network.sw1=switch_vlan
+#uci set network.sw1.device='switch0'
+#uci set network.sw1.vlan='1'
+#uci set network.sw1.ports='0 1 2 3 6t'
+
+#uci set network.sw2=switch_vlan
+#uci set network.sw2.device='switch0'
+#uci set network.sw2.vlan='2'
+#uci set network.sw2.ports='4 6t'
+#####5 ports######
+
+#mac=`cat /sys/class/net/ra0/address |tr -d  ':'`
+. /lib/functions.sh
+. /lib/functions/system.sh
+mac=`mtd_get_mac_binary art 4098 |tr -d ':'`
+uci set 4g.server.sn="${mac}"
+uci set 4g.server.name='router.link-4all.com'
+uci commit 4g
+
+#move gar uhttpd.conf to config dir
+cp /etc/uhttpd.conf.gargoyle /etc/config/uhttpd
+
+rm /etc/modules.d/AutoProbe-usb-net-gobinet*
+echo "gobinet_fg.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+#echo "gobinet_xy.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+#echo "gobinet_yy.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+#echo "gobinet_ls.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+
+
+
