@@ -7,6 +7,9 @@
 config KERNEL_PRINTK
 	bool "Enable support for printk"
 	default y
+config KERNEL_CEVT_SYSTICK_QUIRK
+	bool "Enable systick option"
+	default y
 
 config KERNEL_CRASHLOG
 	bool "Crash logging"

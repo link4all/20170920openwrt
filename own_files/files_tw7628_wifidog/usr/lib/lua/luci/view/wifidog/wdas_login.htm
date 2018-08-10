@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">	
+		
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta http-equiv="cache-control" content="no-cache"/>
+		<meta http-equiv="expires" content="0"/>
+		<script type="text/javascript" src="<%=resource%>/jquery.js"></script>
+		<title>WIFI AD SYSTEM</title>
+		<link rel="stylesheet" type="text/css" href="<%=resource%>/wifidog/wifidog.css" media="all" />
+		<script type="text/javascript" src="<%=resource%>/xhr.js"></script>
+</head>
+<body onload="htmInit()">
+		<div class="addWrap">
+				<div class="swipe" id="mySwipe" style="visibility: visible;">
+					<div class="swipe-wrap" style="width: 1500px;">
+						<div data-index="0" style="width: 375px; left: 0px; transition-duration: 300ms; transform: translate(0px, 0px) translateZ(0px);">
+						    <a href="http://www.chevrolet.com.ar"><img class="img-responsive" src="<%=resource%>/wifidog/1.jpg"></a>
+					    </div>
+						<div data-index="1" style="width: 375px; left: -375px; transition-duration: 0ms; transform: translate(375px, 0px) translateZ(0px);">
+							<a href="http://www.chevrolet.com.ar"><img class="img-responsive" src="<%=resource%>/wifidog/2.jpg"></a>
+						</div>
+						<div data-index="2" style="width: 375px; left: -750px; transition-duration: 300ms; transform: translate(-375px, 0px) translateZ(0px);">
+							<a href="http://www.chevrolet.com.ar"><img class="img-responsive" src="<%=resource%>/wifidog/3.jpg"></a>
+						</div>
+						<div data-index="3" style="width: 375px; left: -1025px; transition-duration: 300ms; transform: translate(-375px, 0px) translateZ(0px);">
+							<a href="http://www.chevrolet.com.ar"><img class="img-responsive" src="<%=resource%>/wifidog/4.jpg"></a>
+						</div>
+					</div>
+				</div>
+				
+				<ul id="position">
+					<li class="cur"></li>
+					<li class=" "></li>
+					<li class=" "></li>
+					<li class=" "></li>
+				</ul>
+			</div>
+<div id="show1" class="botCenter"></div>  
+<div id="commit" class="botCenter" >
+		<form id="frmLogin" method='post' action="<%=REQUEST_URI%>check">
+		<input type="hidden" id="user" name="user" tabindex="1" value="admin" />
+		<input type="hidden" id="pwd" name="pwd" tabindex="2" value="admin"  />
+	    <input  type='button' onclick="return OnBtnLoginClick();" value='Go To Internet' >
+	   </form>
+</div>
+<script type="text/javascript" src="<%=resource%>/wifidog/hhSwipe.js"></script>
+<script type="text/javascript">
+var bullets = document.getElementById('position').getElementsByTagName('li');
+var banner = Swipe(document.getElementById('mySwipe'), {
+	auto: 4000,
+	continuous: true,
+	disableScroll:false,
+	callback: function(pos) {
+		var i = bullets.length;
+		while (i--) {
+			bullets[i].className = ' ';
+		}
+		bullets[pos].className = 'cur';
+	}
+})
+var time = 15;
+</script>
+<script type="text/javascript" src="<%=resource%>/wifidog/wifidog.js"></script>
+</body>
+</html>

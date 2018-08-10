@@ -1,0 +1,31 @@
+
+.botCenter
+{
+      width:100%; height:35px; 
+      line-height:35px;  
+      position:fixed; bottom:30px; 
+      left:0px;font-size:25px; color:#f00; 
+      text-align:center;
+      border-radius:25px;border:none;
+      vertical-align:middle;
+}
+
+input[type=button]
+{
+margin-top: 4px ;
+left:0px;font-size:25px; color:#00f;
+text-align:center;
+border-radius:5px;border:1px solid
+}
+
+*{margin:0;padding:0;list-style-type:none;}
+a,img{border:0;}
+body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
+.addWrap{ position:relative; width:100%;background:#fff;margin-top:100px; padding:0;}
+.addWrap .swipe{overflow: hidden;visibility: hidden;position:relative;}
+.addWrap .swipe-wrap{overflow:hidden;position:relative;}
+.addWrap .swipe-wrap > div {float: left;width: 100%;position:relative;}
+#position{ position:absolute; bottom:0; right:0; padding-right:8px; margin:0; background:#000; opacity: 0.4; width:100%; filter: alpha(opacity=50);text-align:right;}
+#position li{width:10px;height:10px;margin:0 2px;display:inline-block;-webkit-border-radius:5px;border-radius:5px;background-color:#AFAFAF;}
+#position li.cur{background-color:#FF0000;}
+.img-responsive { display: block; max-width:100%;height: auto;}

@@ -226,6 +226,24 @@ init_config() {
 	config_foreach prepare_mqtt_conf mqtt
 }
 
+add_domain(){
+
+a=0
+while [ $a -lt 25 ]
+do
+wdctl add_trusted_domains `uci get wifidogauth.auth.redirect_url`
+if [ ! $? = 0 ];then
+   wdctl add_trusted_domains `uci get wifidogauth.auth.redirect_url`
+   #echo $a
+else
+   break
+fi
+a=$((a+1))
+sleep 1
+done
+}
+
+
 start_service() {
 	init_config
 
@@ -236,6 +254,7 @@ start_service() {
 	procd_set_param respawn # respawn automatically if something died
 	procd_set_param file	$CONFIGFILE
 	procd_close_instance
+	add_domain &
 }
 
 reload_service() {

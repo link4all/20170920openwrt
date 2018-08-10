@@ -83,7 +83,7 @@ define KernelPackage/mt7628/install
 	$(INSTALL_BIN) ./files/mt7628.sh $(1)/lib/wifi/
 	$(INSTALL_DIR) $(1)/etc/wireless/mt7628/
 	$(INSTALL_BIN) ./files/mt7628.dat $(1)/etc/wireless/mt7628/
-	if [ "$$(CONFIG_INTERNAL_PA_INTERNAL_LNA)" = "y" ]; then \
+	-if [ "$$(CONFIG_INTERNAL_PA_INTERNAL_LNA)" = "y" ]; then \
 		$(INSTALL_BIN) ./files/mt7628.eeprom.ipa.ilna.bin $(1)/etc/wireless/mt7628/mt7628.eeprom.bin; \
 	elif [ "$$(CONFIG_INTERNAL_PA_EXTERNAL_LNA)" = "y" ]; then \
 		$(INSTALL_BIN) ./files/mt7628.eeprom.ipa.elna.bin $(1)/etc/wireless/mt7628/mt7628.eeprom.bin; \

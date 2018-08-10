@@ -1,0 +1,20 @@
+config wifidog
+	option	gateway_interface	'br-lan'
+	option	auth_server_hostname	'192.168.11.1'
+	option	auth_server_port	80
+	option	auth_server_path	'/cgi-bin/luci/wdas/'	
+	#option  auth_server_path_msg 'gw_message'
+	option	check_interval		60
+	option	client_timeout		120
+	option	httpd_max_conn		200
+	option	pool_mode			1
+	option	thread_number		5
+	option	queue_size			20
+	option	wired_passed		0
+	option  white_domain     'www.chevrolet.com.ar'
+	option	enable		0
+
+config mqtt	'mqtt'
+  	option	mqtt_hostname	'192.168.11.1'
+  	option	mqtt_port		'8883'
+  	option	mqtt_topic		''
