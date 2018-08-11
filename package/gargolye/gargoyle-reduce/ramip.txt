@@ -1,0 +1,17 @@
+www_ramips/apinfo1.asp
+www_ramips/baseinfo1.asp
+www_ramips/cgi-bin/apscan.sh
+www_ramips/cgi-bin/checkip.sh
+www_ramips/cgi-bin/getwificlient.sh
+www_ramips/cgi-bin/pptp.sh
+www_ramips/cgi-bin/set4g.sh
+www_ramips/cgi-bin/setathrepeater.sh
+www_ramips/cgi-bin/setathwifi.sh
+www_ramips/cgi-bin/setmtkrepeater.sh
+www_ramips/cgi-bin/setmtkwifi.sh
+www_ramips/data/lang/en_us/baseinfo.po
+www_ramips/data/lang/en_us/wifirepeater.po
+www_ramips/data/lang/zh_cn/wifirepeater.po
+www_ramips/netstatus1.asp
+www_ramips/wifirepeater1.asp
+www_ramips/wifisetting1.asp

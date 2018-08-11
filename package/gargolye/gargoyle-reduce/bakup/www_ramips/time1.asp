@@ -1,6 +1,8 @@
 <%
 eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
-echo ""
+#echo ""
+lang=`uci get gargoyle.global.lang`
+. /www/data/lang/$lang/time.po
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -23,7 +25,7 @@ echo ""
 
     <script type="text/javascript">
     function saveTimeZone(){
-      $("#status").html("正在设置时区！");
+      $("#status").html("<%= $processing%>");
     var form = new FormData(document.getElementById("form1"));
         $.ajax({
        url: "/cgi-bin/settimezone.sh",
@@ -33,9 +35,9 @@ echo ""
        contentType:false,
        success: function(json) {
           if (json.timezone==undefined){
-          $("#status").html("时区出错，请刷新登录后重新设置");
+          $("#status").html("<%= $error%>");
           }else{
-          $("#status").html("时区已设置为："+json.timezone+"！");
+          $("#status").html("<%= $finish_zone%>："+json.timezone+"！");
           }
        },
        error: function(error) {
@@ -55,7 +57,7 @@ echo ""
           contentType:false,
           success: function(json) {
              if (json.time==undefined){
-             $("#now")[0].value="系统时间已设置，请重新登录刷新查看！";
+             $("#now")[0].value="<%= $finish_time%>";
              }else{
                 $("#now")[0].value=json.time;
              }
@@ -75,7 +77,7 @@ echo ""
           contentType:false,
           success: function(json) {
              if (json.time==undefined){
-             $("#now")[0].value="系统时间已设置，请重新登录刷新查看！";
+             $("#now")[0].value="<%= $finish_time%>";
              }else{
                 $("#now")[0].value=json.time;
              }
@@ -113,20 +115,20 @@ echo ""
     </style>
 </head>
 <body>
-  <div class="current">当前位置：系统维护 > 系统时间管理</div>
+  <div class="current"><%= $location%></div>
     <div class="wrap-main" style="position: relative;min-height: 100%;">
         <div class="wrap">
-            <div class="title">系统时间管理<p style="display:inline;color:#e81717;font-size:x-large;margin-left: 100px;" id="status"></p></div>
+            <div class="title"><%= $page%><p style="display:inline;color:#e81717;font-size:x-large;margin-left: 100px;" id="status"></p></div>
             <div class="wrap-form">
 
                 <div class="tab">
                     <div class="tab-head">
                         <ul id="tabpanel1" class="tab-nav">
                             <li class="active">
-                                <a href="#tab-1">系统时间</a>
+                                <a href="#tab-1"><%= $systime%></a>
                             </li>
                             <li>
-                                <a href="#tab-2">时区设置</a>
+                                <a href="#tab-2"><%= $timezone%></a>
                             </li>
                         </ul>
                     </div>
@@ -134,27 +136,27 @@ echo ""
                    <div class="tab-panel active" id="tab-1" style="padding: 15px;">
                  <form class="form-info" id="form0">
                                 <label>
-                                    <div class="name">当前系统时间：</div>
+                                    <div class="name"><%= $cur_time%>：</div>
                                     <div>
                                         <input id="now" type="text"  readonly="readonly" value="<% date "+%Y-%m-%d %H:%M:%S" %>" />
                                     </div>
                                 </label>
                                 <label>
-                                    <div class="name">手动设置时间：</div>
+                                    <div class="name"><%= $set_time%>：</div>
                                     <div>
                                        <input id="settime" name="settime" type="text"  />
                                     </div>
                                 </label>
                             </form>
 										  <div class="btn-wrap">
-					            <div class="save-btn fr"><a href="javascript:systime()">保存</a></div>
+					            <div class="save-btn fr"><a href="javascript:systime()"><%= $save%></a></div>
 					            </div>
 
                     </div>
                         <div class="tab-panel" id="tab-2">
                          <form class="form-info" id="form1">
                                 <label>
-                                    <div class="name">当前时区：</div>
+                                    <div class="name"><%= $cur_zone%>：</div>
                                     <div>
                                         <select class="input input-auto" id="timezone" name="timezone">
       <option value="UTC-10:00 TiZ.UTC10 UTC10" <% [ "`uci get system.@system[0].zonename |grep TiZ.UTC10 `" ] && echo selected  %>>UTC-10:00 TiZ.UTC10</option>

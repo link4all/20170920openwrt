@@ -1,6 +1,8 @@
 <%
 eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
-echo ""
+#echo ""
+lang=`uci get gargoyle.global.lang`
+. /www/data/lang/$lang/reboot.po
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -121,9 +123,9 @@ echo ""
     function submit_com(json) {
         $.post('/cgi-bin/reboot.sh',  json , function (d) {
           if (d.type==undefined){
-            $("#status").html("设置出错,请刷新登录后重试！");
+            $("#status").html("<%= $error%>");
             }else{
-              $("#status").html("已设置完毕！");
+              $("#status").html("<%= $finish%>");
             }
          }, 'json');
     }
@@ -140,9 +142,9 @@ echo ""
          // contentType: "application/json; charset=utf-8",
           success: function(json) {
              if (json.rebootnow==undefined){
-             $("#status").html("重启出错,请刷新登录后重试！");
+             $("#status").html("<%= $error%>");
              }else{
-                $("#status").html("正在重启请耐心等待！");
+                $("#status").html("<%= $reboot%>");
              }
           },
         });
@@ -159,42 +161,42 @@ echo ""
     </style>
 </head>
 <body>
-  <div class="current">当前位置：系统维护 > 系统重启</div>
+  <div class="current"><%= $location%></div>
     <div class="wrap-main" style="position: relative;min-height: 100%;">
         <div class="wrap">
-            <div class="title">系统重启<p style="display:inline;color:#e81717;font-size:x-large;margin-left: 100px;" id="status"></p></div>
+            <div class="title"><%= $page%><p style="display:inline;color:#e81717;font-size:x-large;margin-left: 100px;" id="status"></p></div>
             <div class="wrap-form">
 
                 <div class="tab">
                     <div class="tab-head">
                         <ul id="tabpanel1" class="tab-nav">
                             <li class="active">
-                                <a href="#tab-1">立即重启</a>
+                                <a href="#tab-1"><%= $reboot_now%></a>
                             </li>
                             <li>
-                                <a href="#tab-2">定时重启</a>
+                                <a href="#tab-2"><%= $reboot_sche%></a>
                             </li>
                         </ul>
                     </div>
                     <div class="tab-body ">
                       <div class="tab-panel active" id="tab-1" style="padding: 15px;">
     										  <div class="btn-wrap">
-    					              <div class="save-btn fr"><a href="javascript:rebootnow()">立即重启</a></div>
+    					              <div class="save-btn fr"><a href="javascript:rebootnow()"><%= $reboot_now%></a></div>
     					            </div>
                       </div>
                         <div class="tab-panel" id="tab-2">
 
                           <div>
-                              <input type="radio" value="0" name="restart_type"/>关闭定时重启
+                              <input type="radio" value="0" name="restart_type"/><%= $dis_sche%>
                               &nbsp;&nbsp;&nbsp;&nbsp;
-                              <input type="radio" value="1" name="restart_type"/>每天
+                              <input type="radio" value="1" name="restart_type"/><%= $everyday%>
                               &nbsp;&nbsp;&nbsp;&nbsp;
-                              <input type="radio" value="2" name="restart_type"/>每周
+                              <input type="radio" value="2" name="restart_type"/><%= $everyweek%>
                           </div>
 
                           <form id="form0">
                               <div class="btn-wrap">
-                              <div class="save-btn fr"><a href="javascript:submit0()">保存</a></div>
+                              <div class="save-btn fr"><a href="javascript:submit0()"><%= $save%></a></div>
                               </div>
                           </form>
                           <form id="form1">
@@ -203,24 +205,24 @@ echo ""
 
 
                               <div class="btn-wrap">
-                              <div class="save-btn fr"><a href="javascript:submit1()">保存</a></div>
+                              <div class="save-btn fr"><a href="javascript:submit1()"><%= $save%></a></div>
                               </div>
                           </form>
                           <form id="form2">
                               <div style="padding-bottom: 25px;">
-                                  <input type="checkbox" value="1" name="week" <% [ "`uci get system.@system[0].week |grep 1`" ] && echo "checked" %> />星期一&nbsp;&nbsp;
-                                  <input type="checkbox" value="2" name="week" <% [ "`uci get system.@system[0].week |grep 2`" ] && echo "checked" %> />星期二&nbsp;&nbsp;
-                                  <input type="checkbox" value="3" name="week" <% [ "`uci get system.@system[0].week |grep 3`" ] && echo "checked" %> />星期三&nbsp;&nbsp;
-                                  <input type="checkbox" value="4" name="week" <% [ "`uci get system.@system[0].week |grep 4`" ] && echo "checked" %> />星期四&nbsp;&nbsp;
-                                  <input type="checkbox" value="5" name="week" <% [ "`uci get system.@system[0].week |grep 5`" ] && echo "checked" %> />星期五&nbsp;&nbsp;
-                                  <input type="checkbox" value="6" name="week" <% [ "`uci get system.@system[0].week |grep 6`" ] && echo "checked" %> />星期六&nbsp;&nbsp;
-                                  <input type="checkbox" value="7" name="week" <% [ "`uci get system.@system[0].week |grep 7`" ] && echo "checked" %> />星期天
+                                  <input type="checkbox" value="1" name="week" <% [ "`uci get system.@system[0].week |grep 1`" ] && echo "checked" %> /><%= $mon%>&nbsp;&nbsp;
+                                  <input type="checkbox" value="2" name="week" <% [ "`uci get system.@system[0].week |grep 2`" ] && echo "checked" %> /><%= $tue%>&nbsp;&nbsp;
+                                  <input type="checkbox" value="3" name="week" <% [ "`uci get system.@system[0].week |grep 3`" ] && echo "checked" %> /><%= $wed%>&nbsp;&nbsp;
+                                  <input type="checkbox" value="4" name="week" <% [ "`uci get system.@system[0].week |grep 4`" ] && echo "checked" %> /><%= $thur%>&nbsp;&nbsp;
+                                  <input type="checkbox" value="5" name="week" <% [ "`uci get system.@system[0].week |grep 5`" ] && echo "checked" %> /><%= $fri%>&nbsp;&nbsp;
+                                  <input type="checkbox" value="6" name="week" <% [ "`uci get system.@system[0].week |grep 6`" ] && echo "checked" %> /><%= $sat%>&nbsp;&nbsp;
+                                  <input type="checkbox" value="7" name="week" <% [ "`uci get system.@system[0].week |grep 7`" ] && echo "checked" %> /><%= $sun%>
                               </div>
 
                               时间
                               <input type="text" class="input input-auto" value="<% uci get system.@system[0].time %>" name="time2" id="calendar2" readonly="readonly" /><br /><br />
                               <div class="btn-wrap">
-                              <div class="save-btn fr"><a href="javascript:submit2()">保存</a></div>
+                              <div class="save-btn fr"><a href="javascript:submit2()"><%= $save%></a></div>
                               </div>
                           </form>
 

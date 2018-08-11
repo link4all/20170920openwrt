@@ -2,10 +2,10 @@
 @charset "utf-8";
 /* CSS Document */
 body{margin:0;padding:0;}
-.login-bg{width:100%;min-width:800px;height:100%;background:#226aff;background-size:100% auto;}
+.login-bg{width:100%;min-width:800px;height:100%;background:#05afff;background-size:100% auto;}
 .sys-logo{width:615px;height:114px;margin:0 auto;}/*修改*/
 .sys-logo img{width:615px;height:114px;}/*新增*/
-.login-bg{padding-top:15%;}
+.login-bg{padding-top:11%;}
 .login-con{width:585px;height:468px;margin:0 auto;}
 .login-wrap{width:615px;height:297px;background:#f3f5f7;border-radius:6px;margin-top:30px;-moz-box-shadow: 0px 3px 3px #166988; /* 老的 Firefox */
 box-shadow: 0px 3px 3px #166988;position:relative;}

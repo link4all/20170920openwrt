@@ -11,7 +11,8 @@ uci set wifidog.@wifidog[0].enable=0
 fi
 uci set wifidog.@wifidog[0].client_timeout=$FORM_timeout
 if [ -n "$FORM_redirurl" ];then
-uci set wifidogauth.@auth.redirect_url=$FORM_redirurl
+uci set wifidogauth.auth.redirect_url=$FORM_redirurl
+uci set wifidog.@wifidog[0].white_domain=$FORM_redirurl
 else
   uci del wifidogauth.@auth.redirecturl
 fi
@@ -47,21 +48,21 @@ uci commit wifidog
 uci commit wifidogauth
 uci commit dhcp
 /etc/init.d/dnsmasq reload&
-/etc/init.d/wifidog stop && sleep 1 && /etc/init.d/wifidog start
+/etc/init.d/wifidog stop && sleep 1 && /etc/init.d/wifidog start 2>&1 >/dev/null
 #wdctl add_trusted_domains `uci get wifidogauth.auth.redirect_url`
-a=0
-while [ $a -lt 15 ]
-do
-wdctl add_trusted_domains `uci get wifidogauth.auth.redirect_url`
-if [ ! $? = 0 ];then
-   wdctl add_trusted_domains `uci get wifidogauth.auth.redirect_url`
-   echo $a
-else
-   break
-fi
-a=$((a+1))
-sleep 1
-done
+#a=0
+#while [ $a -lt 15 ]
+#do
+#wdctl add_trusted_domains `uci get wifidogauth.auth.redirect_url`
+#if [ ! $? = 0 ];then
+#   wdctl add_trusted_domains `uci get wifidogauth.auth.redirect_url`
+#   echo $a
+#else
+#   break
+#fi
+#a=$((a+1))
+#sleep 1
+#done
 
 
 

@@ -1,6 +1,8 @@
 <%
 eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
-echo ""
+#echo ""
+lang=`uci get gargoyle.global.lang`
+. /www/data/lang/$lang/passwd.po
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -18,7 +20,7 @@ echo ""
   {
        if(document.getElementById("passwd").value == document.getElementById("repasswd").value)
        {
-        $("#status").html("正在设置密码！");
+        $("#status").html("<%= $processing%>");
          var form = new FormData(document.getElementById("form0"));
            $.ajax({
           url: "/cgi-bin/setpasswd.sh",
@@ -29,11 +31,11 @@ echo ""
          // contentType: "application/json; charset=utf-8",
           success: function(json) {
              if (json.stat==undefined){
-             $("#status").html("设置出错请重新刷新页面后再设置");
+             $("#status").html("<%= $error%>");
              }else{
-                $("#status").html("密码已设置为"+json.stat+",请牢记！");
+                $("#status").html("<%= $finish_pass%> "+json.stat+" ！");
              }
-          },  
+          },
           error: function(error) {
             //alert("调用出错" + error.responseText);
           }
@@ -41,13 +43,13 @@ echo ""
        }
       else
       {
-      $("#status").html("两次密码输入不相同，请重新输入！");
+      $("#status").html("<%= $diff%>");
       }
-    }    
-      
+    }
+
  function setwebaccess()
   {
-        $("#status").html("已设置成功，请刷新后查看！");
+        $("#status").html("<%= $finish_web%>");
          var form = new FormData(document.getElementById("form1"));
            $.ajax({
           url: "/cgi-bin/setwebaccess.sh",
@@ -58,31 +60,31 @@ echo ""
          // contentType: "application/json; charset=utf-8",
           success: function(json) {
              if (json.stat==undefined){
-             $("#status").html("设置出错请重新刷新页面后再设置");
+             $("#status").html("<%= $error%>");
              }else{
-                $("#status").html("外网访问控制设置已完成！");
+                $("#status").html("<%= $finish_web%>");
              }
-          },  
+          },
           error: function(error) {
             //alert("调用出错" + error.responseText);
           }
         });
-    } 
-      
+    }
+
     function showpasswd(){
       var pass=document.getElementById("passwd")
       if (pass.type=="password"){
          pass.type="text";
          document.getElementById("repasswd").type="text";
-         document.getElementById("dispass").value="隐藏密码";
+         document.getElementById("dispass").value="<%= $hide_pass%>";
          }
         else{
-         pass.type="password"; 
+         pass.type="password";
          document.getElementById("repasswd").type="password";
-        document.getElementById("dispass").value="显示密码"
+        document.getElementById("dispass").value="<%= $show_pass%>"
         }
      }
-     
+
     </script>
     <style type="text/css">
     .current{
@@ -91,63 +93,63 @@ echo ""
     </style>
 </head>
 <body>
-  <div class="current">当前位置：系统维护 > Web访问管理</div> 
+  <div class="current"><%= $location%></div>
     <div class="wrap-main" style="position: relative;min-height: 100%;">
         <div class="wrap">
-            <div class="title">Web访问管理<p style="display:inline;color:#e81717;font-size:x-large;margin-left: 100px;" id="status"></p></div>
+            <div class="title"><%= $page%><p style="display:inline;color:#e81717;font-size:x-large;margin-left: 100px;" id="status"></p></div>
             <div class="wrap-form">
 
                 <div class="tab">
                     <div class="tab-head">
                         <ul id="tabpanel1" class="tab-nav">
                             <li class="active">
-                                <a href="#tab-1">Web密码设置</a>
+                                <a href="#tab-1"><%= $web_pass%></a>
                             </li>
                             <li>
-                                <a href="#tab-2">外网访问控制</a>
+                                <a href="#tab-2"><%= $wan_access%></a>
                             </li>
                         </ul>
                     </div>
                     <div class="tab-body ">
                       <div class="tab-panel active" id="tab-1" style="padding: 15px;">
              <form class="form-info" id="form0">
-                
+
                     <label class="">
-                        <div class="name">输入密码：</div>
+                        <div class="name"><%= $input_pass%>：</div>
                         <div>
-                            <input id="passwd" name="passwd" type="password"  value="" />         
+                            <input id="passwd" name="passwd" type="password"  value="" />
                         </div>
                     </label>
                     <label class="">
-                        <div class="name">确认密码：</div>
+                        <div class="name"><%= $confirm_pass%>：</div>
                         <div>
-                            <input id="repasswd" name="repasswd" type="password" value="" /> 
-                            <input id="dispass" class="green-btn" type="button" value="显示密码" onclick="showpasswd()"/>        
+                            <input id="repasswd" name="repasswd" type="password" value="" />
+                            <input id="dispass" class="green-btn" type="button" value="<%= $show_pass%>" onclick="showpasswd()"/>
                         </div>
                     </label>
             </form>
 										  <div class="btn-wrap">
-					            <div class="save-btn fr"><a href="javascript:setpasswd()">保存</a></div>
+					            <div class="save-btn fr"><a href="javascript:setpasswd()"><%= $save%></a></div>
 					            </div>
 
                     </div>
                         <div class="tab-panel" id="tab-2">
                         <form class="form-info" id="form1">
                                 <label>
-                                    <div class="name">外网访问控制：</div>
+                                    <div class="name"><%= $wan_access%>：</div>
                                     <div>
-                                        <input id="webctrl" type="checkbox" name="webctrl" value="1"  <% [ `uci get firewall.@zone[1].input|grep "ACCEPT"` ]  && echo "checked" %>/>允许外网访问
+                                        <input id="webctrl" type="checkbox" name="webctrl" value="1"  <% [ `uci get firewall.@zone[1].input|grep "ACCEPT"` ]  && echo "checked" %>/><%= $allow%>
                                     </div>
                                 </label>
                                 <label>
-                                    <div class="name">web端口号：</div>
+                                    <div class="name"><%= $webport%>：</div>
                                     <div>
                                         <input id="webport" name="webport" type="text"  placeholder="80" value=<% uci get uhttpd.main.listen_http |awk -F: '{print $2}' %>/>
                                     </div>
                                 </label>
-                            </form>    
+                            </form>
               <div class="btn-wrap">
-              <div class="save-btn fr"><a href="javascript:setwebaccess()">保存</a></div>
+              <div class="save-btn fr"><a href="javascript:setwebaccess()"><%= $save%></a></div>
               </div>
                         </div>
                     </div>

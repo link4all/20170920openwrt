@@ -15,8 +15,21 @@ sysupgrade -T /tmp/firmware.bin >/dev/null 2>&1
     echo "{"
     echo "\"stat\":\"ok\""
     echo "}"
-  sysupgrade -n  /tmp/firmware.bin  >/dev/null 2>&1
+
   fi
+fi
+
+if [ "$FORM_upgrade" = "yes"  ];then
+   if [ -f /tmp/firmware.bin ];then
+     echo "{"
+     echo "\"stat\":\"ok\""
+     echo "}"
+sysupgrade -n  /tmp/firmware.bin  >/dev/null 2>&1
+   else
+  echo "{"
+  echo "\"stat\":\"not\""
+  echo "}"
+ fi
 fi
 
 %>

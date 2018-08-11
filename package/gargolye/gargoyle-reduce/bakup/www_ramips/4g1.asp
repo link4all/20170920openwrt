@@ -1,6 +1,8 @@
 <%
 eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
-echo ""
+#echo ""
+lang=`uci get gargoyle.global.lang`
+. /www/data/lang/$lang/g4.po
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -14,7 +16,7 @@ echo ""
 <link rel="stylesheet" type="text/css" href="css/form.css" />
   <script type="text/javascript">
   function setlan(){
-        $("#status").html("正在设置4G....请等待网络重启！");
+        $("#status").html("<%= $g4setting_processing%>");
          var form = new FormData(document.getElementById("form0"));
            $.ajax({
           url: "/cgi-bin/set4g.sh",
@@ -25,9 +27,9 @@ echo ""
          // contentType: "application/json; charset=utf-8",
           success: function(json) {
              if (json.ipaddr==undefined){
-             $("#status").html("设置出错请重新刷新页面后再设置");
+             $("#status").html("<%= $g4setting_error%>");
              }else{
-                $("#status").html("已设置4G ip为:"+json.ipaddr);
+                $("#status").html("<%= $g4ip%>"+json.ipaddr);
              }
           },
           error: function(error) {
@@ -41,25 +43,45 @@ echo ""
          $("#apn").html('<input id="apn" name="apn" type="text"  />');
          }
         }
-
+   function mode_change(){
+     var index=$('.dialmode option').index($('.dialmode option:selected'));
+     if (index==0){
+      $(".modem_dev").css('display','none');
+      $(".auth_mode").css('display','inline-block');
+      }
+      if (index==1){
+       $(".modem_dev").css('display','inline-block');
+       $(".auth_mode").css('display','none');
+       }
+   }
+   $(window).load(function() {
+   mode_change();
+   });
   </script>
 </head>
 <body>
-    <div class="current">当前位置：网络设置 > 4G设置</div>
+    <div class="current"><%= $location%></div>
      <div class="wrap-main" style="position: relative;min-height: 100%;">
         <div class="wrap">
-            <div class="title">4G设置 <p style="display:inline;color:#e81717;font-size:x-large;margin-left: 100px;" id="status"></p></div>
+            <div class="title"><%= $g4_setting%> <p style="display:inline;color:#e81717;font-size:x-large;margin-left: 100px;" id="status"></p></div>
             <div class="wrap-form">
              <form class="form-info" id="form0">
 
                     <label class="">
-                        <div class="name">IP 地址：</div>
+                        <div class="name"><%= $ip_addr%></div>
                         <div>
-                            <input id="4gip" name="4gip" type="text" value="<% [ `ubus call network.interface.4g status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "` ] || echo "拨号未成功，请重试！" %>" readonly="readonly" style="background-color:#eee" />
+                            <input id="4gip" name="4gip" type="text" value="<% [ `ubus call network.interface.4g status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "` ] && ubus call network.interface.4g status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, " || echo "$g4_noip" %>" readonly="readonly" style="background-color:#eee" />
                         </div>
                     </label>
                     <label class="">
-                        <div class="name">选择MODEM设备：</div>
+                        <div class="name"><%= $dialmode%>:</div>
+                        <select class="dialmode" name="dialmode" onchange="mode_change()">
+                          <option value="gobinet" <% [ `uci get network.4g.proto |grep "dhcp"` ] && echo 'selected="true"' %> >Gobinet</option>
+                          <option value="pppd" <% [ `uci get network.4g.proto |grep "3g"` ] && echo 'selected="true"' %> >PPPD</option>
+                        </select>
+                    </label>
+                    <label class="modem_dev">
+                        <div class="name"><%= $modem_dev%></div>
                         <div>
                             <select class="device" name="device">
                                 <%
@@ -76,8 +98,8 @@ echo ""
                             </select>
                         </div>
                     </label>
-                    <label class="">
-                        <div class="name">选择AT设备：</div>
+                    <label class="at_dev">
+                        <div class="name"><%= $at_dev%></div>
                         <div>
                             <select class="at" name="at">
                                 <%
@@ -96,39 +118,51 @@ echo ""
                     </label>
 
                     <label class="">
-                        <div class="name">APN设置：</div>
+                        <div class="name"><%= $apn_setting%></div>
                         <div id="apn">
-              <select class="apn" name="apn" onchange="mask_method()">
-								<option value="3gnet" <% [ `uci get network.4g.apn |grep "3gnet"` ] && echo 'selected="true"' %> >联通/移动</option>
-								<option value="ctnet" <% [ `uci get network.4g.apn |grep "ctnet"` ] && echo 'selected="true"' %> >电信</option>
-								<option value=""  >自定义</option>
-							</select>
+				<input class="apn" name="apn" type="text" value="<% uci get config4g.@4G[0].apn %>" placeholder="apn" />
                         </div>
                     </label>
                     <label class="">
-                        <div class="name">用户名：</div>
+                        <div class="name"><%= $dialnumber%>:</div>
                         <div>
-                            <input id="username" name="username" type="text" value="<% uci get network.4g.username %>" placeholder="非必填，可留空" />
+                            <input id="dialnumber" name="dialnumber" type="text" value="<% uci get config4g.@4G[0].dialnumber %>" placeholder="*99#" />
+                        </div>
+                    </label>
+                    <label class="auth_mode">
+                        <div class="name"><%= $auth_mode%>:</div>
+                          <select  name="auth_mode" >
+                            <option value="0" <% [ `uci get config4g.@4G[0].auth |grep "0"` ] && echo 'selected="true"' %> >None</option>
+                            <option value="1" <% [ `uci get config4g.@4G[0].auth |grep "1"` ] && echo 'selected="true"' %> >Pap</option>
+                            <option value="2" <% [ `uci get config4g.@4G[0].auth |grep "2"` ] && echo 'selected="true"' %> >Chap</option>
+                            <option value="3" <% [ `uci get config4g.@4G[0].auth |grep "3"` ] && echo 'selected="true"' %> >MsChapV2</option>
+                          </select>
+                    </label>
+                    <label class="">
+                        <div class="name"><%= $username%></div>
+                        <div>
+                            <input id="username" name="username" type="text" value="<% uci get config4g.@4G[0].user %>" placeholder="<%= $place_hold%>" />
                         </div>
                     </label>
                     <label class="">
-                        <div class="name">密码：</div>
+                        <div class="name"><%= $passwd%></div>
                         <div>
-                            <input id="password" name="password" type="text" value="<% uci get network.4g.password %>"  placeholder="非必填，可留空" />
+                            <input id="password" name="password" type="text" value="<% uci get config4g.@4G[0].password %>"  placeholder="<%= $place_hold%>" />
                         </div>
                     </label>
                     <label class="">
-                        <div class="name">PIN码：</div>
+                        <div class="name"><%= $pincode%></div>
                         <div>
-                            <input id="pincode" name="pincode" type="text" value="<% uci get network.4g.pincode %>" placeholder="非必填，可留空" />
+                            <input id="pincode" name="pincode" type="text" value="<% uci get config4g.@4G[0].pincode %>" placeholder="<%= $place_hold%>" />
                         </div>
                     </label>
             </form>
 				  <div class="btn-wrap">
-					<div class="save-btn fr"><a href="javascript:setlan()">保存</a></div>
+					<div class="save-btn fr"><a href="javascript:setlan()"><%= $save%></a></div>
 					</div>
             </div>
         </div>
     </div>
 </body>
 </html>
+

@@ -1,6 +1,8 @@
 <%
 eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
-echo ""
+#echo ""
+lang=`uci get gargoyle.global.lang`
+. /www/data/lang/$lang/apinfo.po
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -56,15 +58,15 @@ echo ""
     </script>
 </head>
 <body>
-    <div class="current">当前位置：系统状态 > 客户端信息</div>
+    <div class="current"><%= $location%></div>
     <div class="wrap-main" style="position: relative;min-height: 100%">
         <div class="wrap">
-            <div class="title">无线主机</div>
+            <div class="title"><%= $ap_host%></div>
             <div class="wrap-table">
                 <table border="0" cellspacing="0" cellpadding="0" class="table-con">
                     <thead>
-                        <th>MAC 地址</th>
-                         <th>信号强度（dbm）</th>
+                        <th><%= $mac%></th>
+                         <th><%= $signal%>（dbm）</th>
                           <th>RX（Bytes）</th>
                           <th>TX (Btyes)</th>
                     </thead>
@@ -76,13 +78,13 @@ echo ""
         </div>
 
         <div class="wrap">
-            <div class="title">ARP列表</div>
+            <div class="title"><%= $arp_list%></div>
             <div class="wrap-table">
                 <table border="0" cellspacing="0" cellpadding="0" class="table-con">
                     <thead>
-                        <th>IP地址</th>
-                        <th>MAC 地址</th>
-                        <th>标记<br />(0x0不在线，0x2在线)</th>
+                        <th>IP <%= $addr%></th>
+                        <th>MAC <%= $addr%></th>
+                        <th><%= $flag%><br />(<%= $online%>)</th>
 
                     </thead>
                     <tbody id="arplist">

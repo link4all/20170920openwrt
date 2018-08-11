@@ -28,7 +28,7 @@ a{text-decoration:none;}
     left: 0px;
     right: 0px;
     height: 70px;
-	background:#0288d1;
+	background:#05afff;
 }
 .layout_title .logo
     {
@@ -36,17 +36,17 @@ a{text-decoration:none;}
         width: 318px;
         height: 70px;
         background-size: 100%;
-       
+
     }
 .layout_title .logo img{width:318px;height:60px;margin-top:6px;margin-left:10px;}/*新增*/
 .layout_title .sysname
     {
-        float: left;
-        margin: 20px 0 0 20px;/*修改*/
+        float: right;
+        margin: 23px 30px 0 20px;/*修改*/
         vertical-align: text-top;
         font-size: 15px;
         line-height: 28px;
-        
+
         color: #fff;
     }
 .systoolbar{float:right;margin-right:20px;margin-top:25px;}/*修改*/
@@ -82,7 +82,7 @@ a{text-decoration:none;}
 .home:hover{color:#fff;}
 .layout_left .menu > li
     {
-       
+
         border-bottom: 1px solid #e8ebf0;
     }
 .layout_left .menu > li > .menuname
@@ -125,7 +125,7 @@ a{text-decoration:none;}
 		text-decoration:none;
     }
 .layout_left .children .menuname
-        {   
+        {
 		    height:40px;
 			line-height:40px;
             border: none;
@@ -134,18 +134,18 @@ a{text-decoration:none;}
 			text-decoration:none;
         }
 .layout_left .children .menuname:hover
-        {   
+        {
 		   background:#e1f7ff;
 		   color:#0288d1;
-		 
+
         }
 .layout_left .children .menuname .checked
-        {   
+        {
 		   background:#e1f7ff;
 		   color:#0288d1;
-		
+
         }
-		
+
 .layout_left .children .checked
         {
             padding-left: 78px;

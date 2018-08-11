@@ -1,6 +1,8 @@
 <%
 eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
-echo ""
+#echo ""
+lang=`uci get gargoyle.global.lang`
+. /www/data/lang/$lang/wifirepeater.po
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -18,7 +20,7 @@ echo ""
         function apscan(){
          // document.getElementById("form0").submit();
          $("#aplist").html("");//扫描前先清空
-          $("#status").html("正在扫描AP,请等待！");
+          $("#status").html("<%= $scanning%>");
           $.ajax({
           url: "/cgi-bin/apscan.sh",
           type: "get",
@@ -35,7 +37,7 @@ echo ""
                     + '</td><td width="80px"><input class="green-btn" type="button" onclick="selrepeater(this)" value="选择"/></td></tr>';
               $("#aplist").append(tbody);
                }
-             $("#status").html("扫描已完成，请选择！");
+             $("#status").html("<%= $finish_scan%>");
           },
           error: function(error) {
             //alert("调用出错" + error.responseText);
@@ -57,7 +59,7 @@ echo ""
    document.getElementById("etype").value=etype1;
    document.getElementById("pass").value="";
    document.getElementById('pass').focus();
-    $("#status").html("已选择SSID:\""+ssid1+"\",请输入密码再保存!");
+    $("#status").html("<%= $selected%>SSID:\""+ssid1+"\",<%= $input_pass%>");
    }
   function checkip(){
            $.ajax({
@@ -67,10 +69,10 @@ echo ""
           contentType: "application/json; charset=utf-8",
           success: function(json) {
             if ( json["ip"].length==0 ){
-           $("#wwanip")[0].value="未连接:可能是密码错误！"
+           $("#wwanip")[0].value="<%= $no_conn%>"
            }
            else{
-            $("#wwanip")[0].value="已连接,IP为:"+ json["ip"]
+            $("#wwanip")[0].value="<%= $conn%>"+ json["ip"]
            }
           },
           error: function(error) {
@@ -83,16 +85,16 @@ echo ""
       var pass=document.getElementById("pass")
       if (pass.type=="password"){
          pass.type="text"
-         document.getElementById("dispass").value="隐藏密码"
+         document.getElementById("dispass").value="<%= $hide_pass%>"
          }
         else{
          pass.type="password"
-        document.getElementById("dispass").value="显示密码"
+        document.getElementById("dispass").value="<%= $show_pass%>"
         }
      }
 
      function setrepeater(){
-      $("#status").html("正在设置...,请等待网络重启!");
+      $("#status").html("<%= $processing%>");
       var form = new FormData(document.getElementById("form0"));
        $.ajax({
           type: "post", 
@@ -101,7 +103,7 @@ echo ""
           processData:false,
           contentType:false,
           success: function(json) {
-           $("#status").html("已完成设置，请查看连接状态!");
+           $("#status").html("<%= $finish%>");
             document.documentElement.scrollTop=document.body.scrollTop =0;//回到顶部
             setTimeout("checkip()",5000);
           },
@@ -114,14 +116,14 @@ echo ""
     </script>
 </head>
 <body>
-    <div class="current">当前位置：无线设置 > 2.4G中继设置</div>
+    <div class="current"><%= $location%></div>
       <div class="wrap-main" style="position: relative;min-height: 100%;">
         <div class="wrap">
-            <div class="title">2.4G中继设置 <p style="display:inline;color:#e81717;font-size:16px;margin-left: 100px;" id="status"></p></div>
+            <div class="title"><%= $page%><p style="display:inline;color:#e81717;font-size:16px;margin-left: 100px;" id="status"></p></div>
             <div class="wrap-form">
                 <form class="form-info" id="form0" >
                     <label>
-                        <div class="name">连接状态:</div>
+                        <div class="name"><%= $conn_status%></div>
                         <div>
                          <input name="wwanip" type="text" value="" id="wwanip" readonly="readonly" />
                         </div>
@@ -130,10 +132,10 @@ echo ""
 
 
                             <label>
-                                <div class="name">密码：</div>
+                                <div class="name"><%= $pass%></div>
                                 <div>
                                     <input id="pass" name="epwd" type="password"  value="" />
-                                    <input id="dispass" class="green-btn" type="button" value="显示密码" onclick="showpasswd()"/>
+                                    <input id="dispass" class="green-btn" type="button" value="<%= $show_pass%>" onclick="showpasswd()"/>
                                 </div>
                             </label>
                                 <input id="ssid" name="essid" type="hidden" value=""  />
@@ -142,8 +144,8 @@ echo ""
                                 <input id="bssid" type="hidden" name="bssid" />
                 </form>
 				  <div class="btn-wrap">
-					    <div class="save-btn fr"><a href="javascript:setrepeater()">保存</a></div>
-					     <input type="button" class="green-btn" onclick="apscan()" value="扫描" />
+					    <div class="save-btn fr"><a href="javascript:setrepeater()"><%= $save%></a></div>
+					     <input type="button" class="green-btn" onclick="apscan()" value="<%= $scan%>" />
 					</div>
             </div>
         </div>
@@ -152,11 +154,11 @@ echo ""
                 <table border="0" cellspacing="0" cellpadding="0" class="table-con">
                     <thead>
                         <th width="20%">SSID</th>
-                        <th width="10%">信道</th>
-                        <th width="20%">AP MAC地址</th>
-                        <th width="20%">加密方式 (Btye)</th>
-                        <th width="10%">信号强度（%）</th>
-                        <th width="20%">选择</th>
+                        <th width="5%"><%= $ch%></th>
+                        <th width="20%"><%= ap_mac%></th>
+                        <th width="20%"><%= $enc%></th>
+                        <th width="15%"><%= $sig%></th>
+                        <th width="20%"><%= $sel%></th>
                     </thead>
                     <tbody id="aplist">
 

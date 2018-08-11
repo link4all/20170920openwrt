@@ -1,0 +1,17 @@
+www_ar71xx/apinfo1.asp
+www_ar71xx/baseinfo1.asp
+www_ar71xx/cgi-bin/apscan.sh
+www_ar71xx/cgi-bin/checkip.sh
+www_ar71xx/cgi-bin/getwificlient.sh
+www_ar71xx/cgi-bin/pptp.sh
+www_ar71xx/cgi-bin/set4g.sh
+www_ar71xx/cgi-bin/setathrepeater.sh
+www_ar71xx/cgi-bin/setathwifi.sh
+www_ar71xx/cgi-bin/setmtkrepeater.sh
+www_ar71xx/cgi-bin/setmtkwifi.sh
+www_ar71xx/data/lang/en_us/baseinfo.po
+www_ar71xx/data/lang/en_us/wifirepeater.po
+www_ar71xx/data/lang/zh_cn/wifirepeater.po
+www_ar71xx/netstatus1.asp
+www_ar71xx/wifirepeater1.asp
+www_ar71xx/wifisetting1.asp

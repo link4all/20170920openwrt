@@ -1,0 +1,1294 @@
+diff -uNr www_ar71xx/apinfo1.asp www_ramips/apinfo1.asp
+--- www_ar71xx/apinfo1.asp	2018-07-17 02:49:39.827309327 -0400
++++ www_ramips/apinfo1.asp	2018-07-17 02:49:41.691309285 -0400
+@@ -13,7 +13,7 @@
+     <link rel="stylesheet" type="text/css" href="css/layout.css" />
+     <link rel="stylesheet" type="text/css" href="css/table.css" />
+     <link rel="stylesheet" type="text/css" href="css/main.css" />
+-    <script type="text/javascript" src="jjs/jquery.js"></script>
++    <script type="text/javascript" src="jjs/jquery.js"></script>	
+   <script type="text/javascript">
+    function getwificlientlist(){
+            $.ajax({
+@@ -24,10 +24,10 @@
+           success: function(json) {
+                   for (var key in json) {
+                var tbody="";
+-              tbody += '<tr><td>'+ key + '</td><td>' + json[key].signal + '</td><td>' +json[key].rxbytes + '</td><td>' + json[key].txbytes + '</td></tr>';
+-              $("#apclient").append(tbody);
+-               }
+-          },
++              tbody += '<tr><td>'+ key + '</td><td>' + json[key].signal + '</td><td>' +json[key].bw + '</td><td>' + json[key].count + '</td></tr>';  
++              $("#apclient").append(tbody);  
++               }                     
++          },  
+           error: function(error) {
+             //alert("调用出错" + error.responseText);
+           }
+@@ -42,10 +42,10 @@
+           success: function(json) {
+                   for (var key in json) {
+         var tbody="";
+-              tbody += '<tr><td>'+ key + '</td><td>' + json[key].mac + '</td><td>' +json[key].flag + '</td></tr>';
+-              $("#arplist").append(tbody);
+-               }
+-          },
++              tbody += '<tr><td>'+ key + '</td><td>' + json[key].mac + '</td><td>' +json[key].flag + '</td></tr>';  
++              $("#arplist").append(tbody);  
++               }                     
++          },  
+           error: function(error) {
+             //alert("调用出错" + error.responseText);
+           }
+@@ -67,8 +67,8 @@
+                     <thead>
+                         <th><%= $mac%></th>
+                          <th><%= $signal%>（dbm）</th>
+-                          <th>RX（Bytes）</th>
+-                          <th>TX (Btyes)</th>
++                          <th><%= $bw%>（hz）</th>
++                          <th><%= $traffic%>(Btye)</th>
+                     </thead>
+                     <tbody id="apclient">
+ 
+@@ -76,7 +76,7 @@
+                 </table>
+             </div>
+         </div>
+-
++          
+         <div class="wrap">
+             <div class="title"><%= $arp_list%></div>
+             <div class="wrap-table">
+@@ -85,7 +85,7 @@
+                         <th>IP <%= $addr%></th>
+                         <th>MAC <%= $addr%></th>
+                         <th><%= $flag%><br />(<%= $online%>)</th>
+-
++                      
+                     </thead>
+                     <tbody id="arplist">
+ 
+diff -uNr www_ar71xx/baseinfo1.asp www_ramips/baseinfo1.asp
+--- www_ar71xx/baseinfo1.asp	2018-07-17 02:49:38.503309357 -0400
++++ www_ramips/baseinfo1.asp	2018-07-17 02:49:40.543309311 -0400
+@@ -58,18 +58,18 @@
+ 										</tr>
+ 										<tr>
+ 												<th width="20%"><%= $id%></th>
+-												<td><%= `dd bs=1 skip=4098 count=6 if=/dev/mtd4 2>/dev/null | hexdump -v -n 6 -e '5/1 "%02x:" 1/1 "%02x"'|tr -d ":"` %></td>
++												<td><%= `dd bs=1 skip=46 count=6 if=/dev/mtd2 2>/dev/null | hexdump -v -n 6 -e '5/1 "%02x:" 1/1 "%02x"'|tr -d ":"` %></td>
+ 										</tr>
+ 										<tr>
+ 												<th width="20%"><%= $mac%></th>
+-												<td><%= `dd bs=1 skip=4098 count=6 if=/dev/mtd4 2>/dev/null | hexdump -v -n 6 -e '5/1 "%02x:" 1/1 "%02x"'|tr -d ":"` %></td>
++												<td><%= `dd bs=1 skip=46 count=6 if=/dev/mtd2 2>/dev/null | hexdump -v -n 6 -e '5/1 "%02x:" 1/1 "%02x"'|tr -d ":"` %></td>
+ 										</tr>
+ 										<tr>
+ 												<th width="20%"><%= $run_time%></th>
+ 												<td id="uptime" >
+-                        <%  secs=`cut -d. -f1  /proc/uptime`  %>
++			<%  secs=`cut -d. -f1  /proc/uptime`  %>
+                         <%= "$(($secs/86400)) $day $(($secs%86400/3600)) $hour $(($secs%3600/60)) $minute $(($secs%60)) $sec" %>
+-                        </td>
++												</td>
+ 										</tr>
+ 										<tr>
+ 												<th width="20%"><%= $sys_load%></th>
+diff -uNr www_ar71xx/cgi-bin/apscan.sh www_ramips/cgi-bin/apscan.sh
+--- www_ar71xx/cgi-bin/apscan.sh	2018-07-17 02:49:38.923309348 -0400
++++ www_ramips/cgi-bin/apscan.sh	2018-07-17 02:49:40.895309303 -0400
+@@ -3,181 +3,53 @@
+ eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "/login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
+ echo "Content-Type: application/json"
+ echo ""
+-iwlist $1 scanning | awk '
+-BEGIN {
+-  count = 0;
+-  BSSID = "N/A";
+-  CHANNEL = "N/A";
+-  SSID = "N/A";
+-  SIG = "N/A";
+-  ENC = "N/A";
+-  W2 = "N/A";
+-  W1 = "N/A";
+-  WPA = 0;
+-  WPA2 = 0;
+-  printf("{");
+-}
+-function record(bs, ch, s, sg, e, w2, w1){
+-  id = "";
+-  bssid = "";
+-  c = "";
+-  sig = "";
+-  sig_result = "";
+-  enc = "";
+-  type = "none";
+-  split(bs,a,": ");
+-  bssid = a[2];
+-  split(ch,cc,":");
+-  c = cc[2];
+-  split(s,a,":");
+-  id = a[2];
+-  split(sg,a,"level=");
+-  split(a[2],s," ");
+-  sig = s[1];
++i=0
++#echo "HTTP/1.1 200 OK"
++echo "{"
++iwpriv ra0 set SiteSurvey=0
++sleep 2
++iwpriv ra0 get_site_survey | grep '^[0-9]' | while read line
++#/www/cgi-bin/scan 
++#cat /tmp/ssids | while read line
++do
++	chanel=`echo $line | awk '{print $1}'`
++	#if ${line:5:1} == ' ' 
++	if [ "${line:5:1}" = " " ]; then 
++		ssid="[unknown]"
++		bssid=`echo $line | awk '{print $2}'`
++		security=`echo $line | awk '{print $3}'`
++		signal=`echo $line | awk '{print $4}'`
++		wmode=`echo $line | awk '{print $5}'`
++		extch=`echo $line | awk '{print $6}'`
++		nt=`echo $line | awk '{print $7}'`
++		wps=`echo $line | awk '{print $8}'`
++	else
++		ssid=`echo $line | awk '{if (NF>9) print $2,$3;else print $2;}'`
++		bssid=`echo $line | awk '{if (NF>9) print $4;else print $3;}'`
++		security=`echo $line | awk '{if (NF>9) print $5;else print $4;}'`
++		signal=`echo $line | awk '{if (NF>9) print $6;else print $5;}'`
++		wmode=`echo $line | awk '{if (NF>9) print $7;else print $6;}'`
++		extch=`echo $line | awk '{if (NF>9) print $8;else print $7;}'`
++		nt=`echo $line | awk '{if (NF>9) print $9;else print $8;}'`
++		wps=`echo $line | awk '{if (NF>9) print $10;else print $9;}'`
++	fi
+ 
+-  if(sig <= -100) {
+-	sig_result = 0;
+-  } else if (sig >= -50) {
+-	sig_result = 100;
+-  } else {
+-	sig_result = 2 * (sig + 100);
+-  }
++	if [ $i -ne 0 ]; then
++	echo ","
++	fi
+ 
+-  split(e,a,":");
+-  enc = a[2];
+-  if (enc == "on"){
+-	type = "WEP";
+-	ccmp = 0;
+-	tkip = 0;
+-	psk2 = 0;
+-	psk1 = 0;
+-	split(w2,a,":");
+-	if(a[2]){
+-	  split(a[2], r, " ");
+-	  if(r[1] == "CCMP")
+-		ccmp = 1;
+-	  if(r[1] == "TKIP")
+-		tkip = 1;
+-	  if(r[2] == "CCMP")
+-		ccmp = 1;
+-	  if(r[2] == "TKIP")
+-		tkip = 1;
+-	  psk2 = a[2];
+-	}
+-	split(w1,a,":");
+-	if(a[2]){
+-	  split(a[2], r, " ");
+-	  if(r[1] == "CCMP")
+-		ccmp = 1;
+-	  if(r[1] == "TKIP")
+-		tkip = 1;
+-	  if(r[2] == "CCMP")
+-		ccmp = 1;
+-	  if(r[2] == "TKIP")
+-		tkip = 1;
+-	  psk1 = a[2];
+-	}
+-	if (psk1 != 0 && psk2 != 0){
+-	  type = "mixed-psk";
+-	  if(tkip)
+-		type =(type"+tkip");
+-	  if(ccmp)
+-		type =(type"+ccmp");
+-	}else if(psk1 == 0 && psk2 != 0){
+-	  type = "psk2";
+-	  if(tkip)
+-		type =(type"+tkip");
+-	  if(ccmp)
+-		type =(type"+ccmp");
+-	}else if(psk1 != 0 && psk2 == 0){
+-	  type = "psk";
+-	  if(tkip)
+-		type =(type"+tkip");
+-	  if(ccmp)
+-		type =(type"+ccmp");
+-	}
+-  }
+-  count++;
+-  if(count>1) print ","
+-  printf("%s:{\"sig\":%s,\"sig_p\":%s,\"enc\":\"%s\", \"channel\": %s, \"bssid\": \"%s\"}", id, sig, sig_result, type, c, tolower(bssid));
+-}
+-{
+-  match($0, /Cell ([0-9]+) - Address:/);
+-  if(RLENGTH != -1){
+-	if(SSID != "N/A"){
+-	  record(BSSID, CHANNEL, SSID, SIG, ENC, W2, W1);
+-	}
+-	CHANNEL = "N/A";
+-	SSID = "N/A";
+-	SIG = "N/A";
+-	ENC = "N/A";
+-	W2 = "N/A";
+-	W1 = "N/A";
+-	WPA = 0;
+-	WPA2 = 0;
+-  }
+-}
+-{
+-  match($0, /- Address: (.+)/);
+-  if(RLENGTH != -1)
+-	BSSID=$0;
+-}
+-{
+-  match($0, /Channel:(.+)/);
+-  if(RLENGTH != -1)
+-	CHANNEL=$0;
+-}
+-{
+-  match($0, /ESSID:"(.+)"/);
+-  if(RLENGTH != -1)
+-	SSID=$0;
+-}
+-{
+-  match($0, /Quality(.+)/);
+-  if(RLENGTH != -1)
+-	SIG=$0;
+-}
+-{
+-  match($0, /Encryption key:(.+)/);
+-  if(RLENGTH != -1)
+-	ENC=$0;
+-}
+-{
+-  match($0, /IE: IEEE 802.11i\/WPA2 Version 1/);
+-  if(RLENGTH != -1){
+-	WPA2=1;
+-  }
+-  match($0, /IE: WPA Version 1/);
+-  if(RLENGTH != -1){
+-	WPA=1;
+-  }
+-}
+-{
+-  match($0, /Pairwise Ciphers(.+)/);
+-  if(RLENGTH != -1){
+-	if(WPA2==1){
+-	  W2=$0;
+-	}
+-	if(WPA==1){
+-	  W1=$0;
+-	}
+-  }
+-}
+-
+-{
+-  match($0, /Authentication Suites \(1\) : PSK/);
+-  if(RLENGTH != -1 && WPA2==1){
+-	WPA2=0;
+-  }
+-  if(RLENGTH != -1 && WPA==1){
+-	WPA=0;
+-  }
+-}
+-END{
+-  if(SSID != "N/A"){
+-	record(BSSID, CHANNEL, SSID, SIG, ENC, W2, W1);
+-  }
+-  printf("}");
+-}
+-'
++	let i+=1
++	echo "\"$ssid\":{"
++	echo "\"chanel\":"$chanel","
++	#echo "\"ssid\":\""$ssid"\","
++	echo "\"bssid\":\""$bssid"\","
++	echo "\"security\":\""$security"\","
++	echo "\"signal\":\""$signal"\","
++	echo "\"wmode\":\""$wmode"\","
++	echo "\"extch\":\""$extch"\","
++	echo "\"nt\":\""$nt"\","
++	echo "\"wps\":\""$wps"\""
++	echo -n "}"
++done
++echo "}"
+ %>
+diff -uNr www_ar71xx/cgi-bin/checkip.sh www_ramips/cgi-bin/checkip.sh
+--- www_ar71xx/cgi-bin/checkip.sh	2018-07-17 02:49:39.163309342 -0400
++++ www_ramips/cgi-bin/checkip.sh	2018-07-17 02:49:41.099309298 -0400
+@@ -4,13 +4,13 @@
+ echo "Content-Type: application/json"
+ echo ""
+ 
+-apcli=`ifconfig | grep wlan0`
++apcli=`ifconfig | grep apcli0`
+ while [[ -z "$apcli" ]]
+ do
+-    apcli=`ifconfig | grep wlan0`
++    apcli=`ifconfig | grep apcli0`
+ done
+ 
+-ip=`ifconfig wlan0 | grep 'inet addr:'| cut -d: -f2 | awk '{ print $1}'`
++ip=`ifconfig apcli0 | grep 'inet addr:'| cut -d: -f2 | awk '{ print $1}'`
+ 
+ 
+ echo "{\"result\":\"success\", \"ip\":\"$ip\"}"
+diff -uNr www_ar71xx/cgi-bin/getwificlient.sh www_ramips/cgi-bin/getwificlient.sh
+--- www_ar71xx/cgi-bin/getwificlient.sh	2018-07-17 02:49:39.015309346 -0400
++++ www_ramips/cgi-bin/getwificlient.sh	2018-07-17 02:49:40.987309301 -0400
+@@ -3,36 +3,29 @@
+ eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "/login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
+ echo "Content-Type: application/json"
+ echo ""
+-
+-echo "" > /tmp/wificlients
+-for interface in `iw dev | grep Interface | cut -f 2 -s -d" "`
+- do
+-   iw dev $interface  station dump >>  /tmp/wificlients
+- done
++i=0
++iwpriv ra0 show stainfo
++cat /proc/kmsg   > /tmp/wifi-client-list&
++killall cat 
++cat  /tmp/wifi-client-list |grep -E '[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}[ ]' |cut -d] -f2 |awk  '{print $1, $7, $10,$18}' >/tmp/f_wifilist
+ echo "{"
+- awk '
+-{
+-if ($1 ~ /^Station/) {
+-mac=$2;
+-k++;
+-if(k>1) print ","
+-printf("\"%s\":{",mac);
+-next;
+-}  else if ($0 ~ /rx bytes:/) {
+-rx=$NF;
+-printf("\"rxbytes\":%s,",rx);
+-next;
+-} else if ($0 ~ "tx bytes:") {
+-tx=$NF;
+-printf("\"txbytes\":%s,",tx);
+-next;
+-} else if ($0 ~ /signal:/) {
+-sig=$2;
+-printf("\"signal\":%s}",sig);
+-next;
+-}
+-}
+-' /tmp/wificlients
++cat /tmp/f_wifilist | while read line
++do
++  mac=`echo $line |awk '{print $1}'`
++  signal=`echo $line |awk '{print $2}'|cut -d"/" -f1`
++  bw=`echo $line |awk '{print $3}'`
++  count=`echo $line |awk '{print $4}'|cut -d, -f1`
++  if [ $i -ne 0 ];then
++ 	echo ","
++	fi
++	
++  let i+=1
++  
++  echo "\"$mac\":{"
++  echo "\"signal\":\"$signal\","
++  echo "\"bw\":\"$bw\","
++  echo "\"count\":\"$count\""
++  echo -n "}"
++done
+ echo "}"
+ %>
+-
+diff -uNr www_ar71xx/cgi-bin/pptp.sh www_ramips/cgi-bin/pptp.sh
+--- www_ar71xx/cgi-bin/pptp.sh	2018-07-17 02:49:39.075309344 -0400
++++ www_ramips/cgi-bin/pptp.sh	2018-07-17 02:49:41.051309299 -0400
+@@ -15,9 +15,10 @@
+ else
+     uci del network.pptp
+     uci commit network
+-    /etc/init.d/network restart
++    /etc/init.d/network restart 
+ fi
+ 
++
+ if [ "$FORM_setserver" = "1" ];then
+   if [ "$FORM_enable_server" = "1" ];then
+     uci set pptpd.pptpd.enabled='1'
+diff -uNr www_ar71xx/cgi-bin/set4g.sh www_ramips/cgi-bin/set4g.sh
+--- www_ar71xx/cgi-bin/set4g.sh	2018-07-17 02:49:38.783309351 -0400
++++ www_ramips/cgi-bin/set4g.sh	2018-07-29 22:05:32.000000000 -0400
+@@ -4,7 +4,6 @@
+ echo "Content-Type: application/json"
+ echo ""
+ 
+-  uci set config4g.@4G[0].enable="1"
+   uci set config4g.@4G[0].apn="$FORM_apn"
+   uci set config4g.@4G[0].pincode="$FORM_pincode"
+   uci set config4g.@4G[0].user="$FORM_username"
+@@ -36,6 +35,8 @@
+ /etc/init.d/config4g restart 
+ /etc/init.d/network restart 
+ else
++  uci set config4g.@4G[0].enable="1"
++  uci commit config4g
+   uci set network.4g.proto='dhcp'
+   uci del network.4g.service
+   uci set network.4g.ifname="eth2"
+diff -uNr www_ar71xx/cgi-bin/setathrepeater.sh www_ramips/cgi-bin/setathrepeater.sh
+--- www_ar71xx/cgi-bin/setathrepeater.sh	2018-07-17 02:49:39.139309343 -0400
++++ www_ramips/cgi-bin/setathrepeater.sh	1969-12-31 19:00:00.000000000 -0500
+@@ -1,25 +0,0 @@
+-#!/usr/bin/haserl
+-<%
+-eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "/login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
+-echo "Content-Type: application/json"
+-echo ""
+-
+-uci set wireless.stamode=wifi-iface
+-uci set wireless.@wifi-iface[1].ssid="$FORM_essid"
+-uci set wireless.@wifi-iface[1].key="$FORM_epwd"
+-uci set wireless.radio0.channel="$FORM_channel"
+-uci set wireless.@wifi-iface[1].encryption="$FORM_etype"
+-uci set wireless.@wifi-iface[1].bssid="$FORM_bssid"
+-uci set wireless.@wifi-iface[1].network="wwan"
+-uci set wireless.@wifi-iface[1].device="radio0"
+-uci set wireless.@wifi-iface[1].mode="sta"
+-uci set network.wwan=interface
+-uci set network.wwan.proto="dhcp"
+-uci commit network
+-uci commit wireless
+-
+-echo "{"
+-echo "\"success\":\"ok\",\"enc\":\"$FORM_etype $FORM_essid $FORM_channel\""
+-echo "}"
+-/etc/init.d/network restart
+-%>
+diff -uNr www_ar71xx/cgi-bin/setathwifi.sh www_ramips/cgi-bin/setathwifi.sh
+--- www_ar71xx/cgi-bin/setathwifi.sh	2018-07-17 02:49:38.911309348 -0400
++++ www_ramips/cgi-bin/setathwifi.sh	1969-12-31 19:00:00.000000000 -0500
+@@ -1,35 +0,0 @@
+-#!/usr/bin/haserl
+-<%
+-eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "/login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
+-echo "Content-Type: application/json"
+-echo ""
+-
+-if [ "$FORM_enable" -eq 1 ] ;then
+-uci del wireless.radio0.disabled >/dev/null 2>&1
+-else
+-uci set wireless.radio0.disabled=1
+-fi
+-if [ "$FORM_hidssid" -eq 1 ] ;then
+-uci set wireless.@wifi-iface[0].hidden=1
+-else
+-uci del wireless.@wifi-iface[0].hidden >/dev/null 2>&1
+-fi
+-
+-uci set wireless.@wifi-iface[0].ssid="$FORM_ssid"
+-uci set wireless.@wifi-iface[0].encryption="$FORM_etype"
+-uci set wireless.@wifi-iface[0].key="$FORM_epwd"
+-uci set wireless.radio0.channel="$FORM_channel"
+-uci set wireless.radio0.htmode="$FORM_bw"
+-if [ "$FORM_bw" = "HT40"  ];then
+-uci set wireless.radio0.noscan="1"
+-else
+-  uci set wireless.radio0.noscan="0"
+-fi
+-uci set wireless.radio0.txpower="$FORM_txpower"
+-uci commit wireless
+-
+-echo "{"
+-echo "\"success\":\"ok\""
+-echo "}"
+-/etc/init.d/network restart
+-%>
+diff -uNr www_ar71xx/cgi-bin/setmtkrepeater.sh www_ramips/cgi-bin/setmtkrepeater.sh
+--- www_ar71xx/cgi-bin/setmtkrepeater.sh	1969-12-31 19:00:00.000000000 -0500
++++ www_ramips/cgi-bin/setmtkrepeater.sh	2018-07-17 02:49:40.847309304 -0400
+@@ -0,0 +1,52 @@
++#!/usr/bin/haserl
++<%
++eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "/login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
++echo "Content-Type: application/json"
++echo ""
++
++if [ $FORM_setrepeater = 1 ];then
++	if [ "$FORM_etype"x = "WPA1PSKWPA2PSK/TKIPAES"x ]; then
++			      umode="WPA2PSK"
++        		uencryp="AES"
++		elif [ "$FORM_etype"x = "WPA1PSKWPA2PSK/AES"x ]; then
++			      umode="WPA2PSK"
++        		uencryp="AES"
++		elif [ "$FORM_etype"x = "WPA2PSK/AES"x ]; then
++        		umode="WPA2PSK"
++        		uencryp="AES"
++  	  	elif [ "$FORM_etype"x = "WPA2PSK/TKIP"x ]; then
++        		umode="WPA2PSK"
++	        	uencryp="TKIP"
++   		elif [ "$FORM_etype"x = "WPAPSK/TKIPAES"x ]; then
++        		umode="WPAPSK"
++	        	uencryp="TKIP"
++		elif [ "$FORM_etype"x = "WPAPSK/AES"x ]; then
++   			umode="WPAPSK"
++        	uencryp="AES"
++		elif [ "$FORM_etype"x = "WPAPSK/TKIP"x ]; then
++    		umode="WPAPSK"
++        	uencryp="TKIP"
++		elif [ "$FORM_etype"x = "WEP"x ]; then
++    		umode="WEP"
++        	uencryp="WEP"
++   		fi
++
++
++uci set wireless.ap.ApCliSsid="$FORM_essid"
++uci set wireless.ap.ApCliWPAPSK="$FORM_epwd"
++uci set wireless.mt7628.channel="$FORM_channel"
++uci set wireless.ap.ApCliAuthMode="$umode"
++uci set wireless.ap.ApCliEncrypType="$uencryp"
++uci set wireless.ap.ApCliEnable='1'
++else
++uci set wireless.ap.ApCliEnable='0'
++fi
++
++
++
++echo "{"
++echo "\"success\":\"ok\",\"enc\":\"$FORM_etype $FORM_essid $FORM_channel\""
++echo "}"
++uci commit wireless
++/etc/init.d/network restart
++%>
+diff -uNr www_ar71xx/cgi-bin/setmtkwifi.sh www_ramips/cgi-bin/setmtkwifi.sh
+--- www_ar71xx/cgi-bin/setmtkwifi.sh	1969-12-31 19:00:00.000000000 -0500
++++ www_ramips/cgi-bin/setmtkwifi.sh	2018-07-17 02:49:41.023309300 -0400
+@@ -0,0 +1,34 @@
++#!/usr/bin/haserl
++<%
++eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "/login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
++echo "Content-Type: application/json"
++echo ""
++
++if [ "$FORM_enable" -eq 1 ] ;then
++uci del wireless.mt7628.disabled >/dev/null 2>&1 
++else
++uci set wireless.mt7628.disabled=1
++fi
++if [ "$FORM_hidssid" -eq 1 ] ;then
++uci set wireless.ap.hidden=1
++else
++uci del wireless.ap.hidden >/dev/null 2>&1 
++fi
++
++uci set wireless.ap.ssid="$FORM_ssid"
++uci set wireless.ap.encryption="$FORM_etype"
++uci set wireless.ap.key="$FORM_epwd"
++uci set wireless.mt7628.channel="$FORM_channel"
++uci set wireless.mt7628.ht="$FORM_bw"
++uci set wireless.mt7628.txpower="$FORM_txpower"
++uci commit wireless
++uci set network.wwan=interface
++uci set network.wwan.proto="dhcp"
++uci commit network
++
++echo "{"
++echo "\"success\":\"ok\""
++echo "}"
++/etc/init.d/network restart
++%>
++
+diff -uNr www_ar71xx/css/login.css~ www_ramips/css/login.css~
+--- www_ar71xx/css/login.css~	2018-07-17 02:49:38.703309353 -0400
++++ www_ramips/css/login.css~	1969-12-31 19:00:00.000000000 -0500
+@@ -1,24 +0,0 @@
+-
+-@charset "utf-8";
+-/* CSS Document */
+-body{margin:0;padding:0;}
+-.login-bg{width:100%;min-width:800px;height:100%;background:#226aff;background-size:100% auto;}
+-.sys-logo{width:615px;height:114px;margin:0 auto;}/*修改*/
+-.sys-logo img{width:615px;height:114px;}/*新增*/
+-.login-bg{padding-top:11%;}
+-.login-con{width:585px;height:468px;margin:0 auto;}
+-.login-wrap{width:615px;height:297px;background:#f3f5f7;border-radius:6px;margin-top:30px;-moz-box-shadow: 0px 3px 3px #166988; /* 老的 Firefox */
+-box-shadow: 0px 3px 3px #166988;position:relative;}
+-.login-title{width:100%;height:50px;border-bottom:solid #fff 1px;border-top-left-radius:6px;border-top-right-radius:6px;text-align:center;font-size:22px;line-height:49px;background:url(../images/login-title.jpg) repeat-x;}
+-.login-form{width:500px;height:50px;margin:0 auto;background:#f0f0f0;border:solid #cdcdcd 1px;border-radius:5px;margin-top:35px;}
+-.login-name{height:49px;border-bottom:solid #e7e7e7 1px;}
+-.login-name input[type="text"],.login-pass input[type="password"]{width:450px;height:48px;border:none;margin-left:10px;line-height:48px;font-size:16px;background:none;}
+-.login-pass{height:49px;border-top:solid #f5f5f5 1px;}
+-.login-btn{width:500px;height:42px;margin:0 auto;margin-top:60px;border:solid #226aac 1px;border-radius:6px;background:url(../images/btn-bg.jpg) repeat-x;}
+-.login-btn a{width:500px;height:42px;margin:0 auto;display:inline-block;line-height:42px;text-align:center;font-size:18px;color:#fff;}
+-.login-btn:hover{background:url(../images/btn-bg-hover.jpg) repeat-x;}
+-.remember{width:500px;margin:0 auto;padding-top:15px;font-size:12px;}
+-.user-ico{width:23px;height:23px;background-position:0 -56px;display:inline-block;margin-left:13px;margin-top:13px;}
+-.pass-ico{width:23px;height:23px;background-position:-25px -56px;display:inline-block;margin-left:13px;margin-top:13px;}
+-.error-message{width:500px;margin-left:42px;position:absolute;z-index:999;color:#666666;text-align:center;font-size:12px;line-height:26px;height:28px;background:#fff6d2;border:solid #ffe57d 1px;margin-top:3px;display:inline-block;float:left;border-radius:3px;}
+-.tip-ico{width:12px;background:url(../images/tip-ico.jpg) 0 0px no-repeat;padding-right:15px;}
+diff -uNr "www_ar71xx/css/login - \345\211\257\346\234\254.css" "www_ramips/css/login - \345\211\257\346\234\254.css"
+--- "www_ar71xx/css/login - \345\211\257\346\234\254.css"	1969-12-31 19:00:00.000000000 -0500
++++ "www_ramips/css/login - \345\211\257\346\234\254.css"	2018-07-17 02:49:40.679309308 -0400
+@@ -0,0 +1,24 @@
++
++@charset "utf-8";
++/* CSS Document */
++body{margin:0;padding:0;}
++.login-bg{width:100%;min-width:800px;height:100%;background:url(../images/login-bg.jpg) center no-repeat;background-size:100% auto;}
++.sys-logo{width:500px;height:98px;margin:0 auto;}/*修改*/
++.sys-logo img{width:541px;height:73px;}/*新增*/
++.login-bg{padding-top:15%;}
++.login-con{width:585px;height:468px;margin:0 auto;}
++.login-wrap{width:615px;height:297px;background:#f3f5f7;border-radius:6px;margin-top:30px;-moz-box-shadow: 0px 3px 3px #166988; /* 老的 Firefox */
++box-shadow: 0px 3px 3px #166988;position:relative;}
++.login-title{width:100%;height:50px;border-bottom:solid #fff 1px;border-top-left-radius:6px;border-top-right-radius:6px;text-align:center;font-size:22px;line-height:49px;background:url(../images/login-title.jpg) repeat-x;}
++.login-form{width:500px;height:100px;margin:0 auto;background:#f0f0f0;border:solid #cdcdcd 1px;border-radius:5px;margin-top:35px;}
++.login-name{height:49px;border-bottom:solid #e7e7e7 1px;}
++.login-name input[type="text"],.login-pass input[type="password"]{width:450px;height:48px;border:none;margin-left:10px;line-height:48px;font-size:16px;background:none;}
++.login-pass{height:49px;border-top:solid #f5f5f5 1px;}
++.login-btn{width:500px;height:42px;margin:0 auto;margin-top:15px;border:solid #226aac 1px;border-radius:6px;background:url(../images/btn-bg.jpg) repeat-x;}
++.login-btn a{width:500px;height:42px;margin:0 auto;display:inline-block;line-height:42px;text-align:center;font-size:18px;color:#fff;}
++.login-btn:hover{background:url(../images/btn-bg-hover.jpg) repeat-x;}
++.remember{width:500px;margin:0 auto;padding-top:15px;font-size:12px;}
++.user-ico{width:23px;height:23px;background-position:0 -56px;display:inline-block;margin-left:13px;margin-top:13px;}
++.pass-ico{width:23px;height:23px;background-position:-25px -56px;display:inline-block;margin-left:13px;margin-top:13px;}
++.error-message{width:500px;margin-left:42px;position:absolute;z-index:999;color:#666666;text-align:center;font-size:12px;line-height:26px;height:28px;background:#fff6d2;border:solid #ffe57d 1px;margin-top:3px;display:inline-block;float:left;border-radius:3px;}
++.tip-ico{width:12px;background:url(../images/tip-ico.jpg) 0 0px no-repeat;padding-right:15px;}
+\ No newline at end of file
+diff -uNr www_ar71xx/css/main.css~ www_ramips/css/main.css~
+--- www_ar71xx/css/main.css~	2018-07-17 02:49:38.715309353 -0400
++++ www_ramips/css/main.css~	1969-12-31 19:00:00.000000000 -0500
+@@ -1,206 +0,0 @@
+-*{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box; }
+-li, ul{padding: 0;margin: 0;list-style: none;width: 100%; overflow: hidden;}
+-
+-body, html
+-{
+-    padding: 0;
+-    margin: 0;
+-    height: 100%;
+-    font-family: "微软雅黑","宋体","Helvetica Neue",Helvetica Neue,Helvetica,Arial,Hiragino Sans GB,Microsoft Yahei,sans-serif;
+-    font-size: 14px;
+-}
+-a{text-decoration:none;}
+-.sys-icon{background:url(../images/icon.png) no-repeat;}
+-.layout
+-{
+-    top: 0px;
+-    left: 0px;
+-    right: 0px;
+-    bottom: 0px;
+-    background-color: #3C4857;
+-    position: absolute;
+-    overflow: hidden;
+-}
+-.layout_title
+-{
+-    position: absolute;
+-    top: 0px;
+-    left: 0px;
+-    right: 0px;
+-    height: 70px;
+-	background:#05afff;
+-}
+-.layout_title .logo
+-    {
+-        float: left;
+-        width: 318px;
+-        height: 70px;
+-        background-size: 100%;
+-
+-    }
+-.layout_title .logo img{width:318px;height:60px;margin-top:6px;margin-left:10px;}/*新增*/
+-.layout_title .sysname
+-    {
+-        float: right;
+-        margin: 23px 30px 0 20px;/*修改*/
+-        vertical-align: text-top;
+-        font-size: 15px;
+-        line-height: 28px;
+-
+-        color: #fff;
+-    }
+-.systoolbar{float:right;margin-right:20px;margin-top:25px;}/*修改*/
+-.systoolbar div{width:80px;float:left;position:relative;}
+-.systoolbar div .mes-count{position:absolute;z-index:999;width:18px;height:18px;line-height:18px;background:#fe5621;border-radius:10px;float:left;text-align:center;color:#fff;margin-top:-10px;margin-left:10px; font-size: 14px;font-style: normal;}
+-.systoolbar div a{color:#fff;}
+-.systoolbar div a:hover{color:#00fcff;}
+-.mes-ico{width:21px;height:18px;background-position:-210px 0;display:inline-block;float:left;margin-right:6px;}
+-.quit-ico{width:21px;height:22px;background-position:-233px 0;display:inline-block;float:left;margin-right:6px;}
+-
+-.layout_left
+-{
+-    position: absolute;
+-    top: 70px;  /*修改*/
+-    left: 0px;
+-    bottom: 0px;
+-    width: 246px;
+-    font-size: 16px;
+-	border-right:solid #dee3e9 1px;
+-	background:#fff;
+-}
+-.menuname a
+-{
+-    display: block;
+-    color: #04121d;
+-	text-decoration:none;
+-}
+-.checked a
+-{
+-    color: #4a90e2;
+-}
+-.checked .home{color:#fff;}
+-.home:hover{color:#fff;}
+-.layout_left .menu > li
+-    {
+-
+-        border-bottom: 1px solid #e8ebf0;
+-    }
+-.layout_left .menu > li > .menuname
+-    {
+-        background-image: url(../images/right.png);
+-        background-position: 95% 50%;
+-        background-repeat: no-repeat;
+-        background-size: 15px;
+-    }
+-.layout_left .menu > li > .menuname.checked
+-    {
+-        background-image: url(../images/down.png) !important;
+-        background-position: 95% 50% !important;
+-        background-repeat: no-repeat !important;
+-        background-size: 15px;
+-		background:#03a9f5;
+-		color:#fff;
+-    }
+-.layout_left .menuname
+-    {   height:50px;
+-        cursor: pointer;
+-        line-height:50px;
+-        color: #04121d;
+-		padding-left: 25px;
+-    }
+-.layout_left .menuname:hover
+-        {
+-            background-color: #03a9f4;
+-            color: #ffffff;
+-        }
+-.layout_left .checked
+-    {
+-        padding-left: 25px;
+-        color: #4a90e2;
+-        background-color: #333d4a;
+-    }
+-.layout_left .children
+-    {
+-        display: none;
+-		text-decoration:none;
+-    }
+-.layout_left .children .menuname
+-        {
+-		    height:40px;
+-			line-height:40px;
+-            border: none;
+-            padding-left: 78px;
+-            font-size: 14px;
+-			text-decoration:none;
+-        }
+-.layout_left .children .menuname:hover
+-        {
+-		   background:#e1f7ff;
+-		   color:#0288d1;
+-
+-        }
+-.layout_left .children .menuname .checked
+-        {
+-		   background:#e1f7ff;
+-		   color:#0288d1;
+-
+-        }
+-
+-.layout_left .children .checked
+-        {
+-            padding-left: 78px;
+-            background-color: #e1f7ff;
+-			color:#0288d1;
+-        }
+-
+-.layout_main {
+-    position: absolute;
+-    top: 70px;/*修改*/
+-    left: 246px;
+-    right: 0px;
+-    bottom: 0px;
+-    background-color: #ebecf2;
+-}
+-
+-
+-.current{
+-    height:50px;width:100%;background:#fff;color:#000;border-bottom:solid #e3e9ed 1px;font-size:14px;line-height:50px;text-indent:20px;
+-
+-}
+-
+-.layout_main .main_frame
+-{
+-    position: absolute;
+-    top: 0px;
+-    left: 0px;
+-    right: 0px;
+-    bottom: 0px;
+-}
+-#main_frame
+-{
+-    width: 100%;
+-    height: 100%;
+-    margin: 0px;
+-    border: 0px;
+-}
+-
+-
+-
+-
+-.m-icon01,.m-icon02,.m-icon03,.m-icon04,.m-icon05,.m-icon06,.m-icon07,.m-icon08{width:30px;height:28px;display:inline-block;float:left;}
+-.m-icon01{background-position:0 -30px;margin-top:13px;margin-right:22px;}
+-.layout_left .menu > li > .menuname.checked >.m-icon01, .layout_left .menuname:hover >.m-icon01{background-position:0 0;margin-top:13px;margin-right:22px;}
+-.m-icon02{background-position:-30px -30px;margin-top:15px;margin-right:22px;}
+-.layout_left .menu > li > .menuname.checked >.m-icon02, .layout_left .menuname:hover >.m-icon02{background-position:-30px 0;margin-top:15px;margin-right:22px;}
+-.m-icon03{background-position:-60px -30px;margin-top:13px;margin-right:22px;}
+-.layout_left .menu > li > .menuname.checked >.m-icon03, .layout_left .menuname:hover >.m-icon03{background-position:-60px 0;margin-top:13px;margin-right:22px;}
+-.m-icon04{background-position:-90px -30px;margin-top:13px;margin-right:22px;}
+-.layout_left .menu > li > .menuname.checked >.m-icon04, .layout_left .menuname:hover >.m-icon04{background-position:-90px 0;margin-top:13px;margin-right:22px;}
+-.m-icon05{background-position:-120px -30px;margin-top:11px;margin-right:22px;}
+-.layout_left .menu > li > .menuname.checked >.m-icon05, .layout_left .menuname:hover >.m-icon05{background-position:-120px 0;margin-top:11px;margin-right:22px;}
+-.m-icon06{background-position:-150px -30px;margin-top:11px;margin-right:22px;}
+-.layout_left .menu > li > .menuname.checked >.m-icon06, .layout_left .menuname:hover >.m-icon06{background-position:-150px 0;margin-top:11px;margin-right:22px;}
+-.m-icon07{background-position:-180px -30px;margin-top:11px;margin-right:22px;}
+-.layout_left .menu > li > .menuname.checked >.m-icon07, .layout_left .menuname:hover >.m-icon07{background-position:-180px 0;margin-top:11px;margin-right:22px;}
+-.m-icon08{background-position:-211px -30px;margin-top:11px;margin-right:22px;}
+-.layout_left .menu > li > .menuname.checked >.m-icon08, .layout_left .menuname:hover >.m-icon08{background-position:-240px -30px;margin-top:11px;margin-right:22px;}
+diff -uNr www_ar71xx/data/lang/en_us/baseinfo.po www_ramips/data/lang/en_us/baseinfo.po
+--- www_ar71xx/data/lang/en_us/baseinfo.po	2018-07-17 02:49:38.095309367 -0400
++++ www_ramips/data/lang/en_us/baseinfo.po	2018-07-17 02:49:40.195309319 -0400
+@@ -8,7 +8,7 @@
+ day=" day "
+ hour=" hour "
+ minute=" minute "
+-sec=" Seconds"
++sec="&nbsp Seconds"
+ sys_load="System Load"
+ load_avg=" Minutes loadavg"
+ sys_time="System Time"
+diff -uNr www_ar71xx/data/lang/en_us/wifirepeater.po www_ramips/data/lang/en_us/wifirepeater.po
+--- www_ar71xx/data/lang/en_us/wifirepeater.po	2018-07-17 02:49:38.059309368 -0400
++++ www_ramips/data/lang/en_us/wifirepeater.po	2018-07-17 02:49:40.155309320 -0400
+@@ -9,6 +9,7 @@
+ location="Current location: Wireless Setting > 2.4G Repeater Setting"
+ page="2.4G Repeater Setting"
+ conn_status="Connet Status:"
++enable_repeater="Enable Repeater"
+ hide_pass="Hiden Password"
+ show_pass="Show Password"
+ pass="Password"
+diff -uNr www_ar71xx/data/lang/zh_cn/wifirepeater.po www_ramips/data/lang/zh_cn/wifirepeater.po
+--- www_ar71xx/data/lang/zh_cn/wifirepeater.po	2018-07-17 02:49:38.339309361 -0400
++++ www_ramips/data/lang/zh_cn/wifirepeater.po	2018-07-17 02:49:40.419309314 -0400
+@@ -9,6 +9,7 @@
+ location="当前位置：无线设置 > 2.4G中继设置"
+ page="2.4G中继设置"
+ conn_status="连接状态:"
++enable_repeater="开启wifi中继"
+ hide_pass="隐藏密码"
+ show_pass="显示密码"
+ pass="密码："
+diff -uNr www_ar71xx/netstatus1.asp www_ramips/netstatus1.asp
+--- www_ar71xx/netstatus1.asp	2018-07-17 02:49:38.607309355 -0400
++++ www_ramips/netstatus1.asp	2018-07-17 02:49:40.591309310 -0400
+@@ -50,7 +50,7 @@
+ 												<td><%= `ubus call network.interface.wan status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "` %></td>
+ 										</tr>
+                     <%
+-                    if [ "`ifconfig wlan0 |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
++                    if [ "`ifconfig apcli0 |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
+                     echo "<tr>"
+ 										echo "<td >WWAN</td>"
+ 										echo "<td>"
+@@ -112,16 +112,17 @@
+ 										</tr>
+ 										<tr>
+ 												<td ><%= $used_byte%></td>
+-												<td id="used_byte"  colspan="2">                          
+-			<% g4byte=`uci get 4g.modem.4g_byte`
++												<td id="used_byte"  colspan="2">
++                          <% g4byte=`uci get 4g.modem.4g_byte`
+                           if [ $g4byte -ge 1000000000 ];then
+-                           g4byte=`awk -v x=$g4byte  'BEGIN{printf "%.2fGB",x/1024/1024/1024}'`
++                          g4byte=`awk -v x=$g4byte  'BEGIN{printf "%.2fGB",x/1024/1024/1024}'`
+                           elif [ $g4byte -ge 1000000 ]; then
+                            g4byte=`awk -v x=$g4byte  'BEGIN{printf "%.2fMB",x/1024/1024}'`
+                           else
+                            g4byte=`awk -v x=$g4byte   'BEGIN{printf "%dKB",x/1024}'`
+                           fi %>
+-                          <%= $g4byte %></td>
++                          <%= $g4byte %>
++</td>
+                         </tr>
+ 							</table>
+               <br />
+diff -uNr www_ar71xx/wifirepeater1.asp www_ramips/wifirepeater1.asp
+--- www_ar71xx/wifirepeater1.asp	2018-07-17 02:49:38.451309359 -0400
++++ www_ramips/wifirepeater1.asp	2018-07-31 07:15:39.000000000 -0400
+@@ -1,6 +1,6 @@
+ <%
+ eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
+-#echo ""
++echo ""
+ lang=`uci get gargoyle.global.lang`
+ . /www/data/lang/$lang/wifirepeater.po
+ %>
+@@ -12,7 +12,7 @@
+     <link rel="stylesheet" type="text/css" href="css/layout.css" />
+     <link rel="stylesheet" type="text/css" href="css/table.css" />
+     <link rel="stylesheet" type="text/css" href="css/main.css" />
+-    <script type="text/javascript" src="jjs/jquery.js"></script>
++    <script type="text/javascript" src="jjs/jquery.js"></script>	
+ <link rel="stylesheet" type="text/css" href="css/form.css" />
+     <link rel="stylesheet" href="/jjs/plugin/pintuer/pintuer.css" />
+ 
+@@ -20,7 +20,7 @@
+         function apscan(){
+          // document.getElementById("form0").submit();
+          $("#aplist").html("");//扫描前先清空
+-          $("#status").html("<%= $scanning%>");
++          $("#status").html("正在扫描AP,请等待！");
+           $.ajax({
+           url: "/cgi-bin/apscan.sh",
+           type: "get",
+@@ -30,15 +30,15 @@
+             for (var key in json) {
+             var tbody="";
+               tbody += '<tr><td>'+key
+-                    + '</td><td>'+json[key].channel
++                    + '</td><td>'+json[key].chanel
+                     + '</td><td>'+json[key].bssid
+-                    + '</td><td>'+json[key].enc
+-                    + '</td><td>'+json[key].sig
+-                    + '</td><td width="80px"><input class="green-btn" type="button" onclick="selrepeater(this)" value="选择"/></td></tr>';
+-              $("#aplist").append(tbody);
+-               }
++                    + '</td><td>'+json[key].security
++                    + '</td><td>'+json[key].signal
++                    + '</td><td width="80px"><input class="green-btn" type="button" onclick="selrepeater(this)" value="选择"/></td></tr>';  
++              $("#aplist").append(tbody);  
++               }       
+              $("#status").html("<%= $finish_scan%>");
+-          },
++          },  
+           error: function(error) {
+             //alert("调用出错" + error.responseText);
+           }
+@@ -51,11 +51,9 @@
+    document.documentElement.scrollTop=document.body.scrollTop =0;//回到顶部
+    var    ssid1=$(obj).parent().parent().find("td").eq(0).text();
+    var channel1=$(obj).parent().parent().find("td").eq(1).text();
+-   var bssid1=$(obj).parent().parent().find("td").eq(2).text();
+    var   etype1=$(obj).parent().parent().find("td").eq(3).text();
+    document.getElementById("ssid").value=ssid1;
+    document.getElementById("channel").value=channel1;
+-  document.getElementById("bssid").value=bssid1;
+    document.getElementById("etype").value=etype1;
+    document.getElementById("pass").value="";
+    document.getElementById('pass').focus();
+@@ -69,18 +67,18 @@
+           contentType: "application/json; charset=utf-8",
+           success: function(json) {
+             if ( json["ip"].length==0 ){
+-           $("#wwanip")[0].value="<%= $no_conn%>"
++           $("#wwanip")[0].value="<%= $no_conn%>" 
+            }
+            else{
+-            $("#wwanip")[0].value="<%= $conn%>"+ json["ip"]
+-           }
+-          },
++            $("#wwanip")[0].value="<%= $conn%>"+ json["ip"] 
++           }           
++          },  
+           error: function(error) {
+             //alert("调用出错" + error.responseText);
+           }
+         });
+     }
+-
++    
+     function showpasswd(){
+       var pass=document.getElementById("pass")
+       if (pass.type=="password"){
+@@ -88,17 +86,17 @@
+          document.getElementById("dispass").value="<%= $hide_pass%>"
+          }
+         else{
+-         pass.type="password"
++         pass.type="password"  
+         document.getElementById("dispass").value="<%= $show_pass%>"
+         }
+      }
+-
++     
+      function setrepeater(){
+       $("#status").html("<%= $processing%>");
+       var form = new FormData(document.getElementById("form0"));
+        $.ajax({
+           type: "post", 
+-          url: "/cgi-bin/setathrepeater.sh",
++          url: "/cgi-bin/setmtkrepeater.sh",
+           data:form, 
+           processData:false,
+           contentType:false,
+@@ -106,42 +104,47 @@
+            $("#status").html("<%= $finish%>");
+             document.documentElement.scrollTop=document.body.scrollTop =0;//回到顶部
+             setTimeout("checkip()",5000);
+-          },
++          },  
+           error: function(error) {
+             //alert("调用出错" + error.responseText);
+           }
+         });
+-
++          
+      }
+     </script>
+ </head>
+ <body>
+-    <div class="current"><%= $location%></div>
++    <div class="current"><%= $location%></div> 
+       <div class="wrap-main" style="position: relative;min-height: 100%;">
+         <div class="wrap">
+             <div class="title"><%= $page%><p style="display:inline;color:#e81717;font-size:16px;margin-left: 100px;" id="status"></p></div>
+             <div class="wrap-form">
+                 <form class="form-info" id="form0" >
++		     <label>
++                                    <div class="name"><%= $enable_repeater%>:</div>
++                                    <div>
++                                        <input type="checkbox"  name="setrepeater" value="1" <% [ `uci get wireless.ap.ApCliEnable` = 1 ] && echo -n checked %> />
++                                    </div>
++                     </label>
+                     <label>
+-                        <div class="name"><%= $conn_status%></div>
++                        <div class="name"><%= $conn_status%></div> 
+                         <div>
+-                         <input name="wwanip" type="text" value="" id="wwanip" readonly="readonly" />
++                         <input name="wwanip" type="text" value="" id="wwanip" readonly="readonly" /> 
+                         </div>
+                     </label>
+-
+-
+-
++                   
++                                   
++             
+                             <label>
+                                 <div class="name"><%= $pass%></div>
+                                 <div>
+                                     <input id="pass" name="epwd" type="password"  value="" />
+                                     <input id="dispass" class="green-btn" type="button" value="<%= $show_pass%>" onclick="showpasswd()"/>
+                                 </div>
+-                            </label>
+-                                <input id="ssid" name="essid" type="hidden" value=""  />
++                            </label>   
++                                <input id="ssid" name="essid" type="hidden" value=""  />                    
+                                 <input id="etype" type="hidden" name="etype" value=""  />
+                                 <input id="channel" type="hidden" name="channel" />
+-                                <input id="bssid" type="hidden" name="bssid" />
+                 </form>
+ 				  <div class="btn-wrap">
+ 					    <div class="save-btn fr"><a href="javascript:setrepeater()"><%= $save%></a></div>
+@@ -167,6 +170,6 @@
+             </div>
+         </div>
+     </div>
+-
++  
+ </body>
+ </html>
+diff -uNr www_ar71xx/wifisetting1.asp www_ramips/wifisetting1.asp
+--- www_ar71xx/wifisetting1.asp	2018-07-17 02:49:39.851309327 -0400
++++ www_ramips/wifisetting1.asp	2018-07-17 02:49:41.719309284 -0400
+@@ -12,127 +12,126 @@
+     <link rel="stylesheet" type="text/css" href="css/layout.css" />
+     <link rel="stylesheet" type="text/css" href="css/table.css" />
+     <link rel="stylesheet" type="text/css" href="css/main.css" />
+-    <script type="text/javascript" src="jjs/jquery.js"></script>
++    <script type="text/javascript" src="jjs/jquery.js"></script>	
+ <link rel="stylesheet" type="text/css" href="css/form.css" />
+   <script type="text/javascript">
+         function setwifi(){
+          // document.getElementById("form0").submit();
+-          $("#status").html("<%= $on_processing%>");
++          $("#status").html("<%= $on_processing %>");
+          var form = new FormData(document.getElementById("form0"));
+            $.ajax({
+-          url: "/cgi-bin/setathwifi.sh",
++          url: "/cgi-bin/setmtkwifi.sh",
+           type: "post",
+           data:form, 
+           processData:false,
+           contentType:false,
+          // contentType: "application/json; charset=utf-8",
+           success: function(data) {
+-               //alert("设置结果:"+data["success"])
+-             $("#status").html("<%= $finish%>");
+-          },
++               //alert("设置结果:"+data["success"])  
++             $("#status").html("<%= $finish %>");
++          },  
+           error: function(error) {
+             //alert("调用出错" + error.responseText);
+           }
+         });
+    }
+ 	  $(window).on('load', function () {
+-
++  
+       });
+-      function showpasswd(){
++ 	function showpasswd(){
+       var pass=document.getElementById("pass")
+       if (pass.type=="password"){
+          pass.type="text"
+          document.getElementById("dispass").value="<%= $hide_pass%>"
+          }
+         else{
+-         pass.type="password"
++         pass.type="password"  
+         document.getElementById("dispass").value="<%= $show_pass%>"
+         }
+      }
+     </script>
+ </head>
+ <body>
+-    <div class="current"><%= $location%></div>
++    <div class="current"><%= $location%></div> 
+      <div class="wrap-main" style="position: relative;min-height: 100%;">
+         <div class="wrap">
+-            <div class="title"><%= $page%> <p style="display:inline;color:#e81717;font-size:x-large;margin-left: 100px;" id="status"></p></div>
++            <div class="title"><%= $page %> <p style="display:inline;color:#e81717;font-size:x-large;margin-left: 100px;" id="status"></p></div>
+             <div class="wrap-form">
+                 <form class="form-info" id="form0" >
+                     <label>
+                         <div class="name"></div>
+                         <div>
+-                            <input type="checkbox" value="1" name="enable" <%= `uci get wireless.radio0.disabled >/dev/null 2>&1  || echo checked` %>/><%= $enable_wifi%>
++                            <input type="checkbox" value="1" name="enable" <%= `uci get wireless.mt7628.disabled >/dev/null 2>&1  || echo checked` %>/><%= $enable_wifi %>
+                         </div>
+                     </label>
+                       <label>
+-                                <div class="name">SSID：</div>
++                                <div class="name">SSID ：</div>
+                                 <div>
+-                                    <input name="ssid" type="text" value="<%= `uci get wireless.@wifi-iface[0].ssid` %>"  />
+-                                    <input type="checkbox" value="1" name="hidssid" <%= `uci get wireless.@wifi-iface[0].hidden >/dev/null 2>&1  && echo checked` %>/><%= $hide%>SSID
++                                    <input name="ssid" type="text" value="<%= `uci get wireless.ap.ssid` %>"  />
++                                    <input type="checkbox" value="1" name="hidssid" <%= `uci get wireless.ap.hidden >/dev/null 2>&1  && echo checked` %>/><%= $hide%>SSID
+                                 </div>
+                             </label>
+                             <label>
+-                                <div class="name"><%= $encrypt_way%></div>
++                                <div class="name"><%= $encrypt_way %>：</div>
+                                 <div>
+                                     <select name="etype"  >
+-                                        <option value="none" <% [ `uci get wireless.@wifi-iface[0].encryption |grep none` ] && echo 'selected="true"' %> ><%= $no_encrypt%></option>
+-                                        <option value="psk2" <% [ `uci get wireless.@wifi-iface[0].encryption |grep psk` ] && echo 'selected="true"' %> ><%= $encrypt%></option>
++                                        <option value="none" <% [ `uci get wireless.ap.encryption |grep psk` ] && echo 'selected="true"' %> ><%= $no_encrypt %></option>
++                                        <option value="psk2" <% [ `uci get wireless.ap.encryption |grep psk` ] && echo 'selected="true"' %> ><%= $encrypt %></option>
+                                     </select>
+                                 </div>
+                             </label>
+                             <label>
+-                                <div class="name"><%= $passwd%></div>
++                                <div class="name"><%= $passwd %>：</div>
+                                 <div>
+-                                    <input id="pass" name="epwd" type="password"  value="<%= `uci get wireless.@wifi-iface[0].key` %>" />
+-                                    <input id="dispass" class="green-btn" type="button" value="<%= $show_pass%>" onclick="showpasswd()"/>
++                                    <input id="pass" name="epwd" type="password"  value="<%= `uci get wireless.ap.key` %>" />
++                                    <input id="dispass" class="green-btn" type="button" value="<%= $show_pass %>" onclick="showpasswd()"/>
+                                 </div>
+                             </label>
+                      <label>
+-                        <div class="name"><%= $channel%></div>
++                        <div class="name"><%= $channel %></div>
+                         <div>
+                             <select name="channel" id="channel">
+-                                <option value="0" <% [ `uci get wireless.radio0.channel` -eq 0 ] && echo 'selected="true"' %>>Auto</option>
+-                                <option value="1" <% [ `uci get wireless.radio0.channel` -eq 1 ] && echo 'selected="true"' %>>1</option>
+-                                <option value="2" <% [ `uci get wireless.radio0.channel` -eq 2 ] && echo 'selected="true"' %>>2</option>
+-                                <option value="3" <% [ `uci get wireless.radio0.channel` -eq 3 ] && echo 'selected="true"' %>>3</option>
+-                                <option value="4" <% [ `uci get wireless.radio0.channel` -eq 4 ] && echo 'selected="true"' %>>4</option>
+-                                <option value="5" <% [ `uci get wireless.radio0.channel` -eq 5 ] && echo 'selected="true"' %>>5</option>
+-                                <option value="6" <% [ `uci get wireless.radio0.channel` -eq 6 ] && echo 'selected="true"' %>>6</option>
+-                                <option value="7" <% [ `uci get wireless.radio0.channel` -eq 7 ] && echo 'selected="true"' %>>7</option>
+-                                <option value="8" <% [ `uci get wireless.radio0.channel` -eq 8 ] && echo 'selected="true"' %> >8</option>
+-                                <option value="9" <% [ `uci get wireless.radio0.channel` -eq 9 ] && echo 'selected="true"' %> >9</option>
+-                                <option value="10" <% [ `uci get wireless.radio0.channel` -eq 10 ] && echo 'selected="true"' %> >10</option>
+-                                <option value="11" <% [ `uci get wireless.radio0.channel` -eq 11 ] && echo 'selected="true"' %> >11</option>
+-                                <option value="12" <% [ `uci get wireless.radio0.channel` -eq 12 ] && echo 'selected="true"' %> >12</option>
+-                                <option value="13" <% [ `uci get wireless.radio0.channel` -eq 13 ] && echo 'selected="true"' %> >13</option>
++                                <option value="0" <% [ `uci get wireless.mt7628.channel` -eq 0 ] && echo 'selected="true"' %>>Auto</option>
++                                <option value="1" <% [ `uci get wireless.mt7628.channel` -eq 1 ] && echo 'selected="true"' %>>1</option>
++                                <option value="2" <% [ `uci get wireless.mt7628.channel` -eq 2 ] && echo 'selected="true"' %>>2</option>
++                                <option value="3" <% [ `uci get wireless.mt7628.channel` -eq 3 ] && echo 'selected="true"' %>>3</option>
++                                <option value="4" <% [ `uci get wireless.mt7628.channel` -eq 4 ] && echo 'selected="true"' %>>4</option>
++                                <option value="5" <% [ `uci get wireless.mt7628.channel` -eq 5 ] && echo 'selected="true"' %>>5</option>
++                                <option value="6" <% [ `uci get wireless.mt7628.channel` -eq 6 ] && echo 'selected="true"' %>>6</option>
++                                <option value="7" <% [ `uci get wireless.mt7628.channel` -eq 7 ] && echo 'selected="true"' %>>7</option>
++                                <option value="8" <% [ `uci get wireless.mt7628.channel` -eq 8 ] && echo 'selected="true"' %> >8</option>
++                                <option value="9" <% [ `uci get wireless.mt7628.channel` -eq 9 ] && echo 'selected="true"' %> >9</option>
++                                <option value="10" <% [ `uci get wireless.mt7628.channel` -eq 10 ] && echo 'selected="true"' %> >10</option>
++                                <option value="11" <% [ `uci get wireless.mt7628.channel` -eq 11 ] && echo 'selected="true"' %> >11</option>
+                             </select>
+                         </div>
+                     </label>
+                     <label>
+-                        <div class="name"><%= $bw%></div>
++                        <div class="name"><%= $bw %></div>
+                         <div>
+                             <select name="bw" id="bw">
+-                                <option value="HT20" <% [ `uci get wireless.radio0.htmode |grep 20` ] && echo 'selected="true"' %> >20MHz</option>
+-                                <option value="HT40" <% [ `uci get wireless.radio0.htmode |grep 40` ] && echo 'selected="true"' %> >40MHz</option>
++                                <option value="20" <% [ `uci get wireless.mt7628.ht |grep 20` ] && echo 'selected="true"' %> >20MHz</option>
++                                <option value="40" <% [ `uci get wireless.mt7628.ht |grep 40` ] && echo 'selected="true"' %> >40MHz</option>
+                             </select>
+                         </div>
+                     </label>
+                     <label>
+-                        <div class="name"><%= $txpower%></div>
++                        <div class="name"><%= $txpower %></div>
+                         <div>
+                             <select name="txpower" id="stong">
+-                                <option value="<%= ` uci get gargoyle.global.powerH` %>" <% [ `uci get wireless.radio0.txpower |grep 23` ] && echo 'selected="true"' %> ><%= $high%></option>
+-                                <option value="<%= ` uci get gargoyle.global.powerM` %>" <% [ `uci get wireless.radio0.txpower |grep 19` ] && echo 'selected="true"' %> ><%= $medium%></option>
+-                                <option value="<%= ` uci get gargoyle.global.powerL` %>" <% [ `uci get wireless.radio0.txpower |grep 15` ] && echo 'selected="true"' %> ><%= $low%></option>
++                                <option value="100" <% [ `uci get wireless.mt7628.txpower |grep 100` ] && echo 'selected="true"' %> ><%= $high %></option>
++                                <option value="60" <% [ `uci get wireless.mt7628.txpower |grep 60` ] && echo 'selected="true"' %> ><%= $medium %></option>
++                                <option value="40" <% [ `uci get wireless.mt7628.txpower |grep 40` ] && echo 'selected="true"' %> ><%= $low %></option>
+                             </select>
+                         </div>
+                     </label>
+                 </form>
+ 				  <div class="btn-wrap">
+-					<div class="save-btn fr"><a href="javascript:setwifi()"><%= $save%></a></div>
++					<div class="save-btn fr"><a href="javascript:setwifi()"><%= $save %></a></div>
+ 					</div>
+             </div>
+         </div>
+     </div>
+ </body>
+ </html>
++
