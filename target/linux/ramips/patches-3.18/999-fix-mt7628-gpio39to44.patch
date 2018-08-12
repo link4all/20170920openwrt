@@ -1,0 +1,60 @@
+Index: b/arch/mips/ralink/mt7620.c
+===================================================================
+--- a/arch/mips/ralink/mt7620.c
++++ b/arch/mips/ralink/mt7620.c
+@@ -272,6 +272,30 @@ static struct rt2880_pmx_func wled_an_gr
+ 	FUNC("wled_an", 0, 44, 1),
+ };
+ 
++static struct rt2880_pmx_func ephy_p1_grp_mt7628[] = {
++        FUNC("rsvd", 3, 42, 1),
++        FUNC("rsvd", 2, 42, 1),
++        FUNC("gpio", 1, 42, 1),
++        FUNC("ephy", 0, 42, 1),
++};
++static struct rt2880_pmx_func ephy_p2_grp_mt7628[] = {
++        FUNC("rsvd", 3, 41, 1),
++        FUNC("rsvd", 2, 41, 1),
++        FUNC("gpio", 1, 41, 1),
++        FUNC("ephy", 0, 41, 1),
++};
++static struct rt2880_pmx_func ephy_p3_grp_mt7628[] = {
++       FUNC("rsvd", 3, 40, 1),
++        FUNC("rsvd", 2, 40, 1),
++        FUNC("gpio", 1, 40, 1),
++        FUNC("ephy", 0, 40, 1),
++};
++static struct rt2880_pmx_func ephy_p4_grp_mt7628[] = {
++        FUNC("rsvd", 3, 39, 1),
++        FUNC("rsvd", 2, 39, 1),
++        FUNC("gpio", 1, 39, 1),
++        FUNC("ephy", 0, 39, 1),
++};
+ static struct rt2880_pmx_func agpio_grp_mt7628[] = {
+ 	FUNC("sd", 1, 0, 0 ),
+ 	FUNC("uart2", 1, 0, 0),
+@@ -281,6 +305,12 @@ static struct rt2880_pmx_func agpio_grp_
+ };
+ 
+ #define MT7628_GPIO_MODE_MASK		0x3
++
++#define MT7628_GPIO_MODE_EPHY_P4        42
++#define MT7628_GPIO_MODE_EPHY_P3        40
++#define MT7628_GPIO_MODE_EPHY_P2        38
++#define MT7628_GPIO_MODE_EPHY_P1        36
++
+ #define MT7628_AGPIO_MODE_MASK		0x1
+ 
+ #define MT7628_GPIO_MODE_P4LED_KN	58
+@@ -363,6 +393,11 @@ static struct rt2880_pmx_group mt7628an_
+ 				1, MT7628_GPIO_MODE_P3LED_KN),
+ 	GRP_G("p4led_kn", p4led_kn_grp_mt7628, MT7628_GPIO_MODE_MASK,
+ 				1, MT7628_GPIO_MODE_P4LED_KN),
++		 GRP_G("ephy_p1", ephy_p1_grp_mt7628, MT7628_GPIO_MODE_MASK, 1, MT7628_GPIO_MODE_EPHY_P1),
++        GRP_G("ephy_p2", ephy_p2_grp_mt7628, MT7628_GPIO_MODE_MASK, 1, MT7628_GPIO_MODE_EPHY_P2),
++        GRP_G("ephy_p3", ephy_p3_grp_mt7628, MT7628_GPIO_MODE_MASK, 1, MT7628_GPIO_MODE_EPHY_P3),
++        GRP_G("ephy_p4", ephy_p4_grp_mt7628, MT7628_GPIO_MODE_MASK, 1, MT7628_GPIO_MODE_EPHY_P4),
++		
+ 	GRP_G("agpio", agpio_grp_mt7628, MT7628_AGPIO_MODE_MASK,
+ 				1, MT7628_AGPIO_MODE_DIS),
+ 	{ 0 }

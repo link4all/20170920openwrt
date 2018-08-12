@@ -1,0 +1,88 @@
+Index: b/drivers/usb/serial/option.c
+===================================================================
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -61,6 +61,17 @@ static void option_instat_callback(struc
+ #define QUECTEL_PRODUCT_ID2			0X9003
+ #define QUECTEL_PRODUCT_ID3			0X9215
+ 
++//david add Fibocom products
++#define FIBOCOM_VENDOR_ID  0x2cb7
++#define FIBOCOM_PRODUCT_L71X  0x0001
++#define FIBOCOM_USB_VENDOR_AND_INTERFACE_INFO(vend, cl, sc, pr) \
++.match_flags = USB_DEVICE_ID_MATCH_INT_INFO \
++| USB_DEVICE_ID_MATCH_VENDOR, \
++.idVendor = (vend), \
++.bInterfaceClass = (cl), \
++.bInterfaceSubClass = (sc), \
++.bInterfaceProtocol = (pr)
++
+ #define OPTION_VENDOR_ID			0x0AF0
+ #define OPTION_PRODUCT_COLT			0x5000
+ #define OPTION_PRODUCT_RICOLA			0x6000
+@@ -657,7 +668,10 @@ static const struct option_blacklist_inf
+ };
+ //add zte 7520
+ static const struct option_blacklist_info net_7520_blacklist = {
+-	.reserved = BIT(0) | BIT(1) | BIT(5) | BIT(6)  ,
++	.reserved = BIT(0) | BIT(1) | BIT(5) | BIT(6) ,
++};
++static const struct option_blacklist_info net_7520_blacklist_v3 = {
++	.reserved =  BIT(6)|BIT(7) ,
+ };
+ //add end
+ 
+@@ -681,7 +695,13 @@ static const struct usb_device_id option
+ .driver_info = (kernel_ulong_t)&qc9x07_blacklist },
+ //add em8000
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x0532, 0xff, 0xff, 0xff),/* ZTE 7520 */
+-	  .driver_info = (kernel_ulong_t)&net_7520_blacklist },
++	  .driver_info = (kernel_ulong_t)&net_7520_blacklist_v3 },
++//add end
++//add fibocom L71x
++{ FIBOCOM_USB_VENDOR_AND_INTERFACE_INFO(FIBOCOM_VENDOR_ID, 0xff, 0xff, 0xff) },
++{ FIBOCOM_USB_VENDOR_AND_INTERFACE_INFO(FIBOCOM_VENDOR_ID, 0x0a, 0x00, 0xff) },
++{ USB_DEVICE_AND_INTERFACE_INFO(0x19d2, 0x0256, 0xff, 0xff, 0xff) },
++{ USB_DEVICE_AND_INTERFACE_INFO(0x19d2, 0x0579, 0xff, 0xff, 0xff), .driver_info = (kernel_ulong_t)&net_7520_blacklist },
+ //add end
+ //add mu709s
+ 	{ USB_DEVICE(0x12d1, 0x1c25) },
+Index: b/drivers/usb/serial/usb_wwan.c
+===================================================================
+--- a/drivers/usb/serial/usb_wwan.c
++++ b/drivers/usb/serial/usb_wwan.c
+@@ -35,6 +35,8 @@
+ #include <linux/usb/serial.h>
+ #include <linux/serial.h>
+ #include "usb-wwan.h"
++#define FIBOCOM_BCDUSB 0x0100
++#define FIBOCOM_VENDOR_ID 0x2cb7
+ 
+ void usb_wwan_dtr_rts(struct usb_serial_port *port, int on)
+ {
+@@ -189,6 +191,8 @@ int usb_wwan_write(struct tty_struct *tt
+ 	int err;
+ 	unsigned long flags;
+ 
++struct usb_host_endpoint *ep;
++
+ 	portdata = usb_get_serial_port_data(port);
+ 	intfdata = usb_get_serial_data(port->serial);
+ 
+@@ -221,7 +225,15 @@ int usb_wwan_write(struct tty_struct *tt
+ 		/* send the data */
+ 		memcpy(this_urb->transfer_buffer, buf, todo);
+ 		this_urb->transfer_buffer_length = todo;
+-
++if((FIBOCOM_VENDOR_ID == port->serial->dev->descriptor.idVendor)
++&& (FIBOCOM_BCDUSB != port->serial->dev->descriptor.bcdUSB)) { ep =
++usb_pipe_endpoint(this_urb->dev, this_urb->pipe);
++if (ep && (0 != this_urb->transfer_buffer_length)
++&& (0 == this_urb->transfer_buffer_length
++% ep->desc.wMaxPacketSize)) {
++this_urb->transfer_flags |= URB_ZERO_PACKET; printk("GHT:Send ZERO PACKET ####\r\n");
++}
++}
+ 		spin_lock_irqsave(&intfdata->susp_lock, flags);
+ 		if (intfdata->suspended) {
+ 			usb_anchor_urb(this_urb, &portdata->delayed);
