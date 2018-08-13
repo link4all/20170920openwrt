@@ -1,0 +1,14 @@
+Index: b/src/firewall.c
+===================================================================
+--- a/src/firewall.c
++++ b/src/firewall.c
+@@ -678,7 +678,8 @@ fw_sync_with_authserver(void)
+ 			  "Checking client %s for timeout:  Last updated %ld (%ld seconds ago), timeout delay %ld seconds, current time %ld, ",
+ 			  p1->ip, p1->counters.last_updated, current_time - p1->counters.last_updated,
+ 			  config->checkinterval * config->clienttimeout, current_time);
+-		if (p1->counters.last_updated + (config->checkinterval * config->clienttimeout) <= current_time) {
++		//if (p1->counters.last_updated + (config->checkinterval * config->clienttimeout) <= current_time) {
++			if (p1->first_login + (config->checkinterval * config->clienttimeout) <= current_time) {
+ 			/* Timing out user */
+ 			debug(LOG_DEBUG, "%s - Inactive for more than %ld seconds, removing client and denying in firewall",
+ 				  p1->ip, config->checkinterval * config->clienttimeout);
