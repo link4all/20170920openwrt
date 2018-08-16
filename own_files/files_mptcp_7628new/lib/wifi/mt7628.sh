@@ -1,58 +1,59 @@
 #!/bin/sh
-append DRIVERS "mt7628"
+append DRIVERS "ralink"
 
-. /lib/wifi/ralink_common.sh
+devidx=0
 
-prepare_mt7628() {
-	prepare_ralink_wifi mt7628
-}
+write_ralink() {
+	local dir=$1
+	local devtype=$2
+	local dev=$3
+	local mode=$4
+	local sta=apcli0
 
-scan_mt7628() {
-	scan_ralink_wifi mt7628 mt7628
-}
+	[ -d /sys/module/$dir ] || return
+	[ -d "/sys/class/net/$dev" ] || return
 
-
-disable_mt7628() {
-	disable_ralink_wifi mt7628
-}
-
-enable_mt7628() {
-	enable_ralink_wifi mt7628 mt7628
-}
-
-detect_mt7628() {
-#	detect_ralink_wifi mt7628 mt7628
-	#ssid=mt7628-`ifconfig eth0 | grep HWaddr | cut -c 51- | sed 's/://g'`
-	ssid=mt7628-`dd bs=1 skip=7 count=3 if=/dev/mtd2 2>/dev/null | hexdump -e '3/1 "%02X"'`
-	cd /sys/module/
-	[ -d $module ] || return
-	[ -e /etc/config/wireless ] && return
-         cat <<EOF
-config wifi-device      mt7628
-        option type     mt7628
-        option vendor   ralink
-        option band     2.4G
-        option channel  11
-        option auotch   2
-	option ht 40
-	#option disabled 1
-
-config wifi-iface	ap
-        option device   mt7628
-        option ifname   ra0
-        option network  lan
-        option mode     ap
-        option ssid     $ssid
-        option encryption psk2
-        option key      12345678
-        option ApCliSsid 'YINUO-LINK-WiFi'
-        option ApCliAuthMode 'WPA2PSK'
-        option ApCliEncrypType 'AES'
-        option ApCliWPAPSK '88888888'
-        option ApCliEnable '1'
-
+	cat <<EOF
+config wifi-device  ra0
+	option type     ralink
+	option variant  $devtype
+	option country  CN
+	option hwmode   $mode
+	option htmode   HT40
+	option channel  auto
+	option disabled 0
+	
+config wifi-iface ap
+	option device   ra0
+	option mode ap
+	option network  lan
+	option ifname   $dev
+	option ssid mt7628-$(hexdump -s 4 -n 6 -C /dev/mtd2 | head -n 1 | sed 's/\ \ /:/g' | cut -d: -f 2 | awk -F " " '{print $4""$5""$6 }' |tr a-z A-Z)
+	option encryption psk2
+	option key 12345678 
+	option hidden    0
+	
+config wifi-iface sta
+	option device   ra0
+	option disabled 1
+	option mode sta
+	option network  wwan
+	option ifname   $sta
+	option ssid UplinkAp
+	option key  SecretKey
+	option encryption psk
 EOF
-
-
 }
 
+detect_ralink() {
+	[ -z "$(uci get wireless.@wifi-device[-1].type 2> /dev/null)" ] || return 0
+
+	cpu=$(awk 'BEGIN{FS="[ \t]+: MediaTek[ \t]"} /system type/ {print $2}' /proc/cpuinfo | cut -d" " -f1)
+	case $cpu in
+	MT7688 | MT7628AN)
+		write_ralink mt7628 ralink ra0 11n
+		;;
+	esac
+
+	return 0
+}

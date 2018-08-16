@@ -4,6 +4,7 @@ eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_
 echo "Content-Type: application/json"
 echo ""
 
+encx=psk
 if [ $FORM_setrepeater = 1 ];then
 	if [ "$FORM_etype"x = "WPA1PSKWPA2PSK/TKIPAES"x ]; then
 			      umode="WPA2PSK"
@@ -29,17 +30,17 @@ if [ $FORM_setrepeater = 1 ];then
 		elif [ "$FORM_etype"x = "WEP"x ]; then
     		umode="WEP"
         	uencryp="WEP"
+			encx=wep
    		fi
 
 
-uci set wireless.ap.ApCliSsid="$FORM_essid"
-uci set wireless.ap.ApCliWPAPSK="$FORM_epwd"
-uci set wireless.mt7628.channel="$FORM_channel"
-uci set wireless.ap.ApCliAuthMode="$umode"
-uci set wireless.ap.ApCliEncrypType="$uencryp"
-uci set wireless.ap.ApCliEnable='1'
+uci set wireless.sta.ssid="$FORM_essid"
+uci set wireless.sta.key="$FORM_epwd"
+uci set wireless.ra0.channel="$FORM_channel"
+uci set wireless.ra0.encryption=$encx
+uci set wireless.sta.disabled='0'
 else
-uci set wireless.ap.ApCliEnable='0'
+uci set wireless.sta.disabled='1'
 fi
 
 

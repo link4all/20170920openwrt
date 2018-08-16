@@ -61,14 +61,14 @@ lang=`uci get gargoyle.global.lang`
                     <label>
                         <div class="name"></div>
                         <div>
-                            <input type="checkbox" value="1" name="enable" <%= `uci get wireless.mt7628.disabled >/dev/null 2>&1  || echo checked` %>/><%= $enable_wifi %>
+                            <input type="checkbox" value="1" name="enable" <% [ `uci get wireless.ra0.disabled` = 1 ] || echo checked %>/><%= $enable_wifi %>
                         </div>
                     </label>
                       <label>
                                 <div class="name">SSID ：</div>
                                 <div>
                                     <input name="ssid" type="text" value="<%= `uci get wireless.ap.ssid` %>"  />
-                                    <input type="checkbox" value="1" name="hidssid" <%= `uci get wireless.ap.hidden >/dev/null 2>&1  && echo checked` %>/><%= $hide%>SSID
+                                    <input type="checkbox" value="1" name="hidssid" <% [ `uci get wireless.ap.hidden` = 1 ]  && echo checked %>/><%= $hide%>SSID
                                 </div>
                             </label>
                             <label>
@@ -91,18 +91,20 @@ lang=`uci get gargoyle.global.lang`
                         <div class="name"><%= $channel %></div>
                         <div>
                             <select name="channel" id="channel">
-                                <option value="0" <% [ `uci get wireless.mt7628.channel` -eq 0 ] && echo 'selected="true"' %>>Auto</option>
-                                <option value="1" <% [ `uci get wireless.mt7628.channel` -eq 1 ] && echo 'selected="true"' %>>1</option>
-                                <option value="2" <% [ `uci get wireless.mt7628.channel` -eq 2 ] && echo 'selected="true"' %>>2</option>
-                                <option value="3" <% [ `uci get wireless.mt7628.channel` -eq 3 ] && echo 'selected="true"' %>>3</option>
-                                <option value="4" <% [ `uci get wireless.mt7628.channel` -eq 4 ] && echo 'selected="true"' %>>4</option>
-                                <option value="5" <% [ `uci get wireless.mt7628.channel` -eq 5 ] && echo 'selected="true"' %>>5</option>
-                                <option value="6" <% [ `uci get wireless.mt7628.channel` -eq 6 ] && echo 'selected="true"' %>>6</option>
-                                <option value="7" <% [ `uci get wireless.mt7628.channel` -eq 7 ] && echo 'selected="true"' %>>7</option>
-                                <option value="8" <% [ `uci get wireless.mt7628.channel` -eq 8 ] && echo 'selected="true"' %> >8</option>
-                                <option value="9" <% [ `uci get wireless.mt7628.channel` -eq 9 ] && echo 'selected="true"' %> >9</option>
-                                <option value="10" <% [ `uci get wireless.mt7628.channel` -eq 10 ] && echo 'selected="true"' %> >10</option>
-                                <option value="11" <% [ `uci get wireless.mt7628.channel` -eq 11 ] && echo 'selected="true"' %> >11</option>
+                                <option value="0" <% [ `uci get wireless.ra0.channel` -eq 0 ] && echo 'selected="true"' %>>Auto</option>
+                                <option value="1" <% [ `uci get wireless.ra0.channel` -eq 1 ] && echo 'selected="true"' %>>1</option>
+                                <option value="2" <% [ `uci get wireless.ra0.channel` -eq 2 ] && echo 'selected="true"' %>>2</option>
+                                <option value="3" <% [ `uci get wireless.ra0.channel` -eq 3 ] && echo 'selected="true"' %>>3</option>
+                                <option value="4" <% [ `uci get wireless.ra0.channel` -eq 4 ] && echo 'selected="true"' %>>4</option>
+                                <option value="5" <% [ `uci get wireless.ra0.channel` -eq 5 ] && echo 'selected="true"' %>>5</option>
+                                <option value="6" <% [ `uci get wireless.ra0.channel` -eq 6 ] && echo 'selected="true"' %>>6</option>
+                                <option value="7" <% [ `uci get wireless.ra0.channel` -eq 7 ] && echo 'selected="true"' %>>7</option>
+                                <option value="8" <% [ `uci get wireless.ra0.channel` -eq 8 ] && echo 'selected="true"' %> >8</option>
+                                <option value="9" <% [ `uci get wireless.ra0.channel` -eq 9 ] && echo 'selected="true"' %> >9</option>
+                                <option value="10" <% [ `uci get wireless.ra0.channel` -eq 10 ] && echo 'selected="true"' %> >10</option>
+                                <option value="11" <% [ `uci get wireless.ra0.channel` -eq 11 ] && echo 'selected="true"' %> >11</option>
+                                <option value="10" <% [ `uci get wireless.ra0.channel` -eq 12 ] && echo 'selected="true"' %> >12</option>
+                                <option value="11" <% [ `uci get wireless.ra0.channel` -eq 13 ] && echo 'selected="true"' %> >13</option>
                             </select>
                         </div>
                     </label>
@@ -110,8 +112,8 @@ lang=`uci get gargoyle.global.lang`
                         <div class="name"><%= $bw %></div>
                         <div>
                             <select name="bw" id="bw">
-                                <option value="20" <% [ `uci get wireless.mt7628.ht |grep 20` ] && echo 'selected="true"' %> >20MHz</option>
-                                <option value="40" <% [ `uci get wireless.mt7628.ht |grep 40` ] && echo 'selected="true"' %> >40MHz</option>
+                                <option value="20" <% [ `uci get wireless.ra0.htmode |grep 20` ] && echo 'selected="true"' %> >20MHz</option>
+                                <option value="40" <% [ `uci get wireless.ra0.htmode |grep 40` ] && echo 'selected="true"' %> >40MHz</option>
                             </select>
                         </div>
                     </label>

@@ -60,7 +60,7 @@ define Build/Compile
 		$(foreach c, $(PKG_KCONFIG),$(if $(CONFIG_MT7628_$c),CONFIG_$(c)=$(CONFIG_MT7628_$(c))))\
 		CONFIG_MT_AP_SUPPORT=m \
                 CONFIG_SOC_MT7628=y \
-		RT_FIRST_IF_RF_OFFSET=0x40000 \
+		CONFIG_RT_FIRST_IF_RF_OFFSET=0x40000 \
 		CONFIG_SUPPORT_OPENWRT=y \
 		modules
 endef

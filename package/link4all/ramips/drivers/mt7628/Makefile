@@ -39,11 +39,11 @@ TAR_CMD=$(HOST_TAR) -C $(1)/ $(TAR_OPTIONS)
 define KernelPackage/mt7628
   CATEGORY:=MTK Properties
   TITLE:=MTK MT7628 wifi AP driver
-#FILES:=$(PKG_BUILD_DIR)/build/mt7628.ko
-  FILES:=$(PKG_BUILD_DIR)/build/mt_wifi.ko
+  FILES:=$(PKG_BUILD_DIR)/build/mt7628.ko
+  #FILES:=$(PKG_BUILD_DIR)/build/mt_wifi.ko
   DEPENDS:=@(TARGET_ramips_mt7688||TARGET_ramips_mt7628) +wireless-tools +maccalc
-#AUTOLOAD:=$(call AutoLoad,50,mt7628)
-  AUTOLOAD:=$(call AutoLoad,50,mt_wifi)
+  AUTOLOAD:=$(call AutoLoad,50,mt7628)
+  #AUTOLOAD:=$(call AutoLoad,50,mt_wifi)
   SUBMENU:=Drivers
   MENU:=1
 endef
@@ -59,7 +59,7 @@ define Build/Compile
 		SUBDIRS="$(PKG_BUILD_DIR)/build/" \
 		$(foreach c, $(PKG_KCONFIG),$(if $(CONFIG_MT7628_$c),CONFIG_$(c)=$(CONFIG_MT7628_$(c))))\
 		CONFIG_MT_AP_SUPPORT=m \
-                CONFIG_SOC_MT7628=y \
+        CONFIG_SOC_MT7628=y \
 		CONFIG_RT_FIRST_IF_RF_OFFSET=0x40000 \
 		CONFIG_SUPPORT_OPENWRT=y \
 		modules
@@ -81,6 +81,8 @@ endef
 define KernelPackage/mt7628/install
 	$(INSTALL_DIR) $(1)/lib/wifi/
 	$(INSTALL_BIN) ./files/mt7628.sh $(1)/lib/wifi/
+	$(INSTALL_DIR)  $(1)/lib/netifd/wireless
+	$(INSTALL_BIN) ./files/ralink.sh $(1)/lib/netifd/wireless/
 	$(INSTALL_DIR) $(1)/etc/wireless/mt7628/
 	$(INSTALL_BIN) ./files/mt7628.dat $(1)/etc/wireless/mt7628/
 	-if [ "$$(CONFIG_INTERNAL_PA_INTERNAL_LNA)" = "y" ]; then \

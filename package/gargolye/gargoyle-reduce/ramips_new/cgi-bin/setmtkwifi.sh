@@ -5,9 +5,9 @@ echo "Content-Type: application/json"
 echo ""
 
 if [ "$FORM_enable" -eq 1 ] ;then
-uci del wireless.mt7628.disabled >/dev/null 2>&1 
+uci del wireless.ra0.disabled >/dev/null 2>&1 
 else
-uci set wireless.mt7628.disabled=1
+uci set wireless.ra0.disabled=1
 fi
 if [ "$FORM_hidssid" -eq 1 ] ;then
 uci set wireless.ap.hidden=1
@@ -18,9 +18,9 @@ fi
 uci set wireless.ap.ssid="$FORM_ssid"
 uci set wireless.ap.encryption="$FORM_etype"
 uci set wireless.ap.key="$FORM_epwd"
-uci set wireless.mt7628.channel="$FORM_channel"
-uci set wireless.mt7628.ht="$FORM_bw"
-uci set wireless.mt7628.txpower="$FORM_txpower"
+uci set wireless.ra0.channel="$FORM_channel"
+uci set wireless.ra0.htmode="$FORM_bw"
+uci set wireless.ra0.txpower="$FORM_txpower"
 uci commit wireless
 uci set network.wwan=interface
 uci set network.wwan.proto="dhcp"

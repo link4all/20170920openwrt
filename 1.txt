@@ -1,0 +1,9 @@
+./own_files/files_pt100/lib/wifi/mt7628.sh
+./own_files/files_7628fanglikai/lib/wifi/mt7628.sh
+./own_files/files_4modem/lib/wifi/mt7628.sh
+./own_files/files_tw7628_nodog/lib/wifi/mt7628.sh
+./own_files/files_zigbee/lib/wifi/mt7628.sh
+./own_files/files_mptcp_7628new/lib/wifi/mt7628.sh
+./own_files/files_mtb/lib/wifi/mt7628.sh
+./own_files/files_wfnt_4g/lib/wifi/mt7628.sh
+./own_files/files_tw7628_wifidog/lib/wifi/mt7628.sh
