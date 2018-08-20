@@ -16,10 +16,10 @@ uci set network.4g=interface
 uci set network.4g.proto='dhcp'
 uci set network.4g.ifname='eth2'
 
-uci set network.pptp=interface
-uci set network.pptp.proto=pptp
-uci set network.l2tp=interface
-uci set network.l2tp.proto=l2tp
+#uci set network.pptp=interface
+#uci set network.pptp.proto=pptp
+#uci set network.l2tp=interface
+#uci set network.l2tp.proto=l2tp
 
 uci set network.n2n0=interface
 uci set network.n2n0.proto='static'
