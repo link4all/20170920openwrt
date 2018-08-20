@@ -6,6 +6,7 @@ sleep 5
 /etc/init.d/network restart &
 /etc/exportgpio.sh &
 /etc/modem_info.sh &
+/etc/watch_wifidog.sh &
 iptables -N BLKLIST
 iptables -I FORWARD -p tcp -j BLKLIST
 exit 0

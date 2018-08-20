@@ -9,5 +9,5 @@ up_firm="上传固件"
 nofile="请先上传固件！"
 save="上传"
 upgrade="升级"
-upgrade_ok="升级成功，正在重启！"
+upgrade_ok="升级完成，正在重启！"
 

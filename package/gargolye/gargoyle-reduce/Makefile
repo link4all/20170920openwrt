@@ -46,7 +46,7 @@ define Package/gargoyle-reduce/install
 	mkdir -p $(1)/www/data/
 	$(CP) ./www_common/* $(1)/www
 	if [ "$$(CONFIG_TARGET_ar71xx)" = "y" ]; then \
-		$(CP)  ./www_ar71xx/*   $(1)/www; \
+		$(CP)  ./ar71xx_new/*   $(1)/www; \
 	elif [ "$$(CONFIG_TARGET_ramips)" = "y" ]; then \
 		$(CP)  ./ramips_new/*   $(1)/www; \
 	else \

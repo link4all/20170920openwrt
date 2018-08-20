@@ -2,4 +2,5 @@
 # the system init finished. By default this file does nothing.
 /etc/gpioloop.sh &
 /etc/modem_info.sh &
+/etc/plc/plc.pub &
 exit 0

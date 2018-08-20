@@ -24,17 +24,18 @@ uci set network.l2tp.proto=l2tp
 uci set network.n2n0=interface
 uci set network.n2n0.proto='static'
 uci set network.n2n0.ifname='n2n0'
-uci set network.lan.ipaddr='192.168.1.1'
+uci set network.lan.ipaddr='192.168.2.1'
 uci commit network
 
 #uci set luci.main.mediaurlbase='/luci-static/wfnt'
 #uci commit luci
-uci set firewall.@zone[1].network="wan wan6 wwan 4g pptp l2tp n2n0"
-uci set firewall.n2n0=redirect
-uci set firewall.n2n0.src=wan
-uci set firewall.n2n0.proto=all
-uci set firewall.n2n0.dest_ip='192.168.1.251'
-uci set firewall.n2n0.target='DNAT'
+uci set firewall.@zone[0].network="lan n2n0"
+uci set firewall.@zone[1].network="wan wan6 4g"
+# uci set firewall.n2n0=redirect
+# uci set firewall.n2n0.src=wan
+# uci set firewall.n2n0.proto=all
+# uci set firewall.n2n0.dest_ip='192.168.1.251'
+# uci set firewall.n2n0.target='DNAT'
 uci commit firewall
 
 uci set system.@system[0].zonename='Asia/Shanghai'
@@ -66,6 +67,8 @@ uci set 4g.server.sn="${mac}"
 uci set 4g.server.name='router.link-4all.com'
 uci commit 4g
 
+uci set n2n_v2.@edge[0].community=$mac
+uci commit n2n_v2
 #move gar uhttpd.conf to config dir
 cp /etc/uhttpd.conf.gargoyle /etc/config/uhttpd
 

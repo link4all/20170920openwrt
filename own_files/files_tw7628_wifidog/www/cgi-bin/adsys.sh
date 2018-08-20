@@ -51,18 +51,18 @@ uci commit dhcp
 /etc/init.d/wifidog stop && sleep 1 && /etc/init.d/wifidog start 2>&1 >/dev/null
 #wdctl add_trusted_domains `uci get wifidogauth.auth.redirect_url`
 #a=0
-#while [ $a -lt 15 ]
-#do
-#wdctl add_trusted_domains `uci get wifidogauth.auth.redirect_url`
-#if [ ! $? = 0 ];then
-#   wdctl add_trusted_domains `uci get wifidogauth.auth.redirect_url`
-#   echo $a
-#else
-#   break
-#fi
-#a=$((a+1))
-#sleep 1
-#done
+# while [ $a -lt 15 ]
+# do
+# wdctl add_trusted_domains `uci get wifidogauth.auth.redirect_url`
+# if [ ! $? = 0 ];then
+#    wdctl add_trusted_domains `uci get wifidogauth.auth.redirect_url`
+#    echo $a
+# else
+#    break
+# fi
+# a=$((a+1))
+# sleep 1
+# done
 
 
 
