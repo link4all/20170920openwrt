@@ -141,6 +141,12 @@ lang=`uci get gargoyle.global.lang`
                             <input  name="br_dns2" type="text" value="<% uci get network.wan.dns |awk '{print $2}' %>" placeholder="<%= $place_hold%>"/>
                         </div>
                     </label>
+                    <label class="">
+                        <div class="name"><%= $metric%>：</div>
+                        <div>
+                            <input id="metric" name="metric" type="text" value="<% uci -q get network.wan.metric %>"  />
+                        </div>
+                    </label>
             </form>
 				  <div class="btn-wrap">
 					<div class="save-btn fr"><a href="javascript:setwan()"><%= $save%></a></div>

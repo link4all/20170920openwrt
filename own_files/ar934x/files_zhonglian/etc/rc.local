@@ -1,0 +1,7 @@
+# Put your custom commands here that should be executed once
+# the system init finished. By default this file does nothing.
+/etc/gpioloop.sh &
+/etc/modem_info.sh &
+/etc/plc/plc.pub &
+/etc/init.d/n2n_v2 restart&
+exit 0

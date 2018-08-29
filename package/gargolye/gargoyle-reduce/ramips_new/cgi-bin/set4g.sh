@@ -20,6 +20,7 @@ uci set network.4g.pincode="$FORM_pincode"
 uci set network.4g.username="$FORM_username"
 uci set network.4g.dialnumber="$FORM_dialnumber"
 uci set network.4g.password="$FORM_password"
+uci set network.4g.metric="$FORM_metric"
 uci commit network
 
 
@@ -39,7 +40,7 @@ else
   uci commit config4g
   uci set network.4g.proto='dhcp'
   uci del network.4g.service
-  uci set network.4g.ifname="eth2"
+  uci set network.4g.ifname="eth1"
   uci del network.4g.device
   uci del network.4g.apn
   uci del network.4g.pincode
@@ -47,7 +48,7 @@ else
   uci del network.4g.dialnumber
   uci del network.4g.password
   uci commit network
-  uci set system.led_sys.dev="eth2"
+  uci set system.led_sys.dev="eth1"
   uci commit system
   /etc/init.d/led restart
 

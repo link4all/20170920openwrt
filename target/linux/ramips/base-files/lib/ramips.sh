@@ -439,6 +439,9 @@ ramips_board_detect() {
 	*"linkall")
 		name="linkall"
 		;;
+	*"liwei")
+		name="liwei"
+		;;
 	*)
 		name="generic"
 		;;

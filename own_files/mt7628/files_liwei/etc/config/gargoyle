@@ -1,0 +1,18 @@
+config global 'global'
+        option session_timeout '60'
+        option lang 'zh_cn'
+        option soft_ver 'V2.2.10'
+        option model_name '4G MIFI Router'
+        option powerH '100'
+        option powerM '80'
+        option powerL '50'
+        #option powerH '23'
+        #option powerM '19'
+        #option powerL '15'
+	option company_en_us	'Shenzhen Newchiba Smart technology co., LTD.'
+	option company_zh_cn  '深圳市六七八智联科技有限公司'
+
+
+
+
+

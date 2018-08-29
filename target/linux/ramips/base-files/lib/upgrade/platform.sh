@@ -69,6 +69,7 @@ platform_check_image() {
 	mtb |\
 	7628tw |\
 	*linkall|\
+	*liwei|\
 	generic|\
 	m2m | \
 	m3 | \

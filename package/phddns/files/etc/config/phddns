@@ -1,0 +1,5 @@
+config phddns
+	option enabled	'0'
+	option username	'abcd'
+	option password	'123456'
+	

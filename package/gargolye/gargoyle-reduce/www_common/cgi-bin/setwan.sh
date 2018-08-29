@@ -91,7 +91,7 @@ echo "{"
 echo "\"mode\":\"$FORM_wan_mode\""
 echo "}"
 fi
-
+uci -q set network.wan.metric="$FORM_metric" 
 uci commit network
 /etc/init.d/network restart
 

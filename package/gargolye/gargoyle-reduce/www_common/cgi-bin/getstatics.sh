@@ -5,7 +5,7 @@ echo "Content-Type: application/json"
 echo ""
 echo "{"
 i=0
-cat /proc/net/dev |grep -v "lo"|grep -v "gre0" |grep -v "tap0" |grep -v "teql0"|grep -v "imq" |grep -v "apcli" |grep -v "drop" |grep -v "Receive" | while read line
+cat /proc/net/dev |grep -v "lo"|grep -v "gre0" |grep -v "tap0" |grep -v "teql0"|grep -v "imq"|grep -Ev "ra[1-3]"|grep -Ev "ifb[0-1]"|grep -v "mon0" |grep -v "ra3"|grep -v "apcli" |grep -v "drop"  |grep -v "Receive" | while read line
 do
   interface=`echo $line |awk '{print $1}'`
   rxbytes=`echo $line |awk '{print $2}'`

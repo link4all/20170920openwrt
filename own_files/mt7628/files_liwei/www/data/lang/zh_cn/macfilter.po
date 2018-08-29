@@ -1,0 +1,7 @@
+processing="正在设置MAC地址过滤，请等待！"
+mac_error="设置出错请重新刷新页面后再设置！"
+finish_mac="MAC过滤已设置完毕"
+location="当前位置：网络设置 > MAC地址过滤"
+page="MAC地址过滤"
+mac_list="请输入MAC地址列表,分隔符为\"|\""
+save="保存"

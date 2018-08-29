@@ -1033,6 +1033,7 @@ Image/Build/Profile/wifi_audio=$(call BuildFirmware/Default16M/$(1),$(1),wifi_au
 Image/Build/Profile/7628mifi=$(call BuildFirmware/Default16M/$(1),$(1),7628mifi,7628mifi)
 Image/Build/Profile/7628tw=$(call BuildFirmware/Default16M/$(1),$(1),7628tw,7628tw)
 Image/Build/Profile/76x8linkall=$(call BuildFirmware/Default16M/$(1),$(1),76x8linkall,76x8linkall)
+Image/Build/Profile/76x8liwei=$(call BuildFirmware/Default16M/$(1),$(1),76x8liwei,76x8liwei)
 Image/Build/Profile/mtb=$(call BuildFirmware/Default16M/$(1),$(1),mtb,mtb)
 
 
@@ -1044,6 +1045,7 @@ define Image/Build/Profile/Default
 	$(call Image/Build/Profile/7628mifi,$(1))
 	$(call Image/Build/Profile/7628tw,$(1))
 	$(call Image/Build/Profile/76x8linkall,$(1))
+	$(call Image/Build/Profile/76x8liwei,$(1))
 endef
 endif
 

@@ -156,6 +156,12 @@ lang=`uci get gargoyle.global.lang`
                             <input id="pincode" name="pincode" type="text" value="<% uci get config4g.@4G[0].pincode %>" placeholder="<%= $place_hold%>" />
                         </div>
                     </label>
+                    <label class="">
+                        <div class="name"><%= $metric%>：</div>
+                        <div>
+                            <input id="metric" name="metric" type="text" value="<% uci -q get network.4g.metric %>" placeholder="<%= $place_hold%>" />
+                        </div>
+                    </label>
             </form>
 				  <div class="btn-wrap">
 					<div class="save-btn fr"><a href="javascript:setlan()"><%= $save%></a></div>

@@ -274,6 +274,10 @@ case $board in
 		ucidef_set_led_netdev "wifi" "WIFI" "linkall:wifi" "ra0"
 		ucidef_set_led_netdev "sys" "SYS" "linkall:sys" "eth1"	
 		;;
+	liwei)
+		ucidef_set_led_netdev "wifi" "WIFI" "liwei:4g" "eth1"
+		ucidef_set_led_default "sys" "SYS" "liwei:sys" "1"	
+		;;
 esac
 
 board_config_flush
