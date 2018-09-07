@@ -152,7 +152,7 @@ ralink_setup_sta(){
 	echo "#Encryption" >/tmp/wifi_encryption_apcli0.dat
 
 	sta_mode="$(uci get wireless.sta.disabled)"
-	[ "${sta_mode}" == "1" ] && return
+	[ "${sta_mode}" == "1" ]  && iwpriv $ifname set ApCliEnable=0 && return
 
 	ifconfig $ifname up
 

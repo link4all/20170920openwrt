@@ -24,6 +24,13 @@ uci set wireless.ra0.txpower="$FORM_txpower"
 uci commit wireless
 uci set network.wwan=interface
 uci set network.wwan.proto="dhcp"
+
+uci set wireless.ra0.hwmode="$FORM_mode"
+
+if [ "$FORM_etype" = "wep" ];then
+uci set wireless.ap.key=1
+uci set wireless.ap.key1="$FORM_epwd"
+fi
 uci commit network
 
 echo "{"

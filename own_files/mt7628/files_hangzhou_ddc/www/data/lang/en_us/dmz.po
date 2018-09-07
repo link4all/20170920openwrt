@@ -1,0 +1,7 @@
+processing="Setting DMZ, Wait please..."
+dmz_error="Setting Error, please refresh this page and try again!"
+finish_lan="Now DMZ ip is"
+location="Location：Advance Setting > DMZ Setting"
+page="DMZ Setting"
+addr="Address"
+save="Save"

@@ -44,7 +44,7 @@
 			};
 			wled_an {
 				ralink,group = "wled_an";
-				ralink,function = "wled_an";
+				ralink,function = "gpio";
 			};
 			p4led_an{
 				ralink,group = "p4led_an";
@@ -127,13 +127,17 @@
 	};
 	gpio-leds {
 		compatible = "gpio-leds";
-		wifi {
-			label = "liwei:4g";
-			gpios = <&gpio0 2 1>; //gpio2
+		sig1 {
+			label = "liwei:sig1";
+			gpios = <&gpio0 2 0>; //gpio2
 		};
-		sys {
-			label = "liwei:sys";
+		sig2 {
+			label = "liwei:sig2";
 			gpios = <&gpio0 0 0>;//gpio0
+		};
+		4g {
+			label = "liwei:4g";
+			gpios = <&gpio1 12 0>;//gpio44
 		};
 	};
 	gpio-keys-polled {

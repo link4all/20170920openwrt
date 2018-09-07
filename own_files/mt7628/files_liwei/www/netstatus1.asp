@@ -29,6 +29,34 @@ $.ajax({
          }
        });
 }
+
+      function get4ginfo(){
+           $.ajax({
+          type: "GET", 
+          url: "/cgi-bin/get4ginfo.sh",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          success: function(json) {
+            var sim = document.getElementById('sim'); 
+            var sig = document.getElementById('sig');
+            var imei = document.getElementById('imei'); 
+            var imsi = document.getElementById('imsi');
+            var iccid = document.getElementById('iccid');        
+            sim.innerHTML=json.sim
+            sig.innerHTML=json.sig
+            imei.innerHTML=json.imei
+            imsi.innerHTML=json.imsi
+            iccid.innerHTML=json.iccid
+           
+          },
+          error: function(error) {
+            //alert("调用出错" + error.responseText);
+          }
+        });
+   }
+	  $(window).on('load', function () {
+      get4ginfo()
+      });
     </script>
 
 </head>
@@ -46,68 +74,71 @@ $.ajax({
 									</tr>
 									<tr>
 												<td >WAN</td>
-												<td><%= `ubus call network.interface.wan status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "` %></td>
-												<td><%= `ubus call network.interface.wan status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "` %></td>
-										</tr>
-                    <%
-                    if [ "`ifconfig apcli0 |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
-                    echo "<tr>"
-										echo "<td >WWAN</td>"
-										echo "<td>"
-                    ubus call network.interface.wwan status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "
-                    echo "</td><td>"
-                    ubus call network.interface.wwan status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "
-                    echo "</td></tr>"
-                    fi
-                    %>
-                    <%
-                    if [ "`ubus call network.interface.4g status |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
-                    echo "<tr>"
-										echo "<td >4G</td>"
-										echo "<td>"
-                    ubus call network.interface.4g status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "
-                    echo "</td><td>"
-                    ubus call network.interface.4g status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "
-                    echo "</td></tr>"
-                    fi
-                    %>
-                    <%
-                    if [ "`ifconfig pptp-pptp |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
-                    echo "<tr>"
-                    echo "<td >PPTP</td>"
-                    echo "<td>"
-                    ubus call network.interface.pptp status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "
-                    echo "</td><td>"
-                    ubus call network.interface.pptp status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "
-                    echo "</td></tr>"
-                    fi
-                    %>
-                    <%
-                    if [ "`ifconfig l2tp-l2tp |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
-                    echo "<tr>"
-                    echo "<td >L2TP</td>"
-                    echo "<td>"
-                    ubus call network.interface.l2tp status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "
-                    echo "</td><td>"
-                    ubus call network.interface.l2tp status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "
-                    echo "</td></tr>"
-                    fi
-                    %>
-                    <%
-                    if [ "`ifconfig tun0 |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
-                    echo "<tr>"
-                    echo "<td >TUN0</td>"
-                    echo "<td>"
-                    ifconfig tun0 |grep inet |cut -d: -f2 |cut -d" " -f1
-                    echo "</td><td>"
-                    echo "unkown"
-                    echo "</td></tr>"
-                    fi
-                    %>
+                        <td><% w_ip=`ubus call network.interface.wan status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "`
+                          if  [ -z $w_ip ] ;then
+                           echo  "$no_connect"
+                           else
+                           echo $w_ip
+                           fi
+                            %></td>
+												<td><% ubus call network.interface.wan status |grep "uptime" |cut -d: -f2 |tr -d "\"\, " %></td>
+                    </tr>
+                    <tr>
+                        <td>4G</td>
+                        <td><% g4_ip=`ubus call network.interface.4g status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "`
+                          if  [ -z $g4_ip ] ;then
+                           echo  "$no_connect"
+                           else
+                           echo $g4_ip
+                           fi
+                            %></td>
+                        <td><% ubus call network.interface.4g status |grep "uptime" |cut -d: -f2 |tr -d "\"\, " %></td>
+                      </tr>
+                    <tr>
+                      <td>WWAN</td>
+                      <td><% ww_ip=`ubus call network.interface.wwan status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "`
+                        if  [ -z $ww_ip ] ;then
+                         echo  "$no_connect"
+                         else
+                         echo $ww_ip
+                         fi
+                          %></td>
+                      <td><% ubus call network.interface.wwan status |grep "uptime" |cut -d: -f2 |tr -d "\"\, " %></td>
+                    </tr>
+                    <tr>
+                        <td>VPN </td>
+                        <td><% 
+                          if [ "`ifconfig pptp-pptp |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
+                            pptp_ip=`ubus call network.interface.pptp status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "`
+                            pptp_ut=`ubus call network.interface.pptp status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "`
+                            echo "PPPT $pptp_ip"
+                         elif [ "`ifconfig l2tp-l2tp |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
+                            l2tp_ip=`ubus call network.interface.l2tp status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "`
+                            l2tp_ut=`ubus call network.interface.pptp status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "`
+                            echo "L2TP $l2tp_ip"
+                         elif [ "`ifconfig tun0 |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
+                            openvpn_ip=`ubus call network.interface.openvpn status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "` 
+                            openvpn_ut=`ubus call network.interface.pptp status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "`
+                            echo "OPENVPN $openvpn_ip"
+                            else
+                            echo "$no_connect"
+                          fi %>
+                        </td>
+                        <td><%
+                           if [ -n "$pptp_ut" ];then
+                           echo $pptp_ut
+                           elif [ -n "$pptp_ut" ];then
+                           echo $l2tp_ut
+                           elif [ -n "$openvpn_ut" ];then
+                           echo $openvpn_ut
+                           fi                      
+                           %></td>
+
+                        </tr>
 								</table>
 					<div class="title"><%= $modem_info%></div>
 						<div class="wrap-table">
-						<table border="0" cellspacing="0" cellpadding="0" >
+						<table border="0" cellspacing="0" cellpadding="0" id="4ginfo" >
 
 										<tr>
 												<td  width="20%" ><%= $g4_model%></td>
@@ -115,16 +146,34 @@ $.ajax({
 										</tr>
 										<tr>
 												<td ><%= $sim_status%></td>
-												<td colspan="3"><% gcom -d `uci get 4g.modem.device` -s /etc/gcom/getsimstatus.gcom 2>/dev/null %></td>
+												<td colspan="3" id="sim"></td>
 										</tr>
 										<tr>
 												<td ><%= $sig%></td>
-												<td colspan="3"><% gcom -d `uci get 4g.modem.device` -s /etc/gcom/getstrength.gcom  |grep  "," |cut -d: -f2|cut -d, -f1 2>/dev/null %></td>
+												<td colspan="3" id="sig"></td>
+                    </tr>
+                    <tr>
+												<td >IMEI</td>
+												<td colspan="3" id="imei"></td>
+                    </tr>
+                    <tr>
+												<td >IMSI</td>
+												<td colspan="3" id="imsi"></td>
+                    </tr>
+                    <tr>
+												<td >ICCID</td>
+												<td colspan="3" id="iccid"></td>
 										</tr>
 										<tr>
 												<td ><%= $used_byte%></td>
 												<td id="used_byte"  colspan="2">
-                          <% g4byte=`uci get 4g.modem.4g_byte`
+                          <% rx=`vnstat -i eth1 --json |jsonfilter -e @.interfaces[0].traffic.total.rx`
+                          tx=`vnstat -i eth1 --json |jsonfilter -e @.interfaces[0].traffic.total.tx`
+                          if [ -z  $rx  ];then
+                          rx=0
+                          tx=0
+                          fi
+                          g4byte= $(($rx+$tx))
                           if [ $g4byte -ge 1000000000 ];then
                           g4byte=`awk -v x=$g4byte  'BEGIN{printf "%.2fGB",x/1024/1024/1024}'`
                           elif [ $g4byte -ge 1000000 ]; then

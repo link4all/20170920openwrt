@@ -276,7 +276,8 @@ case $board in
 		;;
 	liwei)
 		ucidef_set_led_netdev "wifi" "WIFI" "liwei:4g" "eth1"
-		ucidef_set_led_default "sys" "SYS" "liwei:sys" "1"	
+		ucidef_set_led_default "sys" "SYS" "liwei:sig1" "1"	
+		ucidef_set_led_default "sys" "SYS" "liwei:sig2" "1"	
 		;;
 esac
 

@@ -28,6 +28,13 @@ uci commit firewall
 
 uci set system.@system[0].zonename='Asia/Shanghai'
 uci set system.@system[0].timezone='CST-8'
+uci set system.led_g4_default=led
+uci set system.@led[-1].name="G4_default"
+uci set system.@led[-1].default=0
+uci set system.@led[-1].sysfs='liwei:4g'
+uci set system.@led[-1].trigger='timer'
+uci set system.@led[-1].delayon='800'
+uci set system.@led[-1].delayoff='800'
 uci commit system
 
 #####5 ports######
@@ -39,12 +46,12 @@ uci set network.mtsw.enable_vlan='1'
 uci set network.sw1=switch_vlan
 uci set network.sw1.device='switch0'
 uci set network.sw1.vlan='1'
-uci set network.sw1.ports='1 2 3 4 6t'
+uci set network.sw1.ports='0 1 2 3 6t'
 
 uci set network.sw2=switch_vlan
 uci set network.sw2.device='switch0'
 uci set network.sw2.vlan='2'
-uci set network.sw2.ports='0 6t'
+uci set network.sw2.ports='4 6t'
 uci -q set network.lan.ipaddr='192.168.8.1'
 uci -q set network.wan.metric='1'
 uci -q set network.4g.metric='2'

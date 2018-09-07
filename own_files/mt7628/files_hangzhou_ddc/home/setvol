@@ -1,0 +1,3 @@
+#!/bin/sh
+
+amixer cset numid=9,iface=MIXER,name='Headphone Playback Volume' $1

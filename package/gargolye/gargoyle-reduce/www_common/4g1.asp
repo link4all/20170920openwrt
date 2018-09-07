@@ -54,6 +54,15 @@ lang=`uci get gargoyle.global.lang`
        $(".auth_mode").css('display','none');
        }
    }
+    function showadv(){
+    var adv = document.getElementById("advance");
+     if(adv.style.display=="block"){
+        adv.style.display='none';
+    }else{
+       adv.style.display='block';
+    } 
+       
+     }
    $(window).load(function() {
    mode_change();
    });
@@ -73,6 +82,11 @@ lang=`uci get gargoyle.global.lang`
                             <input id="4gip" name="4gip" type="text" value="<% [ `ubus call network.interface.4g status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "` ] && ubus call network.interface.4g status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, " || echo "$g4_noip" %>" readonly="readonly" style="background-color:#eee" />
                         </div>
                     </label>
+                    <label>
+                            <div class="name"></div>
+                            <input id="dispass" class="green-btn" type="button" value="<%= $custom %>" onclick="showadv()"/>
+                    </label>
+                    <div id="advance" style="display: none;">
                     <label class="">
                         <div class="name"><%= $dialmode%>:</div>
                         <select class="dialmode" name="dialmode" onchange="mode_change()">
@@ -162,6 +176,7 @@ lang=`uci get gargoyle.global.lang`
                             <input id="metric" name="metric" type="text" value="<% uci -q get network.4g.metric %>" placeholder="<%= $place_hold%>" />
                         </div>
                     </label>
+                </div>
             </form>
 				  <div class="btn-wrap">
 					<div class="save-btn fr"><a href="javascript:setlan()"><%= $save%></a></div>
