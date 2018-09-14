@@ -111,7 +111,7 @@ $.ajax({
                           if [ "`ifconfig pptp-pptp |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
                             pptp_ip=`ubus call network.interface.pptp status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "`
                             pptp_ut=`ubus call network.interface.pptp status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "`
-                            echo "PPPT $pptp_ip"
+                            echo "PPTP $pptp_ip"
                          elif [ "`ifconfig l2tp-l2tp |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
                             l2tp_ip=`ubus call network.interface.l2tp status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "`
                             l2tp_ut=`ubus call network.interface.pptp status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "`
@@ -173,13 +173,13 @@ $.ajax({
                           rx=0
                           tx=0
                           fi
-                          g4byte= $(($rx+$tx))
-                          if [ $g4byte -ge 1000000000 ];then
-                          g4byte=`awk -v x=$g4byte  'BEGIN{printf "%.2fGB",x/1024/1024/1024}'`
-                          elif [ $g4byte -ge 1000000 ]; then
-                           g4byte=`awk -v x=$g4byte  'BEGIN{printf "%.2fMB",x/1024/1024}'`
+                          g4byte=$(($rx+$tx))
+                          if [ $g4byte -ge 1000000 ];then
+                          g4byte=`awk -v x=$g4byte  'BEGIN{printf "%.2fGB",x/1024/1024}'`
+                          elif [ $g4byte -ge 1000 ]; then
+                           g4byte=`awk -v x=$g4byte  'BEGIN{printf "%.2fMB",x/1024}'`
                           else
-                           g4byte=`awk -v x=$g4byte   'BEGIN{printf "%dKB",x/1024}'`
+                           g4byte=`awk -v x=$g4byte   'BEGIN{printf "%dKB",x}'`
                           fi %>
                           <%= $g4byte %>
 </td>

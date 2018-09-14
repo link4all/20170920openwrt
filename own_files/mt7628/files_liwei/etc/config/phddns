@@ -1,0 +1,5 @@
+config phddns
+	option enabled	'0'
+	option provider 'oray.com'
+	option username	'abcd'
+	option password	'123456'

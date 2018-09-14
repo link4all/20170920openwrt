@@ -18,7 +18,7 @@ company_name=`uci get gargoyle.global.company_${lang}`
     <script type="text/javascript" src="/jjs/plugin/iPath1/iPath.js"></script>
     <link rel="stylesheet" type="text/css" href="/jjs/plugin/iPath1/iPath.css" />
 
-	<script type="text/javascript" src="jjs/main.js?_=1"></script>
+	<script type="text/javascript" src="jjs/main.js"></script>
 	<script type="text/javascript">
   function change_lang(){
       var form = new FormData(document.getElementById("form0"));
@@ -37,6 +37,42 @@ company_name=`uci get gargoyle.global.company_${lang}`
           }
         });
   }
+
+  function get4ginfo(){
+           $.ajax({
+          type: "GET", 
+          url: "/cgi-bin/get4ginfo.sh?sigonly=1",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          success: function(json) {         
+            var sigimg=document.getElementById('sigimg'); 
+            var rssi=parseInt(json.sig);
+            if(rssi<=31 && rssi>24){  
+              sigimg.src="/images/sig4.png";
+            }
+            else if(rssi<=24 && rssi>17){  
+           sigimg.src="/images/sig3.png";
+            } 
+            else if(rssi<=17 && rssi>10){  
+           sigimg.src="/images/sig2.png";
+            } 
+            else if(rssi<=10 && rssi>0){  
+           sigimg.src="/images/sig1.png";
+            } 
+           else{  
+             sigimg.src="/images/sig_no_sim.png";
+            } 
+            //sig.innerHTML=json.sig 
+          },
+          error: function(error) {
+            //alert("调用出错" + error.responseText);
+          }
+        });
+   }
+	  $(window).on('load', function () {
+        setInterval(get4ginfo,10000);
+      });
+
     </script>
 	</head>
 <body>
@@ -45,8 +81,9 @@ company_name=`uci get gargoyle.global.company_${lang}`
             <div class="logo"><h1>&nbsp;&nbsp;<font color="white" face="arial">4G WIFI ROUTER</font></h1></div>
             <div class="systoolbar">
 						  <div><cite class="sys-icon quit-ico"></cite><a href="/logout.asp"><%= $logout %></a></div>
-			      </div>
-						<div class="sysname"><span>Language(语言)：</span>
+                  </div>
+
+						<div class="sysname"><img id="sigimg" src="" style="float:left;padding-right:20px;" /><span>Language(语言)：</span>
 							<form id="form0" style='display:inline;' >
 							 <select class="lang" name="lang" onchange="change_lang()">
 							 <option value="zh_cn" <% [ `uci get gargoyle.global.lang |grep "zh_cn"` ] && echo 'selected="true"' %> >中文</option>
@@ -64,6 +101,14 @@ company_name=`uci get gargoyle.global.company_${lang}`
                     <div class="menuname"><cite class="m-icon02 sys-icon"></cite><%= $sysinfo %></div>
                     <div class="children">
                         <ul>
+                                <li>
+                                        <div class="menuname">
+                                            <a target="main_frame" href="/baseinfo1.asp"><%= $baseinfo %></a></div>
+                                    </li>
+                                <li>
+                                        <div class="menuname">
+                                            <a target="main_frame" href="/netstatus1.asp"><%= $wan_status %></a></div>
+                                    </li>
                             <li>
                                 <div class="menuname">
                                     <a target="main_frame" href="/apinfo1.asp"><%= $clientinfo %></a></div>
@@ -73,10 +118,7 @@ company_name=`uci get gargoyle.global.company_${lang}`
                                 <div class="menuname">
                                     <a target="main_frame" href="/statics1.asp"><%= $statistics %></a></div>
                             </li>
-							 <li>
-                                <div class="menuname">
-                                    <a target="main_frame" href="/netstatus1.asp"><%= $wan_status %></a></div>
-                            </li>
+
                         </ul>
                     </div>
                 </li>

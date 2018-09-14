@@ -11,8 +11,7 @@ sleep 15
 #rev=$(gcom -d ${device_at} -s /etc/gcom/getcardinfo.gcom |grep -i rev |cut -d: -f2-|tr -d '\r')
 #imei=$(gcom -d ${device_at} -s /etc/gcom/getimei.gcom)
 imsi=$(gcom -d ${device_at} -s /etc/gcom/getimsi.gcom)
-#iccid=$(gcom -d ${device_at} -s /etc/gcom/iccid_forge.gcom|cut -d: -f2)
-iccid=$imsi
+iccid=$(gcom -d ${device_at} -s /etc/gcom/iccid_forge.gcom|cut -d: -f2 |tr -d " ")
 #roam=$(gcom -d ${device_at} -s /etc/gcom/checkregister.gcom )
 #lac=$(gcom -d ${device_at} -s /etc/gcom/getlaccellid.gcom )
 reg_net=$(gcom -d ${device_at} -s /etc/gcom/getregisterednetwork.gcom |cut -d: -f2- )

@@ -9,6 +9,7 @@ echo ""
 uci set phddns.@phddns[0].username="$FORM_ddnsuser"
 uci set phddns.@phddns[0].password="$FORM_ddnspass"
 uci set phddns.@phddns[0].enabled=$FORM_enable
+uci set phddns.@phddns[0].provider=$FORM_ddns_provider
 
 
 echo "{"

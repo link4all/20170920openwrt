@@ -1,11 +1,11 @@
 opengt
 set com 115200n81
-set senddelay 0.03
-waitquiet 1 0.1
+set senddelay 0.01
+waitquiet 0.01 0.01
 :start
-flash 0.1
+flash 0.01
 send "AT+CPIN?\r\n"
-waitfor 30 "SIM PUK","SIM PIN","READY","ERROR","ERR"
+waitfor 0.01 "SIM PUK","SIM PIN","READY","ERROR","ERR"
 if % = -1 goto timeout
 if % = 0 goto ready
 if % = 1 goto pinlock

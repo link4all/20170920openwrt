@@ -41,7 +41,8 @@ uci set wireless.ra0.encryption=$encx
 uci set wireless.sta.disabled='0'
 else
 uci set wireless.sta.disabled='1'
-uci set wireless.sta.key="any"
+iwpriv apcli0 set ApCliEnable=0
+ifconfig apcli0 down
 fi
 
 
