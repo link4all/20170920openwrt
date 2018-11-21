@@ -1,7 +1,0 @@
-#!/bin/sh
-
-logger "openvpn up script called"
-
-/etc/openvpn.firewall start
-
-exit 0

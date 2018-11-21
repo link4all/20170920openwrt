@@ -1,0 +1,6 @@
+on_processing="On Processing..., Wait a moment please!"
+finish="Setting Completed"
+location="Current Location：Advance Setting > Remote Help"
+page="Remote Help"
+enable_rtty="Enable Remote Help"
+save="Save"

@@ -68,9 +68,12 @@ $.ajax({
 				<div class="wrap-table">
 						<table border="0" cellspacing="0" cellpadding="0" >
 									<tr>
-												<td ><%= $wan_if%></td>
+												<td><%= $wan_if%></td>
 												<td><%= $ip_addr%></td>
-												<td ><%= $run_time%></td>
+                        <td>GateWaye</td>
+                        <td>NetMask</td>
+                        <td >DNS</td>
+                        <td ><%= $run_time%></td>
 									</tr>
 									<tr>
 												<td >WAN</td>
@@ -81,6 +84,9 @@ $.ajax({
                            echo $w_ip
                            fi
                             %></td>
+                        <td><% ubus call network.interface.wan status |jsonfilter -e "@['route'][-1].nexthop" %></td>
+                        <td><% ifconfig eth0.2 |grep "inet addr"|awk '{print $4}' |cut -d: -f2 %></td>
+                        <td><%  ubus call network.interface.wan status |jsonfilter -e "@['dns-server'][*]" | sed ":a;N;s/\n/<br \/>/g;ta" %></td>
 												<td><% ubus call network.interface.wan status |grep "uptime" |cut -d: -f2 |tr -d "\"\, " %></td>
                     </tr>
                     <tr>
@@ -92,7 +98,10 @@ $.ajax({
                            echo $g4_ip
                            fi
                             %></td>
-                        <td><% ubus call network.interface.4g status |grep "uptime" |cut -d: -f2 |tr -d "\"\, " %></td>
+                            <td><% ubus call network.interface.4g status |jsonfilter -e "@['route'][-1].nexthop" %></td>
+                            <td><% ifconfig eth1 |grep "inet addr"|awk '{print $4}' |cut -d: -f2 %></td>
+                            <td><%  ubus call network.interface.4g status |jsonfilter -e "@['dns-server'][*]" | sed ":a;N;s/\n/<br \/>/g;ta" %></td>
+                            <td><% ubus call network.interface.4g status |grep "uptime" |cut -d: -f2 |tr -d "\"\, " %></td>
                       </tr>
                     <tr>
                       <td>WWAN</td>
@@ -103,6 +112,9 @@ $.ajax({
                          echo $ww_ip
                          fi
                           %></td>
+                      <td><% ubus call network.interface.wwan status |jsonfilter -e "@['route'][-1].nexthop" %></td>
+                      <td><% ifconfig apcli0 |grep "inet addr"|awk '{print $4}' |cut -d: -f2 %></td>
+                      <td><%  ubus call network.interface.wwan status |jsonfilter -e "@['dns-server'][*]" | sed ":a;N;s/\n/<br \/>/g;ta" %></td>
                       <td><% ubus call network.interface.wwan status |grep "uptime" |cut -d: -f2 |tr -d "\"\, " %></td>
                     </tr>
                     <tr>
@@ -112,30 +124,52 @@ $.ajax({
                             pptp_ip=`ubus call network.interface.pptp status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "`
                             pptp_ut=`ubus call network.interface.pptp status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "`
                             echo "PPTP $pptp_ip"
+                            vpn_gw=`ubus call network.interface.pptp status |jsonfilter -e "@['route'][-1].nexthop"`
+                            vpn_netmask=`ifconfig pptp-pptp |grep "inet addr"|awk '{print $4}' |cut -d: -f2`
+                            vpn_dns=`ubus call network.interface.pptp status |jsonfilter -e "@['dns-server'][*]" | sed ":a;N;s/\n/<br \/>/g;ta"`
+                            vpn_uptime=`ubus call network.interface.pptp status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "`
                          elif [ "`ifconfig l2tp-l2tp |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
                             l2tp_ip=`ubus call network.interface.l2tp status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "`
                             l2tp_ut=`ubus call network.interface.pptp status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "`
                             echo "L2TP $l2tp_ip"
+                            vpn_gw=`ubus call network.interface.l2tp status |jsonfilter -e "@['route'][-1].nexthop"`
+                            vpn_netmask=`ifconfig l2tp-l2tp |grep "inet addr"|awk '{print $4}' |cut -d: -f2`
+                            vpn_dns=`ubus call network.interface.l2tp status |jsonfilter -e "@['dns-server'][*]" | sed ":a;N;s/\n/<br \/>/g;ta"`
+                            vpn_uptime=`ubus call network.interface.l2tp status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "`
                          elif [ "`ifconfig tun0 |grep -E  '([0-9]{1,3}[\.]){3}[0-9]{1,3}'`" ];then
                             openvpn_ip=`ubus call network.interface.openvpn status |grep "\"address\":" |cut -d: -f2 |tr -d "\"\, "` 
                             openvpn_ut=`ubus call network.interface.pptp status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "`
                             echo "OPENVPN $openvpn_ip"
+                            vpn_gw=`ubus call network.interface.tun0 status |jsonfilter -e "@['route'][-1].nexthop"`
+                            vpn_netmask=`ifconfig tun0 |grep "inet addr"|awk '{print $4}' |cut -d: -f2`
+                            vpn_dns=`ubus call network.interface.tun0 status |jsonfilter -e "@['dns-server'][*]" | sed ":a;N;s/\n/<br \/>/g;ta"`
+                            vpn_uptime=`ubus call network.interface.tun0 status |grep "uptime" |cut -d: -f2 |tr -d "\"\, "`
                             else
                             echo "$no_connect"
                           fi %>
                         </td>
-                        <td><%
-                           if [ -n "$pptp_ut" ];then
-                           echo $pptp_ut
-                           elif [ -n "$pptp_ut" ];then
-                           echo $l2tp_ut
-                           elif [ -n "$openvpn_ut" ];then
-                           echo $openvpn_ut
-                           fi                      
-                           %></td>
+                          <td><%= $vpn_gw %></td>
+                           <td><%= $vpn_netmask %></td>
+                           <td><%= $vpn_dns %></td>
+                           <td><%= $vpn_uptime  %></td>
+                  
 
                         </tr>
-								</table>
+                </table>
+                <div class="title"><%= $lan_info%></div>
+                <div class="wrap-table">
+                <table border="0" cellspacing="0" cellpadding="0" id="brinfo" >
+                    <tr>
+												<td  width="20%" >LAN IP</td>
+												<td ><% uci get network.lan.ipaddr 2>/dev/null %></td>
+										</tr>
+										<tr>
+												<td >NetMask</td>
+												<td ><% uci get network.lan.netmask 2>/dev/null %></td>
+										</tr>
+                </table>  
+                </div>
+                </div>  
 					<div class="title"><%= $modem_info%></div>
 						<div class="wrap-table">
 						<table border="0" cellspacing="0" cellpadding="0" id="4ginfo" >

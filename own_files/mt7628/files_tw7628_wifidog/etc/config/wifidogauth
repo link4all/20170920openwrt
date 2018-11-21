@@ -3,4 +3,4 @@ config wifidog auth
 	option password admin
 	option sessionexpire 900
 	option sessionpath /tmp/session-wifidog/
-	option redirect_url 'www.chevrolet.com.ar'
+	option redirect_url 'www.secamanosarco.com.ar'

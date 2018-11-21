@@ -50,7 +50,8 @@ company_name=`uci get gargoyle.global.company_${lang}`
 							<form id="form0" style='display:inline;' >
 							 <select class="lang" name="lang" onchange="change_lang()">
 							 <option value="zh_cn" <% [ `uci get gargoyle.global.lang |grep "zh_cn"` ] && echo 'selected="true"' %> >中文</option>
-							 <option value="en_us" <% [ `uci get gargoyle.global.lang |grep "en_us"` ] && echo 'selected="true"' %> >English</option>
+                             <option value="en_us" <% [ `uci get gargoyle.global.lang |grep "en_us"` ] && echo 'selected="true"' %> >English</option>
+                             <option value="esp" <% [ `uci get gargoyle.global.lang |grep "esp"` ] && echo 'selected="true"' %> >Español</option>
 							 </select>
 					 </form>
 				</div>

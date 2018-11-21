@@ -173,10 +173,10 @@ company_name=`uci get gargoyle.global.company_${lang}`
                     <div class="menuname">
                     <a target="main_frame" href="/dmz1.asp"><%= $dmz_setting%></a></div>
                     </li>
-                    <li>
-                        <div class="menuname">
-                        <a target="main_frame" href="/phddns1.asp"><%= $oray%></a></div>
-                        </li>
+                      <li>
+                            <div class="menuname">
+                            <a target="main_frame" href="/remotehelp.asp"><%= $remotehelp%></a></div>
+                            </li>  
                         <li>
                                 <div class="menuname">
                                         <a target="main_frame" href="/portmap1.asp"><%= $portmap %></a></div>

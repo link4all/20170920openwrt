@@ -133,7 +133,7 @@
 		};
 		sys {
 			label = "linkall:sys";
-			gpios = <&gpio1 12 0>;//gpio44
+			gpios = <&gpio1 12 1>;//gpio44
 		};
 	};
 	gpio-keys-polled {

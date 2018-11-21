@@ -11,8 +11,9 @@ config wifidog
 	option	thread_number		5
 	option	queue_size			20
 	option	wired_passed		0
-	option  white_domain     'www.chevrolet.com.ar'
+	option  trusted_domains      'www.secamanosarco.com.ar'
 	option	enable		0
+	option wait_time '20'
 
 config mqtt	'mqtt'
   	option	mqtt_hostname	'192.168.11.1'

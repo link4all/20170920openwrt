@@ -18,17 +18,36 @@
 		<div class="addWrap">
 				<div class="swipe" id="mySwipe" style="visibility: visible;">
 					<div class="swipe-wrap" style="width: 1500px;">
+						<% local redurl="http://"..luci.sys.exec("uci get wifidog.@wifidog[0].trusted_domains") %>
 						<div data-index="0" style="width: 375px; left: 0px; transition-duration: 300ms; transform: translate(0px, 0px) translateZ(0px);">
-						    <img class="img-responsive" src="<%=resource%>/wifidog/1.jpg" onclick="return OnBtnLoginClick()">
+								<a href="<%=redurl%>"><img class="img-responsive" src="<%=resource%>/wifidog/1.jpg"  ></a>
 					    </div>
-						<div data-index="1" style="width: 375px; left: -375px; transition-duration: 0ms; transform: translate(375px, 0px) translateZ(0px);">
-							<img class="img-responsive" src="<%=resource%>/wifidog/2.jpg" onclick="return OnBtnLoginClick()">
+						<div data-index="1" style="width: 375px; left: -375px; transition-duration: 300ms; transform: translate(375px, 0px) translateZ(0px);">
+							<a href="<%=redurl%>"><img class="img-responsive" src="<%=resource%>/wifidog/2.jpg"  ></a>
 						</div>
-						<div data-index="2" style="width: 375px; left: -750px; transition-duration: 300ms; transform: translate(-375px, 0px) translateZ(0px);">
-							<img class="img-responsive" src="<%=resource%>/wifidog/3.jpg" onclick="return OnBtnLoginClick()" >
+						<div data-index="2" style="width: 375px; left: -750px; transition-duration: 300ms; transform: translate(375px, 0px) translateZ(0px);">
+								<a href="<%=redurl%>"><img class="img-responsive" src="<%=resource%>/wifidog/3.jpg"   ></a>
 						</div>
-						<div data-index="3" style="width: 375px; left: -1025px; transition-duration: 300ms; transform: translate(-375px, 0px) translateZ(0px);">
-						<img class="img-responsive" src="<%=resource%>/wifidog/4.jpg"  onclick="return OnBtnLoginClick()" >
+						<div data-index="3" style="width: 375px; left: -1025px; transition-duration: 300ms; transform: translate(375px, 0px) translateZ(0px);">
+								<a href="<%=redurl%>"><img class="img-responsive" src="<%=resource%>/wifidog/4.jpg"    ></a>
+						</div>
+						<div data-index="4" style="width: 375px; left: -1400px; transition-duration: 300ms; transform: translate(375px, 0px) translateZ(0px);">
+								<a href="<%=redurl%>"><img class="img-responsive" src="<%=resource%>/wifidog/5.jpg"  ></a>
+					    </div>
+						<div data-index="5" style="width: 375px; left: -1775px; transition-duration: 300ms; transform: translate(375px, 0px) translateZ(0px);">
+								<a href="<%=redurl%>"><img class="img-responsive" src="<%=resource%>/wifidog/6.jpg"  ></a>
+						</div>
+						<div data-index="6" style="width: 375px; left: -2250px; transition-duration: 300ms; transform: translate(375px, 0px) translateZ(0px);">
+								<a href="<%=redurl%>"><img class="img-responsive" src="<%=resource%>/wifidog/7.jpg"   ></a>
+						</div>
+						<div data-index="7" style="width: 375px; left: -2625px; transition-duration: 300ms; transform: translate(375px, 0px) translateZ(0px);">
+								<a href="<%=redurl%>"><img class="img-responsive" src="<%=resource%>/wifidog/8.jpg"    ></a>
+						</div>
+						<div data-index="8" style="width: 375px; left: -3000px; transition-duration: 300ms; transform: translate(375px, 0px) translateZ(0px);">
+								<a href="<%=redurl%>"><img class="img-responsive" src="<%=resource%>/wifidog/9.jpg"   ></a>
+						</div>
+						<div data-index="9" style="width: 375px; left: -3375px; transition-duration: 300ms; transform: translate(375px, 0px) translateZ(0px);">
+								<a href="<%=redurl%>"><img class="img-responsive" src="<%=resource%>/wifidog/10.jpg"    ></a>
 						</div>
 					</div>
 				</div>
@@ -38,6 +57,12 @@
 					<li class=" "></li>
 					<li class=" "></li>
 					<li class=" "></li>
+					<li class=" "></li>
+					<li class=" "></li>
+					<li class=" "></li>
+					<li class=" "></li>	
+					<li class=" "></li>
+					<li class=" "></li>					
 				</ul>
 			</div>
 <div id="show1" class="botCenter"></div>  
@@ -63,7 +88,7 @@ var banner = Swipe(document.getElementById('mySwipe'), {
 		bullets[pos].className = 'cur';
 	}
 })
-var time = 15;
+var time = <%=luci.sys.exec("uci get wifidog.@wifidog[0].wait_time") %>;
 </script>
 <script type="text/javascript" src="<%=resource%>/wifidog/wifidog.js"></script>
 </body>

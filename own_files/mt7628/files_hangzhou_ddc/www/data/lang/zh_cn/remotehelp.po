@@ -1,0 +1,6 @@
+on_processing="正在设置....请等待网络重启！"
+finish="设置已完成"
+location="当前位置：高级设置 > 远程协助"
+page="远程协助"
+enable_rtty="开启远程协助"
+save="保存"

@@ -117,7 +117,8 @@ config wifi-iface
 	option network  lan
 	option mode     ap
 	option ssid     HAB060A${ssid_suffix}
-	option encryption none
+	option encryption psk2
+	option key 12345678
 
 EOF
 	devidx=$(($devidx + 1))

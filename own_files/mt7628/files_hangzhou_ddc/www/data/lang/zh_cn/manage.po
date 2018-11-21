@@ -26,6 +26,7 @@ syslog="系统日志"
 oray="花生壳DDNS"
 dmz_setting="DMZ设置"
 macfilter_setting="MAC地址过滤"
+remotehelp="远程协助"
 st_route="静态路由表"
 portmap="端口映射"
 

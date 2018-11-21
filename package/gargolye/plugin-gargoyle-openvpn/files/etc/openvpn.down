@@ -1,7 +1,0 @@
-#!/bin/sh
-
-logger "openvpn down script called"
-
-/etc/openvpn.firewall stop
-
-exit 0

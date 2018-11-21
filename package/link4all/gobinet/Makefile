@@ -1,119 +1,48 @@
-
 #
-# Copyright (C) 2006-2009 OpenWrt.org
-#
-# This is free software, licensed under the GNU General Public License v2.
-# See /LICENSE for more information.
+# Copyright (c) 2014 The Linux Foundation. All rights reserved.
 #
 
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
-#PKG_NAME:=gobinet
-
-PKG_VERSION:=1
+PKG_NAME:=GobiNet
+PKG_VERSION:=2011-07-29-1026
 PKG_RELEASE:=1
 
-#PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
-PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/gobinet
-PKG_UNPACK=mkdir -p $(PKG_BUILD_DIR); \
-$(CP) -r ./driver_fangge/ $(PKG_BUILD_DIR)/; \
-$(CP) -r ./driver_yiyuan/ $(PKG_BUILD_DIR)/;\
-$(CP) -r ./driver_xinfeng/ $(PKG_BUILD_DIR)/;\
-$(CP) -r ./driver_longsung/ $(PKG_BUILD_DIR)/
+
+PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/$(PKG_NAME)
 
 include $(INCLUDE_DIR)/package.mk
 
-define KernelPackage/usb-net-gobinet_fg
+define KernelPackage/usb-gobi-net
   SUBMENU:=USB Support
-  TITLE:=usb-net-gobinet_fg for qca9x07
-  DEPENDS:= +kmod-usb-net
-  FILES:=$(PKG_BUILD_DIR)/gobinet_fg.ko
-  AUTOLOAD:=$(call AutoLoad,AutoProbe,gobinet_fg)
+  DEPENDS:=+kmod-usb-net
+  TITLE:=Kernel USB driver for GobiNet
+  FILES:= $(PKG_BUILD_DIR)/GobiNet.ko
+  AUTOLOAD:=$(call AutoLoad,81,GobiNet)
 endef
 
-define KernelPackage/usb-net-gobinet_fg/description
-usb-net-gobinet_fg for qca9x07
+define KernelPackage/GobiNet/Description
+This package contains a USB driver for GobiNet3000
 endef
 
-define KernelPackage/usb-net-gobinet_yy
-  SUBMENU:=USB Support
-  TITLE:=usb-net-gobinet_yy for qca9x07
-  DEPENDS:= +kmod-usb-net
-  FILES:=$(PKG_BUILD_DIR)/gobinet_yy.ko
-  AUTOLOAD:=$(call AutoLoad,AutoProbe,gobinet_yy)
+define Build/Prepare
+	$(CP) src/* $(PKG_BUILD_DIR)
+	$(call Build/Prepare/Default)
 endef
 
-define KernelPackage/usb-net-gobinet_yy/description
-usb-net-gobinet_yy for qca9x07
-endef
-
-define KernelPackage/usb-net-gobinet_xy
-  SUBMENU:=USB Support
-  TITLE:=usb-net-gobinet_xy for qca9x07
-  DEPENDS:= +kmod-usb-net
-  FILES:=$(PKG_BUILD_DIR)/gobinet_xy.ko
-  AUTOLOAD:=$(call AutoLoad,AutoProbe,gobinet_xy)
-endef
-
-define KernelPackage/usb-net-gobinet_xy/description
-usb-net-gobinet_xy for qca9x07
-endef
-
-define KernelPackage/usb-net-gobinet_ls
-  SUBMENU:=USB Support
-  TITLE:=usb-net-gobinet_ls for qca9x07
-  DEPENDS:= +kmod-usb-net
-  FILES:=$(PKG_BUILD_DIR)/gobinet_ls.ko
-  AUTOLOAD:=$(call AutoLoad,AutoProbe,gobinet_ls)
-endef
-
-define KernelPackage/usb-net-gobinet_ls/description
-usb-net-gobinet_ls for qca9x07
-endef
-
-SOURCE_DIR:=$(PKG_BUILD_DIR)
-export SOURCE_DIR
-
-MAKEOPTS1:= -C $(LINUX_DIR) \
-                ARCH="$(LINUX_KARCH)" \
-                CROSS_COMPILE="$(TARGET_CROSS)" \
-                M="$(PKG_BUILD_DIR)/driver_fangge/" \
-		CONFIG_USB_NET_GOBINET=m \
-		modules
-MAKEOPTS2:= -C $(LINUX_DIR) \
-                ARCH="$(LINUX_KARCH)" \
-                CROSS_COMPILE="$(TARGET_CROSS)" \
-                M="$(PKG_BUILD_DIR)/driver_yiyuan" \
-		CONFIG_USB_NET_GOBINET=m \
-		modules
-MAKEOPTS3:= -C $(LINUX_DIR) \
-                ARCH="$(LINUX_KARCH)" \
-                CROSS_COMPILE="$(TARGET_CROSS)" \
-                M="$(PKG_BUILD_DIR)/driver_xinfeng" \
-		CONFIG_USB_NET_GOBINET=m \
-		modules
-MAKEOPTS4:= -C $(LINUX_DIR) \
-                ARCH="$(LINUX_KARCH)" \
-                CROSS_COMPILE="$(TARGET_CROSS)" \
-                M="$(PKG_BUILD_DIR)/driver_longsung" \
-		CONFIG_USB_NET_GOBINET=m \
-		modules
+ifeq ($(ARCH_PACKAGES),ipq806x)
+	EXTRA_CFLAGS+=-I$(STAGING_DIR)/usr/include/qca-nss-drv
+endif
 
 define Build/Compile
-	$(MAKE) $(MAKEOPTS1)
-	$(CP) $(PKG_BUILD_DIR)/driver_fangge/gobinet_fg.ko $(PKG_BUILD_DIR) 
-	$(MAKE) $(MAKEOPTS2)
-	$(CP) $(PKG_BUILD_DIR)/driver_yiyuan/gobinet_yy.ko $(PKG_BUILD_DIR) 
-	$(MAKE) $(MAKEOPTS3)
-	$(CP) $(PKG_BUILD_DIR)/driver_xinfeng/gobinet_xy.ko $(PKG_BUILD_DIR)
-	$(MAKE) $(MAKEOPTS4)
-	$(CP) $(PKG_BUILD_DIR)/driver_longsung/gobinet_ls.ko $(PKG_BUILD_DIR)
+	$(MAKE) -C "$(LINUX_DIR)" \
+		CROSS_COMPILE="$(TARGET_CROSS)" \
+		ARCH="$(LINUX_KARCH)" \
+		SUBDIRS="$(PKG_BUILD_DIR)" \
+		EXTRA_CFLAGS="$(EXTRA_CFLAGS)" \
+		modules
 endef
 
-
-$(eval $(call KernelPackage,usb-net-gobinet_fg))
-$(eval $(call KernelPackage,usb-net-gobinet_yy))
-$(eval $(call KernelPackage,usb-net-gobinet_xy))
-$(eval $(call KernelPackage,usb-net-gobinet_ls))
+$(eval $(call KernelPackage,usb-gobi-net))
 

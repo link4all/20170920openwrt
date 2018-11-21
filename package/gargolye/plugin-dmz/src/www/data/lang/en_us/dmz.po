@@ -1,0 +1,10 @@
+processing="On processing, Please wait a moment!"
+error="Setting error, please refresh this page and retry！"
+finish="DMZ Setting done!"
+location="Current Location：Advance Setting > DMZ Setting"
+page="DMZ Setting"
+dmzhost="DMZ Host IP"
+please="Please input "
+enable="Enable"
+save="Save"
+

@@ -1,0 +1,18 @@
+config global 'global'
+        option session_timeout '60'
+        option lang 'zh_cn'
+        option soft_ver 'V2.2.10'
+        option model_name 'AOK-2610AP'
+        #option powerH '100'
+        #option powerM '80'
+        #option powerL '50'
+        option powerH '23'
+        option powerM '19'
+        option powerL '15'
+	option company_en_us	'Shenzhen AOLKEE Technology Co., Ltd'
+	option company_zh_cn  '深圳市广旭电子科技有限公司'
+
+
+
+
+

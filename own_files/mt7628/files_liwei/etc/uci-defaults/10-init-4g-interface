@@ -53,6 +53,7 @@ uci set network.sw2.device='switch0'
 uci set network.sw2.vlan='2'
 uci set network.sw2.ports='4 6t'
 uci -q set network.lan.ipaddr='192.168.8.1'
+uci -q set network.lan.ifname='eth0.1 eth0.2'
 uci -q set network.wan.metric='1'
 uci -q set network.4g.metric='2'
 uci commit network
@@ -69,16 +70,16 @@ uci commit 4g
 #move gar uhttpd.conf to config dir
 cp /etc/uhttpd.conf.gargoyle /etc/config/uhttpd
 
-sleep 10
-#set yiyuan default
-rm /etc/modules.d/AutoProbe-usb-net-gobinet*
-if gcom -d  /dev/ttyUSB3 -s /etc/gcom/getcardinfo.gcom  |grep -ir quect ;then
-echo "gobinet_yy.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
-elif gcom -d  /dev/ttyUSB3 -s /etc/gcom/getcardinfo.gcom  |grep -ir meig ;then
-echo "gobinet_fg.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
-elif gcom -d  /dev/ttyUSB3 -s /etc/gcom/getcardinfo.gcom  |grep -ir longs ;then
-echo "gobinet_ls.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
-else
-echo "gobinet_fg.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
-fi
+#sleep 10
+##set yiyuan default
+#rm /etc/modules.d/AutoProbe-usb-net-gobinet*
+#if gcom -d  /dev/ttyUSB3 -s /etc/gcom/getcardinfo.gcom  |grep -ir quect ;then
+#echo "gobinet_yy.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+#elif gcom -d  /dev/ttyUSB3 -s /etc/gcom/getcardinfo.gcom  |grep -ir meig ;then
+#echo "gobinet_fg.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+#elif gcom -d  /dev/ttyUSB3 -s /etc/gcom/getcardinfo.gcom  |grep -ir longs ;then
+#echo "gobinet_ls.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+#else
+#echo "gobinet_fg.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+#fi
 

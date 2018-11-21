@@ -72,8 +72,8 @@ uci commit n2n_v2
 #move gar uhttpd.conf to config dir
 cp /etc/uhttpd.conf.gargoyle /etc/config/uhttpd
 
-rm /etc/modules.d/AutoProbe-usb-net-gobinet*
-echo "gobinet_fg.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+# rm /etc/modules.d/AutoProbe-usb-net-gobinet*
+# echo "gobinet_fg.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
 #echo "gobinet_xy.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
 #echo "gobinet_yy.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
 #echo "gobinet_ls.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet

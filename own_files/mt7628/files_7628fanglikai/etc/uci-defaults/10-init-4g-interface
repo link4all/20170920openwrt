@@ -59,10 +59,5 @@ uci commit 4g
 #move gar uhttpd.conf to config dir
 cp /etc/uhttpd.conf.gargoyle /etc/config/uhttpd
 
-#set yiyuan default
-rm /etc/modules.d/AutoProbe-usb-net-gobinet*
-echo "gobinet_fg.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
-#echo "gobinet_xy.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
-#echo "gobinet_yy.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
-#echo "gobinet_ls.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+
 

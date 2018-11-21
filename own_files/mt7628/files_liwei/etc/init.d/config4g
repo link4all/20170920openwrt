@@ -34,6 +34,8 @@ run_4g()
         if [ "$pincode" != "" ]; then
 	    #定义respawn参数，告知procd当CM程序退出后尝试进行重启  
     	procd_set_param command $CM -s $apn  $user $password $auth -p $pincode -f /tmp/4g.log  
+             elif [ "$user" != "" ]; then
+        procd_set_param command $CM -s $apn  $user $password $auth -f /tmp/4g.log 
          elif [ "$apn" != "" ]; then
         procd_set_param command $CM -s $apn -f /tmp/4g.log 
          else

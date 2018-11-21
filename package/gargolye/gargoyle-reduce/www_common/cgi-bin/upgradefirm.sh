@@ -20,7 +20,8 @@ sysupgrade -T /tmp/firmware.bin >/dev/null 2>&1
 fi
 
 if [ "$FORM_upgrade" = "yes"  ];then
-   if [ -f /tmp/firmware.bin ];then
+   sysupgrade -T /tmp/firmware.bin >/dev/null 2>&1
+   if [ `echo $?` -eq 0 ];then
    . /lib/functions.sh
    firm_index=`find_mtd_index firmware`
    mtd write /tmp/firmware.bin /dev/mtd${firm_index}
@@ -28,7 +29,7 @@ if [ "$FORM_upgrade" = "yes"  ];then
      echo "\"stat\":\"ok\""
      echo "}"
     sleep 1
-    reboot
+   firstboot -y && reboot 
 #sysupgrade -n  /tmp/firmware.bin  >/dev/null 2>&1
    else
   echo "{"

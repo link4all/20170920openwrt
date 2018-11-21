@@ -47,9 +47,16 @@ lang=`uci get gargoyle.global.lang`
             <div class="title"><%= $page%><p style="display:inline;color:#e81717;font-size:x-large;margin-left: 100px;" id="status"></p></div>
             <div class="wrap-form">
              <form class="form-info" id="form0">
+                    <label class="">
+                            <div class="name">Virtual IP <%= $addr%>：</div>
+                            <div>
+                                <input id="virtualip" name="virtualip" type="text" value="<% uci get n2n_v2.edge.ipaddr %>" />
+    
+                            </div>
+                        </label>
 
                     <label class="">
-                        <div class="name">IP <%= $addr%>：</div>
+                        <div class="name">LAN IP <%= $addr%>：</div>
                         <div>
                             <input id="dmzip" name="dmzip" type="text" value="<% uci get firewall.dmz.dest_ip %>" />
 

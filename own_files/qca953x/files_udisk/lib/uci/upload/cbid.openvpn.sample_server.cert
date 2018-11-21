@@ -1,0 +1,100 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 1 (0x1)
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=CN, ST=GuangDong, L=ShenZhen, O=LINK4ALL, OU=LINK4ALL, CN=LINK4ALL/name=EasyRSA/emailAddress=admin@link-4all.com
+        Validity
+            Not Before: Jan 11 01:13:56 2018 GMT
+            Not After : Jan  9 01:13:56 2028 GMT
+        Subject: C=CN, ST=GuangDong, L=ShenZhen, O=LINK4ALL, OU=LINK4ALL, CN=link4all/name=EasyRSA/emailAddress=admin@link-4all.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:e0:d0:58:d9:63:88:ba:6a:c8:ff:f6:9f:da:de:
+                    4c:45:a1:88:88:68:7d:a0:b9:1a:db:cf:ad:e0:ee:
+                    76:d1:6d:c7:f7:d9:df:73:46:2a:70:ae:a8:c9:bf:
+                    21:b4:5b:cf:bb:8e:90:b3:32:de:a0:94:a4:7d:5d:
+                    fe:53:63:96:74:a8:1f:b2:96:48:a9:ec:f9:c5:38:
+                    4b:8c:46:23:e2:75:d9:ae:0a:e8:ed:8b:ff:4f:b1:
+                    cc:31:85:0b:df:f7:fb:43:17:75:a0:f3:ab:17:65:
+                    e5:5a:e7:c6:6c:04:2b:a2:92:d8:4e:84:3d:ed:8f:
+                    f7:79:37:6c:09:24:42:3f:99:04:2e:d1:b5:65:91:
+                    95:aa:69:a2:d4:f3:b1:45:f5:fe:62:38:14:8c:72:
+                    74:6d:37:ba:74:6d:7b:b2:44:1f:31:18:09:db:ed:
+                    62:34:2d:7b:6b:cc:55:a7:cf:39:1f:ca:9f:f2:20:
+                    e4:d9:e3:5a:a6:73:7f:a7:13:61:6e:80:40:91:53:
+                    c7:c7:35:10:b3:8c:48:25:61:bc:01:3d:1d:55:84:
+                    1d:70:9a:b8:1d:5b:e9:20:95:f8:53:9f:6b:f4:7d:
+                    a3:fe:3a:1e:ae:91:a9:99:d7:dc:fc:ce:69:99:e4:
+                    8f:a6:79:32:1b:79:1e:13:c6:de:b4:a5:83:40:38:
+                    65:cd
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Cert Type: 
+                SSL Server
+            Netscape Comment: 
+                Easy-RSA Generated Server Certificate
+            X509v3 Subject Key Identifier: 
+                23:1E:72:17:84:B2:B0:2E:90:41:42:36:19:D2:1A:BF:A5:B1:24:E8
+            X509v3 Authority Key Identifier: 
+                keyid:21:40:2D:11:FE:9F:8F:68:FB:06:1E:57:0C:6A:28:B0:C6:B6:CD:2A
+                DirName:/C=CN/ST=GuangDong/L=ShenZhen/O=LINK4ALL/OU=LINK4ALL/CN=LINK4ALL/name=EasyRSA/emailAddress=admin@link-4all.com
+                serial:A3:0A:30:6F:BD:55:AB:B1
+
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+            X509v3 Key Usage: 
+                Digital Signature, Key Encipherment
+            X509v3 Subject Alternative Name: 
+                DNS:link4all
+    Signature Algorithm: sha256WithRSAEncryption
+         95:31:56:1c:d1:ec:38:10:88:b7:24:83:15:63:e3:38:1a:45:
+         33:7e:e8:e6:bf:92:69:e7:4d:eb:05:55:fd:5c:5d:44:4e:16:
+         e5:40:80:64:54:4e:86:1f:e1:22:a5:47:21:fc:ab:b0:c7:e9:
+         4c:26:8c:fb:4c:3e:04:d1:00:4d:73:10:33:dc:c3:e0:97:14:
+         d6:09:6f:97:6e:32:8e:59:f0:8a:c9:6d:c4:cb:0a:35:48:57:
+         5a:3f:fc:cb:75:60:7d:76:79:6a:3e:28:19:07:73:70:2c:d0:
+         aa:b4:c7:7e:fb:be:cc:50:92:f2:fa:e5:f8:01:ba:a5:4c:50:
+         bc:3e:b5:e1:73:75:36:7b:d0:24:c3:4e:5a:bc:44:37:e3:49:
+         3f:ec:01:3b:a3:db:c6:de:6e:3d:53:09:c3:72:7d:9a:a6:f6:
+         2c:19:f4:24:b6:1f:2e:dc:93:5a:28:7b:08:c1:10:c2:fc:07:
+         36:b1:39:90:c9:ee:77:6d:7d:8d:a1:5e:b9:a1:bc:0e:2a:89:
+         e7:03:3f:ca:51:96:80:72:0a:f4:29:c8:c6:bd:82:7e:c6:19:
+         7c:51:fc:83:e8:6e:0d:b9:c9:06:61:66:2e:e2:6e:a8:3e:b0:
+         26:55:54:1a:47:a8:76:77:14:9e:0b:29:0c:f7:08:04:ea:fc:
+         8b:c3:0b:53
+-----BEGIN CERTIFICATE-----
+MIIFTjCCBDagAwIBAgIBATANBgkqhkiG9w0BAQsFADCBozELMAkGA1UEBhMCQ04x
+EjAQBgNVBAgTCUd1YW5nRG9uZzERMA8GA1UEBxMIU2hlblpoZW4xETAPBgNVBAoT
+CExJTks0QUxMMREwDwYDVQQLEwhMSU5LNEFMTDERMA8GA1UEAxMITElOSzRBTEwx
+EDAOBgNVBCkTB0Vhc3lSU0ExIjAgBgkqhkiG9w0BCQEWE2FkbWluQGxpbmstNGFs
+bC5jb20wHhcNMTgwMTExMDExMzU2WhcNMjgwMTA5MDExMzU2WjCBozELMAkGA1UE
+BhMCQ04xEjAQBgNVBAgTCUd1YW5nRG9uZzERMA8GA1UEBxMIU2hlblpoZW4xETAP
+BgNVBAoTCExJTks0QUxMMREwDwYDVQQLEwhMSU5LNEFMTDERMA8GA1UEAxMIbGlu
+azRhbGwxEDAOBgNVBCkTB0Vhc3lSU0ExIjAgBgkqhkiG9w0BCQEWE2FkbWluQGxp
+bmstNGFsbC5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDg0FjZ
+Y4i6asj/9p/a3kxFoYiIaH2guRrbz63g7nbRbcf32d9zRipwrqjJvyG0W8+7jpCz
+Mt6glKR9Xf5TY5Z0qB+ylkip7PnFOEuMRiPiddmuCujti/9PscwxhQvf9/tDF3Wg
+86sXZeVa58ZsBCuikthOhD3tj/d5N2wJJEI/mQQu0bVlkZWqaaLU87FF9f5iOBSM
+cnRtN7p0bXuyRB8xGAnb7WI0LXtrzFWnzzkfyp/yIOTZ41qmc3+nE2FugECRU8fH
+NRCzjEglYbwBPR1VhB1wmrgdW+kglfhTn2v0faP+Oh6ukamZ19z8zmmZ5I+meTIb
+eR4Txt60pYNAOGXNAgMBAAGjggGJMIIBhTAJBgNVHRMEAjAAMBEGCWCGSAGG+EIB
+AQQEAwIGQDA0BglghkgBhvhCAQ0EJxYlRWFzeS1SU0EgR2VuZXJhdGVkIFNlcnZl
+ciBDZXJ0aWZpY2F0ZTAdBgNVHQ4EFgQUIx5yF4SysC6QQUI2GdIav6WxJOgwgdgG
+A1UdIwSB0DCBzYAUIUAtEf6fj2j7Bh5XDGoosMa2zSqhgamkgaYwgaMxCzAJBgNV
+BAYTAkNOMRIwEAYDVQQIEwlHdWFuZ0RvbmcxETAPBgNVBAcTCFNoZW5aaGVuMREw
+DwYDVQQKEwhMSU5LNEFMTDERMA8GA1UECxMITElOSzRBTEwxETAPBgNVBAMTCExJ
+Tks0QUxMMRAwDgYDVQQpEwdFYXN5UlNBMSIwIAYJKoZIhvcNAQkBFhNhZG1pbkBs
+aW5rLTRhbGwuY29tggkAowowb71Vq7EwEwYDVR0lBAwwCgYIKwYBBQUHAwEwCwYD
+VR0PBAQDAgWgMBMGA1UdEQQMMAqCCGxpbms0YWxsMA0GCSqGSIb3DQEBCwUAA4IB
+AQCVMVYc0ew4EIi3JIMVY+M4GkUzfujmv5Jp503rBVX9XF1EThblQIBkVE6GH+Ei
+pUch/Kuwx+lMJoz7TD4E0QBNcxAz3MPglxTWCW+XbjKOWfCKyW3Eywo1SFdaP/zL
+dWB9dnlqPigZB3NwLNCqtMd++77MUJLy+uX4AbqlTFC8PrXhc3U2e9Akw05avEQ3
+40k/7AE7o9vG3m49UwnDcn2apvYsGfQkth8u3JNaKHsIwRDC/Ac2sTmQye53bX2N
+oV65obwOKonnAz/KUZaAcgr0KcjGvYJ+xhl8UfyD6G4NuckGYWYu4m6oPrAmVVQa
+R6h2dxSeCykM9wgE6vyLwwtT
+-----END CERTIFICATE-----

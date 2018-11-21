@@ -42,7 +42,8 @@ company_name=`uci get gargoyle.global.company_${lang}`
 <body>
     <div class="layout">
         <div class="layout_title">
-            <div class="logo"><img src="images/LOGO1.png"  /></div>
+            <!-- <div class="logo"><img src="images/LOGO1.png"  /></div> -->
+            <div class="logo"><h1>&nbsp;&nbsp;<font color="white" face="arial">4G WIFI ROUTER</font></h1></div>
             <div class="systoolbar">
 						  <div><cite class="sys-icon quit-ico"></cite><a href="/logout.asp"><%= $logout %></a></div>
 			      </div>

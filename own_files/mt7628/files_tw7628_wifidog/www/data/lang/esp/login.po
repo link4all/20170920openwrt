@@ -1,0 +1,3 @@
+welcome_greeting="Bienvenido a iniciar sesión en WebUI"
+login="Iniciar sesión"
+login_tip="error de contrase?a, vuelva a intentar por favor!"

@@ -59,6 +59,12 @@ lang=`uci get gargoyle.global.lang`
                         </div>
                     </label>
                     <label >
+                        <div class="name">Wait Time(Sec)：</div>
+                        <div>
+                            <input  name="wait_time" type="text" value="<%  uci get wifidog.@wifidog[0].wait_time %>" />
+                        </div>
+                    </label>
+                    <label >
                         <div class="name"><%= $redirecturl%>：</div>
                         <div>
                             <input  name="redirurl" type="text" value="<%  uci get wifidogauth.auth.redirect_url %>" />

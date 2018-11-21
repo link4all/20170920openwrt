@@ -26,6 +26,7 @@ syslog="System Log"
 oray="Oray DDNS"
 dmz_setting="DMZ Setting"
 macfilter_setting="MACFilter Setting"
+remotehelp="Remote Help"
 st_route="Static Route"
 portmap="Port Mapping"
 

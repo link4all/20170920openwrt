@@ -13,6 +13,7 @@ define Package/luci-app-ser2net
 	CATEGORY:=LuCI
 	SUBMENU:=3. Applications
 	TITLE:=ser2net for LuCI
+	DEPENDS:=+ser2net
 	PKGARCH:=all
 endef
 

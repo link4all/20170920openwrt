@@ -10,9 +10,10 @@ else
 uci set wifidog.@wifidog[0].enable=0
 fi
 uci set wifidog.@wifidog[0].client_timeout=$FORM_timeout
+uci set wifidog.@wifidog[0].wait_time=$FORM_wait_time
 if [ -n "$FORM_redirurl" ];then
 uci set wifidogauth.auth.redirect_url=$FORM_redirurl
-uci set wifidog.@wifidog[0].white_domain=$FORM_redirurl
+uci set wifidog.@wifidog[0].trusted_domains=$FORM_redirurl
 else
   uci del wifidogauth.@auth.redirecturl
 fi

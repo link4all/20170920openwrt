@@ -50,7 +50,7 @@ lang=`uci get gargoyle.global.lang`
 								<tbody id="sysinfobody">
 										<tr>
 												<th width="20%"><%= $sys_ver%></th>
-												<td><%= $DISTRIB_BULDTIME %></td>
+												<td><% uci get gargoyle.global.soft_ver %><%= $DISTRIB_BULDTIME %></td>
 										</tr>
 										<tr>
 												<th width="20%"><%= $model%></th>
