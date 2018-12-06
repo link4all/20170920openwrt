@@ -1,0 +1,18 @@
+
+config server 'server'
+	option name 'router.link-4all.com'
+	option sn '88124c101570'
+
+config modem 'modem'
+	option device '/dev/ttyUSB2'
+	option rssi    '0'
+	option sim_status '0'
+	option model ''
+	option rev  'V2.1'
+	option imei ''
+	option imsi ''
+	option roam ''
+	option lac ''
+	option reg_net ''
+	option iccid ''
+   	option 4g_byte ''

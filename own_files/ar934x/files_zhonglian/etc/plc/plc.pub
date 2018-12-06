@@ -1,7 +1,7 @@
 #!/bin/sh
 
 deviceId=$(uci get 4g.server.sn)
-wget http://120.77.43.135:8085/coco/sys/deviceplc/PLCIPs?deviceId=${deviceId} -O /tmp/plcip.json
+wget http://yinuo-link-cloud.com/sys/deviceplc/PLCIPs?deviceId==${deviceId} -O /tmp/plcip.json
 jsonfilter -i /tmp/plcip.json -e @.* > /etc/plc/plc.ip
 ssid=$(uci get wireless.@wifi-iface[0].ssid)
 signalIntensity=$(gcom -d /dev/ttyUSB3 -s /etc/gcom/getstrength.gcom  |grep "CSQ:" |cut -d" " -f2|cut -d"," -f1)
@@ -31,7 +31,7 @@ ip_echo(){
 
 plc_pub(){
 #mosquitto_pub -h 120.77.43.135  -u admin -P Yinuolink2018 -t ZL -m "{\"mac\":\"$(uci get 4g.server.sn)\"$(ip_echo)}"  
-mosquitto_pub -h 120.77.43.135  -u admin -P Yinuolink2018 -t ZL -m "{\"cmd\":\"auto\",\"deviceId\":\"$deviceId\",\"ssid\":\"$ssid\",\"signalIntensity\":\"$signalIntensity\"}" 
+mosquitto_pub -h www.yinuo-link-cloud.com  -u admin -P Yinuolink2018 -t ZL -m "{\"cmd\":\"auto\",\"deviceId\":\"$deviceId\",\"ssid\":\"$ssid\",\"signalIntensity\":\"$signalIntensity\"}" 
 }
 
 

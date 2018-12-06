@@ -1,0 +1,33 @@
+#!/bin/sh
+
+iwinfo ra0 scan | awk '
+{
+if ($1 ~ /^Cell/) {
+id=$2;
+bssid=$NF;
+printf "sear_id:"id "\t";
+printf "bssid:"bssid "\t";
+next;
+} else if ($1 ~ "ESSID") {
+essid=$2;
+printf "essid:"essid "\t";
+next;
+} else if ($1 ~ "Mode") {
+channel=$NF;
+printf "channel:"channel "\t";
+next;
+} else if ($1 ~ "Signal") {
+signal=$2;	
+quality=$NF;
+printf "signal:"signal "\t";
+printf "quality:"quality "\t";
+next;
+} else if ($1 ~ "Encryption") {
+$1="";
+enc=$0;
+printf "enc:"enc "\n<br />";
+next;
+}
+
+}
+'

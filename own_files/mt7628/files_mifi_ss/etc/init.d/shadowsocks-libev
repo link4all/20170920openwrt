@@ -1,0 +1,91 @@
+#!/bin/sh /etc/rc.common
+#
+# Copyright (C) 2017 Yousong Zhou <yszhou4tech@gmail.com>
+# Modified it for Shadowsocks-libev with optional crypto:
+# Ferenc Fejes <primalgamer@gmail.com>
+#
+# This is free software, licensed under the GNU General Public License v3.
+# See /LICENSE for more information.
+#
+
+USE_PROCD=1
+START=99
+
+CONFIG=/etc/shadowsocks-libev.conf
+
+uci_config_to_json(){
+	server=`uci -q get shadowsocks-libev.sss0.server`
+	server_port=`uci -q get shadowsocks-libev.sss0.server_port`
+	password=`uci -q get shadowsocks-libev.sss0.password`
+	method=`uci -q get shadowsocks-libev.sss0.method`
+	local_address=`uci -q get shadowsocks-libev.hi.local_address`
+	local_port=`uci -q get shadowsocks-libev.hi.local_port`
+	timeout=`uci -q get shadowsocks-libev.hi.timeout`
+	obfs=`uci -q get shadowsocks-libev.hi.obfs`
+	cat <<EOF > /etc/shadowsocks-libev.conf
+{
+    "server": "$server",
+    "server_port": $server_port,
+    "password": "$password",
+    "method": "$method",
+    "local_address": "$local_address",
+    "local_port":$local_port ,
+    "timeout": $timeout,
+    "protocol": "origin",
+    "protocol_param": "",
+    "obfs": "plain",
+    "obfs_param": "$obfs",
+    "fast_open": false,
+    "mptcp":true,
+    "mode":"tcp_and_udp"
+}
+EOF
+
+}
+start_service() {
+	if [ `uci -q get shadowsocks-libev.hi.disabled` = 0 ];then
+	uci_config_to_json
+	procd_open_instance
+	procd_set_param command /usr/bin/ssr-redir
+	procd_append_param command -c /etc/shadowsocks-libev.conf
+	procd_close_instance 
+
+	iptables -t nat -F SSREDIR
+	iptables -t nat -D PREROUTING -p tcp -j SSREDIR
+	#iptables -t nat -D OUTPUT -p tcp -j SSREDIR
+	#server_IP=`uci -q get shadowsocks-libev.sss0.server`
+	#iptables -t nat -D SSREDIR -d $server_IP -j RETURN
+	iptables -t nat -N SSREDIR
+	iptables -t nat -A PREROUTING -p tcp -j SSREDIR
+	#iptables -t nat -A SSREDIR -d $server_IP -j RETURN
+	iptables -t nat -A SSREDIR -d 127.0.0.0/8 -j RETURN
+	iptables -t nat -A SSREDIR -d 192.168.0.0/16 -j RETURN
+	iptables -t nat -A SSREDIR -p tcp -j REDIRECT --to-ports 1100
+	iptables -D prerouting_rule -t nat -m geoip -p tcp ! --destination-country CN -j SSREDIR
+	iptables -A prerouting_rule -t nat -m geoip -p tcp ! --destination-country CN -j SSREDIR
+	#iptables -t nat -A OUTPUT -p tcp -j SSREDIR
+	else
+	echo "ss disabled"
+	killall ssr-redir 
+ fi
+}
+
+stop_service() {
+	local bin="$ss_bindir/ss-rules"
+
+	[ -x "$bin" ] && "$bin" -f
+	rm -rf "$ss_confdir"
+	iptables -t nat -F SSREDIR
+	iptables -t nat -D PREROUTING -p tcp -j SSREDIR
+	#iptables -t nat -D OUTPUT -p tcp -j SSREDIR
+	#server_IP=`uci -q get shadowsocks-libev.sss0.server`
+	#iptables -t nat -D SSREDIR -d $server_IP -j RETURN
+}
+
+service_triggers() {
+	procd_add_reload_interface_trigger wan
+	procd_add_reload_trigger shadowsocks-libev
+}
+
+
+

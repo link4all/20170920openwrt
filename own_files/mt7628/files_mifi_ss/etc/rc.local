@@ -1,0 +1,9 @@
+# Put your custom commands here that should be executed once
+# the system init finished. By default this file does nothing.
+/etc/init.d/dnsmasq restart &
+sleep 5 
+/etc/init.d/network restart &
+/etc/exportgpio.sh &
+/etc/modem_info.sh &
+/etc/sig.sh &
+exit 0

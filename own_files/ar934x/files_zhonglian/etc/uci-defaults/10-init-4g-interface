@@ -24,6 +24,8 @@ uci set network.4g.ifname='eth2'
 uci set network.n2n0=interface
 uci set network.n2n0.proto='static'
 uci set network.n2n0.ifname='n2n0'
+uci set network.n2n0.ipaddr='10.0.0.4'
+uci set network.n2n0.netmask='255.255.0.0'
 uci set network.lan.ipaddr='192.168.2.1'
 uci commit network
 

@@ -1,0 +1,96 @@
+#!/bin/sh
+#
+# Copyright (C) 2011 OpenWrt.org
+#
+#device_modem="/dev/ttyUSB1"
+
+uci set network.4g=interface
+#uci set network.4g.device=${device_modem}
+uci set network.4g.proto='dhcp'
+uci set network.4g.ifname='eth1'
+
+
+#uci set network.pptp=interface
+#uci set network.pptp.proto=pptp
+#uci set network.l2tp=interface
+#uci set network.l2tp.proto=l2tp
+
+uci set network.wwan=interface
+uci set network.wwan.ifname=apcli0
+uci set network.wwan.proto=dhcp
+
+uci commit network
+
+uci set luci.main.mediaurlbase='/luci-static/wfnt'
+uci commit luci
+uci set firewall.@zone[0].network="lan n2n0"
+uci set firewall.@zone[1].network="wan wan6 wwan 4g "
+uci commit firewall
+
+uci set system.@system[0].zonename='Asia/Shanghai'
+uci set system.@system[0].timezone='CST-8'
+uci set system.led_g4_default=led
+uci set system.@led[-1].name="G4_default"
+uci set system.@led[-1].default=0
+uci set system.@led[-1].sysfs='liwei:4g'
+uci set system.@led[-1].trigger='timer'
+uci set system.@led[-1].delayon='800'
+uci set system.@led[-1].delayoff='800'
+uci commit system
+
+#####5 ports######
+uci set network.mtsw=switch
+uci set network.mtsw.name='switch0'
+uci set network.mtsw.reset='1'
+uci set network.mtsw.enable_vlan='1'
+
+uci set network.sw1=switch_vlan
+uci set network.sw1.device='switch0'
+uci set network.sw1.vlan='1'
+uci set network.sw1.ports='0 1 2 3 6t'
+
+uci set network.sw2=switch_vlan
+uci set network.sw2.device='switch0'
+uci set network.sw2.vlan='2'
+uci set network.sw2.ports='4 6t'
+uci -q set network.lan.ipaddr='192.168.11.1'
+uci -q set network.lan.ifname='eth0.1 eth0.2'
+uci -q set network.wan.metric='1'
+uci -q set network.4g.metric='2'
+
+uci set network.n2n0=interface
+uci set network.n2n0.proto='static'
+uci set network.n2n0.ifname='n2n0'
+uci set network.n2n0.ipaddr='10.0.0.4'
+uci set network.n2n0.netmask='255.255.0.0'
+uci commit network
+
+#####5 ports######
+
+#mac=`cat /sys/class/net/ra0/address |tr -d  ':'`
+. /lib/functions.sh
+. /lib/functions/system.sh
+mac=`mtd_get_mac_binary factory 46 |tr -d ':'`
+uci set 4g.server.sn="${mac}"
+uci set 4g.server.name='router.link-4all.com'
+uci commit 4g
+
+uci set n2n_v2.@edge[0].community=$mac
+uci commit n2n_v2
+
+#move gar uhttpd.conf to config dir
+cp /etc/uhttpd.conf.gargoyle /etc/config/uhttpd
+
+#sleep 10
+##set yiyuan default
+#rm /etc/modules.d/AutoProbe-usb-net-gobinet*
+#if gcom -d  /dev/ttyUSB3 -s /etc/gcom/getcardinfo.gcom  |grep -ir quect ;then
+#echo "gobinet_yy.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+#elif gcom -d  /dev/ttyUSB3 -s /etc/gcom/getcardinfo.gcom  |grep -ir meig ;then
+#echo "gobinet_fg.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+#elif gcom -d  /dev/ttyUSB3 -s /etc/gcom/getcardinfo.gcom  |grep -ir longs ;then
+#echo "gobinet_ls.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+#else
+#echo "gobinet_fg.ko" > /etc/modules.d/AutoProbe-usb-net-gobinet
+#fi
+

@@ -1,0 +1,25 @@
+opengt
+set com 115200n81
+set senddelay 0.01
+waitquiet 0.01 0.01
+:start
+flash 0.01
+send "AT+CPIN?\r\n"
+waitfor 0.01 "SIM PUK","SIM PIN","READY","ERROR","ERR"
+if % = -1 goto timeout
+if % = 0 goto ready
+if % = 1 goto pinlock
+if % = 2 goto ready
+if % = 3 goto error
+if % = 4 goto error
+:timeout
+print "Timeout"
+exit 1
+:error
+print $s," ***SIM ERROR*** "
+exit 1
+:pinlock
+print "SIM Locked,Please input PIN!"
+exit 1
+:ready
+print "SIM Ready"
