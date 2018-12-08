@@ -2,7 +2,7 @@
 eval $( gargoyle_session_validator -c "$COOKIE_hash" -e "$COOKIE_exp" -a "$HTTP_USER_AGENT" -i "$REMOTE_ADDR" -r "login1.asp" -t $(uci get gargoyle.global.session_timeout) -b "$COOKIE_browser_time"  )
 #echo ""
 lang=`uci get gargoyle.global.lang`
-. /www/data/lang/$lang/proxy.po
+. /www/data/lang/$lang/proxy.po 
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -19,7 +19,7 @@ lang=`uci get gargoyle.global.lang`
         $("#status").html("<%= $processing%>");
          var form = new FormData(document.getElementById("form0"));
            $.ajax({
-          url: "/cgi-bin/mpserver.sh",
+          url: "/cgi-bin/proxy.sh",
           type: "POST",
           data:form, 
           processData:false,
@@ -37,23 +37,6 @@ lang=`uci get gargoyle.global.lang`
           }
         });
   }
-        function mask_method(){
-        var mpserv=$('input[name="mptcp"]:checked').val();
-            if (mpserv==1){
-              $("#mask").show();
-              $("#mask1").hide();
-
-            }
-            else{
-              $("#mask").hide();
-              $("#mask1").show();
-            }
-        }
-
-        $(window).on('load', function () {
-        mask_method();
-        });
-
   </script>
 </head>
 <body>
@@ -66,21 +49,10 @@ lang=`uci get gargoyle.global.lang`
                <label>
                    <div class="name"></div>
                    <div>
-                       <input type="checkbox" onclick="mask_method()" value="1" name="mptcp" <% [ `uci get shadowsocks-libev.hi.disabled` = 0 ]  && echo checked %>/><%= $enable%><%= $server%>
+                       <input type="checkbox"  value="1" name="mptcp" <% [ `uci get shadowsocks-libev.hi.disabled` = 0 ]  && echo checked %>/><%= $enable%><%= $server%>
                    </div>
                </label>
                <div id="mask">
-                 <label >
-                     <div class="name"><%= $wan_sel%>：</div>
-                     <div>
-                         4g1<input type="checkbox"  value="1" name="m_wan1" <% [ `uci get network.wan1.multipath` = on ]  && echo checked %>/>
-                         4g2<input type="checkbox"  value="1" name="m_wan2" <% [ `uci get network.wan2.multipath` = on ]  && echo checked %>/>
-                         4g3<input type="checkbox"  value="1" name="m_wan3" <% [ `uci get network.wan3.multipath` = on ]  && echo checked %>/>
-                         4g4<input type="checkbox"  value="1" name="m_wan4" <% [ `uci get network.wan4.multipath` = on ]  && echo checked %>/>
-                         wan<input type="checkbox"  value="1" name="m_wan" <% [ `uci get network.wan.multipath` = on ]  && echo checked %>/>
-                         wwan<input type="checkbox"  value="1" name="m_wwan" <% [ `uci get network.wwan.multipath` = on ]  && echo checked %>/>
-                     </div>
-                 </label>
                     <label >
                         <div class="name"><%= $server%>：</div>
                         <div>
@@ -105,21 +77,12 @@ lang=`uci get gargoyle.global.lang`
                             <input  name="passwd" type="text" value="<% uci get shadowsocks-libev.sss0.password %>" />
                         </div>
                     </label>
-              </div>
-              <div id="mask1">
-                <label >
-                    <div class="name"><%= $interface%>：</div>
-                    <div>
-                      <select name="interface" >
-                        <option value="wan1" <% [ `uci get gargoyle.global.master` = "wan1" ] && echo 'selected="true"' %>>4G 1</option>
-                        <option value="wan2" <% [ `uci get gargoyle.global.master` = "wan2" ] && echo 'selected="true"' %>>4G 2</option>
-                        <option value="wan3" <% [ `uci get gargoyle.global.master` = "wan3" ] && echo 'selected="true"' %>>4G 3</option>
-                        <option value="wan4" <% [ `uci get gargoyle.global.master` = "wan4" ] && echo 'selected="true"' %>>4G 4</option>
-                        <option value="wan" <% [ `uci get gargoyle.global.master` = "wan" ] && echo 'selected="true"' %>>WAN</option>
-                        <option value="wwan" <% [ `uci get gargoyle.global.master` = "wwan" ] && echo 'selected="true"' %>>WWAN</option>
-                      </select>
-                    </div>
-                </label>
+                    <label >
+                        <div class="name">obfs：</div>
+                        <div>
+                            <input  name="obfs" type="text" value="<% uci get shadowsocks-libev.hi.obfs %>" />
+                        </div>
+                    </label>
               </div>
                 </form>
 				  <div class="btn-wrap">
