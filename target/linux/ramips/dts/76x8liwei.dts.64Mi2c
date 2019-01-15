@@ -12,7 +12,7 @@
 
 	memory@0 {
 		device_type = "memory";
-		reg = <0x0 0x8000000>;
+		reg = <0x0 0x4000000>;
 	};
 
 	pinctrl {
@@ -36,7 +36,7 @@
 			};
 			i2c {
 				ralink,group = "i2c";
-				ralink,function = "gpio";
+				ralink,function = "i2c";
 			};
 			i2s {
 				ralink,group = "i2s";

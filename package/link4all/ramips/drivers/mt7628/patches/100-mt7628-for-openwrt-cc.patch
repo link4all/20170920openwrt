@@ -11,17 +11,6 @@ Index: b/build/Makefile
  SRC_DIR = ../src/embedded
  obj-m += $(DRV_NAME).o
  else
-@@ -57,8 +57,8 @@ cmm_objs := $(SRC_DIR)/common/crypt_md5.
- 						$(SRC_DIR)/tx_rx/wdev.o\
- 						$(SRC_DIR)/tx_rx/wdev_tx.o\
- 						$(SRC_DIR)/tx_rx/wdev_rx.o\
--						$(SRC_DIR)/os/linux/ralink_flash.o \
--						$(SRC_DIR)/os/linux/rt_profile.o
-+						$(SRC_DIR)/os/linux/rt_profile.o 
-+                        #$(SRC_DIR)/os/linux/ralink_flash.o \
- 
- ########################################################
- # Rate adaptation related files
 Index: b/src/embedded/ap/ap_cfg.c
 ===================================================================
 --- a/src/embedded/ap/ap_cfg.c
@@ -54,141 +43,11 @@ Index: b/src/embedded/common/cmm_info.c
  #endif /* CONFIG_STA_SUPPORT */
  
  #ifdef CONFIG_ANDES_SUPPORT
-Index: b/src/embedded/os/linux/rt_linux.c
-===================================================================
---- a/src/embedded/os/linux/rt_linux.c
-+++ b/src/embedded/os/linux/rt_linux.c
-@@ -36,6 +36,7 @@
- #include "rt_os_util.h"
- #include "dot11i_wpa.h"
- #include <linux/rtnetlink.h>
-+#include <linux/mtd/mtd.h>
- 
- #if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE)
- #if defined(CONFIG_SUPPORT_OPENWRT)
-@@ -379,35 +380,82 @@ extern int ra_mtd_read_nm(char *name, lo
- #endif /* CONFIG_RALINK_FLASH_API */
- 
- void RtmpFlashRead(
--	UCHAR *p,
--	ULONG a,
--	ULONG b)
--{
--#ifdef CONFIG_RALINK_FLASH_API
--	FlashRead((uint32_t *) p, (uint32_t *) a, (uint32_t) b);
--#else
--#ifdef RA_MTD_RW_BY_NUM
--	ra_mtd_read(MTD_NUM_FACTORY, 0, (size_t) b, p);
--#else
--	ra_mtd_read_nm("factory", a&0xFFFF, (size_t) b, p);
--#endif
--#endif /* CONFIG_RALINK_FLASH_API */
-+	UCHAR *buf,
-+	ULONG from,
-+	ULONG len)
-+{
-+	int ret = -1;
-+	size_t rdlen;
-+	struct mtd_info *mtd;
-+
-+	mtd = get_mtd_device_nm("factory");
-+	if (IS_ERR(mtd)) {
-+		printk("Not found mtd:factory\n");
-+		return;
-+	}
-+
-+	ret = mtd_read(mtd, from & 0xFFFF, len, &rdlen, buf);
-+	if (rdlen != len)
-+		printk("warning: RtmpFlashRead: rdlen is not equal to len\n");
-+	put_mtd_device(mtd);
- }
- 
- void RtmpFlashWrite(
--	UCHAR * p,
--	ULONG a,
--	ULONG b)
--{
--#ifdef CONFIG_RALINK_FLASH_API
--	FlashWrite((uint16_t *) p, (uint16_t *) a, (uint32_t) b);
--#else
--#ifdef RA_MTD_RW_BY_NUM
--	ra_mtd_write(MTD_NUM_FACTORY, 0, (size_t) b, p);
--#else
--	ra_mtd_write_nm("factory", a&0xFFFF, (size_t) b, p);
--#endif
--#endif /* CONFIG_RALINK_FLASH_API */
-+	UCHAR *buf,
-+	ULONG to,
-+	ULONG len)
-+{
-+	int ret = -1;
-+	size_t rdlen, wrlen;
-+	struct mtd_info *mtd = NULL;
-+	struct erase_info ei;
-+	u_char *bak = NULL;
-+
-+	mtd = get_mtd_device_nm("factory");
-+	if (IS_ERR(mtd)) {
-+		printk("Not found mtd:factory\n");
-+		return;
-+	}
-+
-+	if (len > mtd->erasesize) {
-+		printk("RtmpFlashWrite:Too big\n");
-+		goto QUIT;
-+	}
-+
-+	bak = kzalloc(mtd->erasesize, GFP_KERNEL);
-+	if (bak == NULL) {
-+		printk("RtmpFlashWrite:No mem\n");
-+		goto QUIT;
-+	}
-+
-+	ret = mtd_read(mtd, 0, mtd->erasesize, &rdlen, bak);
-+	if (ret)
-+		goto QUIT;
-+
-+	if (rdlen != mtd->erasesize)
-+		printk("warning: RtmpFlashWrite: rdlen is not equal to erasesize\n");
-+
-+	memcpy(bak + to, buf, len);
-+
-+	ei.mtd = mtd;
-+	ei.callback = NULL;
-+	ei.addr = 0;
-+	ei.len = mtd->erasesize;
-+	ei.priv = 0;
-+
-+	ret = mtd_erase(mtd, &ei);
-+	if (ret)
-+		goto QUIT;
-+
-+	ret = mtd_write(mtd, 0, mtd->erasesize, &wrlen, bak);
-+	udelay(10); /* add delay after write */
-+
-+QUIT:
-+	if (mtd)
-+		put_mtd_device(mtd);
-+
-+	if (bak)
-+		kfree(bak);
- }
- #endif /* defined(RTMP_RBUS_SUPPORT) || defined(RTMP_FLASH_SUPPORT) */
- 
 
 Index: b/src/embedded/os/linux/rt_proc.c
 ===================================================================
 --- a/src/embedded/os/linux/rt_proc.c
 +++ b/src/embedded/os/linux/rt_proc.c
-@@ -61,7 +61,7 @@ int wl_proc_exit(void);
- #endif /* PROCREG_DIR */
- 
- #ifdef CONFIG_PROC_FS
--extern struct proc_dir_entry *procRegDir;
-+struct proc_dir_entry *procRegDir;
- 
- #ifdef VIDEO_TURBINE_SUPPORT
- extern BOOLEAN UpdateFromGlobal;
 @@ -498,8 +498,7 @@ int wl_video_proc_exit(void)
  
  int wl_proc_init(void)

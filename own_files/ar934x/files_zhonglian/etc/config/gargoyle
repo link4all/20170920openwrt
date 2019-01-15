@@ -2,7 +2,7 @@ config global 'global'
         option session_timeout '60'
         option lang 'zh_cn'
         option soft_ver 'V2.2.10'
-        option model_name '4G Industrial Router'
+        option model_name 'PLC_LTE_GATEWAY_201809'
         #option powerH '100'
         #option powerM '80'
         #option powerL '50'
@@ -11,8 +11,4 @@ config global 'global'
         option powerL '15'
 	option company_en_us	'Shenzhen Yinuo-Link Technology Co., Ltd'
 	option company_zh_cn  '深圳市伊诺时代科技有限公司'
-
-
-
-
-
+        

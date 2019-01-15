@@ -77,6 +77,12 @@ lang=`uci get gargoyle.global.lang`
                             <input  name="passwd" type="text" value="<% uci get shadowsocks-libev.sss0.password %>" />
                         </div>
                     </label>
+                    <label >
+                        <div class="name">obfs：</div>
+                        <div>
+                            <input  name="obfs" type="text" value="<% uci get shadowsocks-libev.hi.obfs %>" />
+                        </div>
+                    </label>
               </div>
                 </form>
 				  <div class="btn-wrap">

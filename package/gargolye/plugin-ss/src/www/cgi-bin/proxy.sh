@@ -9,6 +9,7 @@ if [ "$FORM_mptcp" = "1" ] ;then
    uci set shadowsocks-libev.sss0.server_port="$FORM_port"
    uci set shadowsocks-libev.sss0.method="$FORM_method"
    uci set shadowsocks-libev.sss0.password="$FORM_passwd"
+   uci set shadowsocks-libev.hi.obfs="$FORM_obfs"
    uci set shadowsocks-libev.hi.disabled=0
    else
    uci set shadowsocks-libev.hi.disabled=1
@@ -16,13 +17,10 @@ if [ "$FORM_mptcp" = "1" ] ;then
 fi
  
 uci commit shadowsocks-libev
-/etc/init.d/shadowsocks-libev restart
-
+/etc/init.d/shadowsocks-libev restart >/dev/null 2>&1
 
 echo "{"
 echo "\"stat\":\"OK\""
 echo "}"
-/etc/init.d/network restart
-/etc/init.d/mptcp restart
 %>
 
