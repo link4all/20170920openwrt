@@ -1,0 +1,28 @@
+#!/bin/sh
+
+gpio=15
+dir=out
+off=0
+on=1
+dev=/sys/class/gpio/gpio15/
+if [ "$ACTION" = "pressed" -a "$BUTTON" = "BTN_0" ]; then
+	echo ""
+	echo "SIM CARD INSERT" >/dev/console
+	logger "SIM CARD INSERT"
+	if [ ! -e "${dev}/value" ]; then
+		echo "$gpio" > /sys/class/gpio/export
+		echo "$dir" > "${dev}/direction"
+	fi
+	echo "$on" > "${dev}/value"
+fi
+
+if [ "$ACTION" = "released" -a "$BUTTON" = "BTN_0" ]; then
+	echo ""
+	echo "SIM CARD REMOVE" >/dev/console
+	logger  "SIM CARD REMOVE"
+	if [ ! -e "${dev}/value" ]; then
+		echo "$gpio" > /sys/class/gpio/export
+		echo "$dir" >  "${dev}/direction"	
+	fi
+	echo "$off" > "${dev}/value"
+fi

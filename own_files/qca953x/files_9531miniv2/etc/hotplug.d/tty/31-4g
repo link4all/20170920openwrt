@@ -1,0 +1,111 @@
+#!/bin/sh
+
+set_4g_iface(){
+
+uci set network.4g.proto='dhcp'
+uci set network.4g.ifname='eth2'
+uci set 4g.modem.device="/dev/ttyUSB2"
+
+# Quectel EC200T
+ if cat /sys/kernel/debug/usb/devices |grep "Vendor=2c7c ProdID=6026 "  > /dev/null 2>&1;then
+    uci set network.4g.ifname='usb0'
+    uci set 4g.modem.device="/dev/ttyUSB2"
+ fi
+
+ # Luat air720
+ if cat /sys/kernel/debug/usb/devices |grep "Vendor=1286 ProdID=4e3d "  > /dev/null 2>&1;then
+    uci set 4g.modem.device="/dev/ttyUSB1"
+    uci set network.4g.device='/dev/ttyUSB0'
+ fi
+
+# Quectel UG96
+if cat /sys/kernel/debug/usb/devices |grep "Vendor=1519 ProdID=0020 "  > /dev/null 2>&1;then
+    uci set 4g.modem.device="/dev/ttyACM3"
+    uci set network.4g.proto='3g'
+    uci set network.4g.device='/dev/ttyACM0'
+    uci set network.4g.apn="3gnet"
+    uci del network.4g.ifname
+
+fi
+# Fibocom L850/L830
+if cat /sys/kernel/debug/usb/devices |grep -E "Vendor=8087 ProdID=095a |Vendor=1519 ProdID=0443" > /dev/null 2>&1;then
+    uci set 4g.modem.device="/dev/ttyACM2"
+    uci set network.4g.proto='dhcp'
+    uci set network.4g.device='/dev/ttyACM0'
+    uci set network.4g.apn="3gnet"
+    if cat /sys/kernel/debug/usb/devices |grep -E "Vendor=1519 ProdID=0443" > /dev/null 2>&1;then
+    uci set network.4g.ifname='wwan0'
+    else
+    uci set network.4g.ifname='usb0'
+    fi
+    
+fi
+    uci commit network
+    uci commit 4g
+}
+
+set_apn(){
+    device_at=`uci get 4g.modem.device`
+imsi=$(gcom -d ${device_at} -s /etc/gcom/getimsi.gcom)
+if [ `uci get config4g.4G.apnsel` = '0' ];then
+    apndata=`cat /etc/apn.txt |grep  ${imsi:0:5}`
+    if [ -n "$apndata" ] ;then
+        dialnum=`echo $apndata |cut  -d'|' -f5`
+        apn=`echo $apndata |cut  -d'|' -f7`
+        username=`echo $apndata |cut  -d'|' -f3`
+        password=`echo $apndata |cut  -d'|' -f4`
+        authtype=`echo $apndata |cut  -d'|' -f14`
+        if uci get network.4g.proto |grep "3g" ;then 
+            uci set network.4g.apn="$apn"
+            uci set network.4g.username="$username"
+            uci set network.4g.password="$password"
+            uci set network.4g.dialnumber="$dialnum"
+            uci commit network
+        fi
+
+        if uci get network.4g.proto |grep "dhcp" ;then 
+        uci set config4g.4G.apn="$apn"
+        uci set config4g.4G.user="$username"
+        uci set config4g.4G.password="$password"
+            if [ "$authype" = "PAP" ];then
+              uci set config4g.4G.auth=1
+             elif [ "$authype" = "CHAP" ];then
+               uci set config4g.4G.auth=2
+             elif [ "$authype" = "MSCHAPV2" ];then
+                uci set config4g.4G.auth=3
+             else
+                uci set config4g.4G.auth=0
+            fi
+        uci commit config4g
+        fi
+    else
+        if uci get network.4g.proto |grep "3g" ;then 
+            uci set network.4g.apn='3gnet'
+            uci set network.4g.username=''
+            uci set network.4g.password=''
+            uci set network.4g.dialnumber="*99#"
+            uci commit network
+        fi
+
+        if uci get network.4g.proto |grep "dhcp" ;then 
+        uci set config4g.4G.apn='3gnet'
+        uci set config4g.4G.user=''
+        uci set config4g.4G.password=''
+        uci set config4g.4G.auth=0
+        uci commit config4g
+        fi
+    fi
+fi
+}
+
+case "$DEVICENAME" in
+	tty[U,A][S,C][B,M]0)
+	[ -e "/dev/$DEVICENAME" -a "$ACTION" = add ] || exit 0
+    set_4g_iface
+    set_apn
+    /etc/init.d/config4g restart
+    /etc/init.d/network restart
+    /etc/modem_info.sh
+
+	;;
+esac

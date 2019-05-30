@@ -189,7 +189,8 @@ platform_check_image() {
 	mr16 | \
 	wpj558 | \
 	zcn-1523h-2 | \
-	zcn-1523h-5)
+	zcn-1523h-5 |\
+	miniv2)
 		[ "$magic_long" != "68737173" -a "$magic_long" != "19852003" ] && {
 			echo "Invalid image type."
 			return 1
@@ -367,7 +368,7 @@ platform_check_image() {
 	tl-wr1041n-v2 | \
 	tl-wr1043nd | \
 	tl-wr1043nd-v2 | \
-	tl-wr2543n)
+	tl-wr2543n )
 		[ "$magic" != "0100" ] && {
 			echo "Invalid image type."
 			return 1

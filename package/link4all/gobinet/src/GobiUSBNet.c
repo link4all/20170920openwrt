@@ -313,6 +313,14 @@ static int GobiNetDriverBind(
    		   return -ENODEV;
    		}
 		break;
+   case 0x1e0e:
+		if (pIntf->cur_altsetting->desc.bInterfaceNumber != 5)
+   		{
+   		   DBG( "invalid interface %d\n", 
+   		        pIntf->cur_altsetting->desc.bInterfaceNumber );
+   		   return -ENODEV;
+   		}
+		break;
 
 	break;
 

@@ -320,7 +320,6 @@ define Profile/TLWR841/Description
 endef
 $(eval $(call Profile,TLWR841))
 
-
 define Profile/TLWR842
 	NAME:=TP-LINK TL-WR842N/ND
 	PACKAGES:=kmod-usb-core kmod-usb2 kmod-ledtrig-usbdev

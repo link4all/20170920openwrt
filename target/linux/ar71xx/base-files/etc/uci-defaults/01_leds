@@ -512,6 +512,12 @@ tl-wr841n-v11)
 	ucidef_set_led_wlan "wlan_5g" "WLAN_5G" "tp-link:green:5g" "phy1tpt"
 	;;
 
+miniv2)
+	ucidef_set_led_netdev "wan" "WAN" "miniv2:lan" "eth0"
+	ucidef_set_led_timer "sys" "SYS" "miniv2:wan" "200" "200"
+	ucidef_set_led_wlan "wifi" "WIFI" "miniv2:2g" "phy0tpt"
+	;;
+
 tl-wr842n-v2)
 	ucidef_set_led_netdev "wan" "WAN" "tp-link:green:wan" "eth0"
 	ucidef_set_led_netdev "link0" "LINK0" "tp-link:green:link0" "eth0"

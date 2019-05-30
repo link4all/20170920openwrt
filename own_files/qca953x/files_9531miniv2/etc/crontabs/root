@@ -1,0 +1,2 @@
+*/2 * * * *  /etc/setaponly
+*/5 * * * * /etc/modem_info.sh

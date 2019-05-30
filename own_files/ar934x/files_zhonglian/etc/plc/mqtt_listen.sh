@@ -18,4 +18,22 @@ while true
       fi
   break
  fi
+
+if [ `jsonfilter -i /tmp/mqttmsg -e @.cmd` == 'getGwInfo' ];then
+    for i in `ps |grep update |grep -v grep |awk '{print $1}'`
+      do
+      kill -9 $i
+    done
+    /etc/plc/updateinfo.sh &
+
+fi
+
+if [ `jsonfilter -i /tmp/mqttmsg -e @.cmd` == 'connectedGw' ];then
+
+cat /sys/class/leds/tp-link\:green\:system/trigger
+(echo 0 > /sys/class/leds/tp-link\:green\:system/brightness;sleep 1;echo 255 > /sys/class/leds/tp-link\:green\:system/brightness) &
+mosquitto_pub -h www.yinuo-link-cloud.com  -u admin -P Yinuolink2018 -t ZL -m "{\"cmd\":\"connetctAck\",\"deviceId\":\"$deviceId\"}"
+
+fi
+
  done

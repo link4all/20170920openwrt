@@ -123,14 +123,17 @@ lang=`uci get gargoyle.global.lang`
             <div class="wrap-form">
                 <form class="form-info" id="form0" >
                     <label>
+                        <div class="name"><%= $enable_repeater%>:</div>
+                        <div>
+                            <input type="checkbox"  name="setrepeater" value="1" <% [ "`uci get -q wireless.stamode.mode`" = "sta" ]  && echo -n checked %> />
+                        </div>
+         </label>
+                    <label>
                         <div class="name"><%= $conn_status%></div>
                         <div>
                          <input name="wwanip" type="text" value="" id="wwanip" readonly="readonly" />
                         </div>
                     </label>
-
-
-
                             <label>
                                 <div class="name"><%= $pass%></div>
                                 <div>

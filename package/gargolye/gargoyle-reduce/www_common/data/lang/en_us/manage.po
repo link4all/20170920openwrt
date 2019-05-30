@@ -21,5 +21,6 @@ web_access="Web Access Control"
 bak_restore="Backup/Restore"
 upgrade="Firmware upgrade"
 time_setting="Time Setting"
+remotehelp="Remote Help"
 reboot="Reboot"
 

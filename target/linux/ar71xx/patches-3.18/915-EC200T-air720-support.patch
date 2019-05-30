@@ -1,0 +1,18 @@
+Index: linux-3.18.45/drivers/usb/serial/option.c
+===================================================================
+--- linux-3.18.45.orig/drivers/usb/serial/option.c
++++ linux-3.18.45/drivers/usb/serial/option.c
+@@ -737,6 +737,13 @@ static const struct usb_device_id option
+ //add forege 730
+ 	{ USB_DEVICE(0x05c6, 0xf601), .driver_info = (kernel_ulong_t)&qc9x07_blacklist },
+ //add end
++//add Quectel EC200T
++	{ USB_DEVICE(0x2c7c, 0x6026) },
++//add end
++//add Luat air720
++	{ USB_DEVICE(0x1286,0x4e3d) },
++//add end
++
+ 	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_COLT) },
+ 	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_RICOLA) },
+ 	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_RICOLA_LIGHT) },

@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# Copyright (C) 2011 OpenWrt.org
+#
+device_modem=/dev/ttyUSB1
+
+
+uci set network.4g=interface
+uci set network.4g.device=${device_modem}
+uci set network.4g.proto='dhcp'
+uci set network.4g.ifname='eth2'
+uci set network.4g.metric='2'
+uci set network.wan.metric='1'
+
+uci set network.pptp=interface
+uci set network.pptp.proto=pptp
+uci set network.l2tp=interface
+uci set network.l2tp.proto=l2tp
+uci set network.lan.ipaddr=192.168.11.1
+#set 2LAN
+uci set network.@switch_vlan[0].ports="0t 3 4"
+uci set network.@switch_vlan[1].ports="0t 1"
+
+uci commit network
+
+#uci set luci.main.mediaurlbase='/luci-static/wfnt'
+#uci commit luci
+uci set firewall.@zone[1].network="wan wan6 wwan 4g pptp l2tp"
+uci commit firewall
+
+uci set system.@system[0].zonename='Asia/Shanghai'
+uci set system.@system[0].timezone='CST-8'
+uci commit system
+
+#####5 ports######
+#uci set network.mtsw=switch
+#uci set mtsw.name='switch0'
+#uci set mtsw.reset='1'
+#uci set mtsw.enable_vlan='1'
+
+#uci set network.sw1=switch_vlan
+#uci set network.sw1.device='switch0'
+#uci set network.sw1.vlan='1'
+#uci set network.sw1.ports='0 1 2 3 6t'
+
+#uci set network.sw2=switch_vlan
+#uci set network.sw2.device='switch0'
+#uci set network.sw2.vlan='2'
+#uci set network.sw2.ports='4 6t'
+#####5 ports######
+
+#mac=`cat /sys/class/net/ra0/address |tr -d  ':'`
+. /lib/functions.sh
+. /lib/functions/system.sh
+mac=`mtd_get_mac_binary art 4098 |tr -d ':'`
+uci set 4g.server.sn="${mac}"
+uci set 4g.server.name='router.link-4all.com'
+uci commit 4g
+
+#move gar uhttpd.conf to config dir
+cp /etc/uhttpd.conf.gargoyle /etc/config/uhttpd
+
+

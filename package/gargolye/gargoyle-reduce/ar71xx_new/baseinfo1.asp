@@ -56,13 +56,14 @@ lang=`uci get gargoyle.global.lang`
 												<th width="20%"><%= $model%></th>
 												<td><% uci get gargoyle.global.model_name %></td>
 										</tr>
+										<% mac_sn=`uci get 4g.server.sn` %>
 										<tr>
 												<th width="20%"><%= $id%></th>
-												<td><%= `dd bs=1 skip=4098 count=6 if=/dev/mtd4 2>/dev/null | hexdump -v -n 6 -e '5/1 "%02x:" 1/1 "%02x"'|tr -d ":"` %></td>
+												<td><%= $mac_sn %></td>
 										</tr>
 										<tr>
 												<th width="20%"><%= $mac%></th>
-												<td><%= `dd bs=1 skip=4098 count=6 if=/dev/mtd4 2>/dev/null | hexdump -v -n 6 -e '5/1 "%02x:" 1/1 "%02x"'|tr -d ":"` %></td>
+												<td><%= $mac_sn %></td>
 										</tr>
 										<tr>
 												<th width="20%"><%= $run_time%></th>

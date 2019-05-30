@@ -1,0 +1,113 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+USE_PROCD=1
+
+
+CONFIG=/var/etc/shadowsocks-libev
+
+uci_config_to_json(){
+	server=`uci get shadowsocks-libev.hi.server`
+	server_port=`uci get shadowsocks-libev.hi.server_port`
+	password=`uci get shadowsocks-libev.hi.password`
+	method=`uci get shadowsocks-libev.hi.method`
+	local_address=`uci get shadowsocks-libev.hi.local_address`
+	local_port=`uci get shadowsocks-libev.hi.local_port`
+	timeout=`uci get shadowsocks-libev.hi.timeout`
+    if [ `uci get shadowsocks-libev.hi.fast_open` = "1" ];then
+    fastopen=true
+    else
+    fastopen=false
+    fi
+
+
+	cat <<EOF > /var/etc/shadowsocks-libev
+{
+    "server": "$server",
+    "server_port": $server_port,
+    "password": "$password",
+    "method": "$method",
+    "local_address": "$local_address",
+    "local_port":$local_port ,
+    "timeout": $timeout,
+    "protocol": "origin",
+    "protocol_param": "",
+    "obfs": "tls1.2_ticket_auth",
+    "obfs_param": "",
+    "fast_open": $fastopen,
+    "mptcp":false,
+    "mode":"tcp_and_udp"
+}
+EOF
+
+
+}
+
+ipt_stop(){
+ echo "Clear iptables rules for ss-redir"
+   iptables -t nat -F SSREDIR
+   iptables -t nat -D PREROUTING -p tcp -j SSREDIR
+   iptables -t nat -D OUTPUT -p tcp -j SSREDIR
+	server_IP=`uci get shadowsocks-libev.sss0.server`
+	iptables -t nat -D SSREDIR -d $server_IP -j RETURN
+}
+
+ipt_start(){
+# Setup the ipset
+ipset -N chnroute hash:net maxelem 65536
+[ -f /tmp/china.txt ] || cp /etc/china.txt /tmp/
+ipset test chnroute 43.237.116.0/22 > /dev/null 2>&1
+if [ $? -ne 0 ];then
+    for ip in $(cat '/tmp/china.txt'); do
+        ipset add chnroute $ip
+    done
+fi
+echo "iptable redirect all tcp to 1100"
+iptables -t nat -D OUTPUT -p tcp -j SSREDIR
+server_IP=`uci get shadowsocks-libev.hi.server`
+iptables -t nat -D SSREDIR -d $server_IP -j RETURN
+iptables -t nat -N SSREDIR
+iptables -t nat -A PREROUTING -p tcp -j SSREDIR
+iptables -t nat -A SSREDIR -d $server_IP -j RETURN
+iptables -t nat -A SSREDIR -d 127.0.0.0/8 -j RETURN
+iptables -t nat -A SSREDIR -d 192.168.0.0/16 -j RETURN
+iptables -t nat -A SSREDIR -d 0.0.0.0/8 -j RETURN
+iptables -t nat -A SSREDIR -d 10.0.0.0/8 -j RETURN
+iptables -t nat -A SSREDIR -d 169.254.0.0/16 -j RETURN
+iptables -t nat -A SSREDIR -d 172.16.0.0/12 -j RETURN
+iptables -t nat -A SSREDIR -d 224.0.0.0/4 -j RETURN
+iptables -t nat -A SSREDIR -d 240.0.0.0/4 -j RETURN
+# Allow connection to chinese IPs
+iptables -t nat -A SSREDIR -p tcp -m set --match-set chnroute dst -j RETURN
+
+iptables -t nat -A SSREDIR -p tcp -j REDIRECT --to-ports 1100
+iptables -t nat -A OUTPUT -p tcp -j SSREDIR
+}
+
+start_service() {
+uci_config_to_json
+if [ `uci get shadowsocks-libev.hi.disabled` = 0 ];then
+ipt_stop
+ipt_start
+sleep 2
+echo "Start ss-redir"
+procd_open_instance
+procd_set_param command /usr/bin/ss-redir -c $CONFIG
+procd_set_param respawn
+procd_close_instance
+else
+echo "shadowsocks-libev-redir disabled"
+fi
+	
+}
+
+stop_service() {
+   echo "Stop ss-redir"
+   killall ss-redir
+   ipt_stop
+}
+
+service_triggers()
+{
+	procd_add_reload_trigger "shadowsocks-libev"
+}

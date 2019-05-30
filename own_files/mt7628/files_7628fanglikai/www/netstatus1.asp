@@ -29,6 +29,34 @@ $.ajax({
          }
        });
 }
+
+function get4ginfo(){
+           $.ajax({
+          type: "GET", 
+          url: "/cgi-bin/get4ginfo.sh",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          success: function(json) {
+            var sim = document.getElementById('sim'); 
+            var sig = document.getElementById('sig');
+            var imei = document.getElementById('imei'); 
+            var imsi = document.getElementById('imsi');
+            var iccid = document.getElementById('iccid');        
+            sim.innerHTML=json.sim
+            sig.innerHTML=json.sig
+            imei.innerHTML=json.imei
+            imsi.innerHTML=json.imsi
+            iccid.innerHTML=json.iccid
+           
+          },
+          error: function(error) {
+            //alert("调用出错" + error.responseText);
+          }
+        });
+   }
+	  $(window).on('load', function () {
+      get4ginfo()
+      });
     </script>
 
 </head>
@@ -109,19 +137,31 @@ $.ajax({
 						<div class="wrap-table">
 						<table border="0" cellspacing="0" cellpadding="0" >
 
-										<tr>
-												<td  width="20%" ><%= $g4_model%></td>
-												<td colspan="3" ><%= `uci get 4g.modem.rev 2>/dev/null` %></td>
-										</tr>
-										<tr>
-												<td ><%= $sim_status%></td>
-												<td colspan="3"><% gcom -d `uci get 4g.modem.device` -s /etc/gcom/getsimstatus.gcom 2>/dev/null %></td>
-										</tr>
-										<tr>
-												<td ><%= $sig%></td>
-												<td colspan="3"><% gcom -d `uci get 4g.modem.device` -s /etc/gcom/getstrength.gcom  |grep  "," |cut -d: -f2|cut -d, -f1 2>/dev/null %></td>
-										</tr>
-										<tr>
+              <tr>
+              <td  width="20%" ><%= $g4_model%></td>
+              <td colspan="3" ><%= `uci get 4g.modem.rev 2>/dev/null` %></td>
+          </tr>
+          <tr>
+              <td ><%= $sim_status%></td>
+              <td colspan="3" id="sim"></td>
+          </tr>
+          <tr>
+              <td ><%= $sig%></td>
+              <td colspan="3" id="sig"></td>
+          </tr>
+          <tr>
+              <td >IMEI</td>
+              <td colspan="3" id="imei"></td>
+          </tr>
+          <tr>
+              <td >IMSI</td>
+              <td colspan="3" id="imsi"></td>
+          </tr>
+          <tr>
+              <td >ICCID</td>
+              <td colspan="3" id="iccid"></td>
+          </tr>
+          <tr>
 												<td ><%= $used_byte%></td>
 												<td id="used_byte"  colspan="2">
                           <% g4byte=`uci get 4g.modem.4g_byte`

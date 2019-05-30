@@ -46,6 +46,18 @@ lang=`uci get gargoyle.global.lang`
       $("#status").html("<%= $diff%>");
       }
     }
+    function verify_pass(){
+       
+       if( $("input[name='passwd']").val() == ""){
+        alert("<%= $nopass%>");
+       }
+       else if( $("input[name='passwd']").val() != $("input[name='repasswd']").val()){
+           alert("<%= $nopass%>");
+       }
+       else {
+        setpasswd();
+       }
+    }
 
  function setwebaccess()
   {
@@ -129,7 +141,7 @@ lang=`uci get gargoyle.global.lang`
                     </label>
             </form>
 										  <div class="btn-wrap">
-					            <div class="save-btn fr"><a href="javascript:setpasswd()"><%= $save%></a></div>
+					            <div class="save-btn fr"><a href="javascript:verify_pass()"><%= $save%></a></div>
 					            </div>
 
                     </div>

@@ -1,0 +1,14 @@
+opengt
+ set com 115200n81
+ set comecho off
+ set senddelay 0.02
+ waitquiet 0.2 0.2
+ flash 0.1
+
+:start
+ send "AT+PSRAT^m"
+ get 2 "\r\n" $s
+ get 2 "\r\n" $s
+ print $s
+:continue
+ exit 0

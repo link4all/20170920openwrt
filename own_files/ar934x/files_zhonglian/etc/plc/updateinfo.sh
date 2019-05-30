@@ -20,8 +20,11 @@ once_mqtt(){
  fourgOperator=$(gcom -d /dev/ttyUSB3 -s /etc/gcom/getregisterednetwork.gcom|cut -d: -f2|cut -d, -f1 |sed $'s/\"//g')
  uci -q set 4g.modem.reg_net="$fourgOperator"
  leavingFactoryNumber=YNAR41-20181218
+
+ jingDu=`uci get -q gps.loc.jingdu`
+ weiDu=`uci get -q gps.loc.weidu`
  
- mosquitto_pub -h www.yinuo-link-cloud.com  -u admin -P Yinuolink2018 -t ZL -m "{\"cmd\":\"auto\",\"deviceId\":\"$deviceId\",\"model\":\"$model\",\"telNumber\":\"$telNumber\",\"hardwareversion\":\"$hardwareversion\",\"softwareversion\":\"$softwareversion\",\"ipAddr\":\"$ipAddr\",\"fourgOperator\":\"$fourgOperator\",\"leavingFactoryNumber\":\"$leavingFactoryNumber\"}"
+ mosquitto_pub -h www.yinuo-link-cloud.com  -u admin -P Yinuolink2018 -t ZL -m "{\"cmd\":\"auto\",\"deviceId\":\"$deviceId\",\"model\":\"$model\",\"telNumber\":\"$telNumber\",\"hardwareversion\":\"$hardwareversion\",\"softwareversion\":\"$softwareversion\",\"ipAddr\":\"$ipAddr\",\"fourgOperator\":\"$fourgOperator\",\"leavingFactoryNumber\":\"$leavingFactoryNumber\",\"jingDu\":\"$jingDu\",\"weiDu\":\"$weiDu\"}"
 }
 
  while true
@@ -53,7 +56,7 @@ ssid=$(uci get wireless.@wifi-iface[0].ssid)
 password=$(uci get wireless.@wifi-iface[0].encryption)
 channel=$(uci get wireless.@wifi-device[0].channel)
 
-mosquitto_pub -h www.yinuo-link-cloud.com  -u admin -P Yinuolink2018 -t ZL -m "{\"cmd\":\"auto\",\"deviceId\":\"$deviceId\",\"ssid\":\"$ssid\",\"signalIntensity\":\"`uci -q get 4g.modem.rssi`\",\"clientNumber\":\"$clientNumber\",\"simDataTotal\":\"$simDataTotal\",\"wifiDataTotal\":\"$wifiDataTotal\",\"password\":\"$password\",\"channel\":\"$channel\"}"
+mosquitto_pub -h www.yinuo-link-cloud.com  -u admin -P Yinuolink2018 -t ZL -m "{\"cmd\":\"auto\",\"deviceId\":\"$deviceId\",\"ssid\":\"$ssid\",\"signalIntensity\":\"`uci -q get 4g.modem.rssi`\",\"clientNumber\":\"$clientNumber\",\"simDataTotal\":\"$simDataTotal\",\"wifiDataTotal\":\"$wifiDataTotal\",\"password\":\"$password\",\"channel\":\"$channel\",\"jingDu\":\"$jingDu\",\"weiDu\":\"$weiDu\"}"
 
 }
 

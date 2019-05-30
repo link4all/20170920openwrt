@@ -149,3 +149,15 @@ define Profile/PB92/Description
 endef
 
 $(eval $(call Profile,PB92))
+
+
+define Profile/miniv2
+	NAME:=miniv2
+	PACKAGES:=
+endef
+
+define Profile/miniv2/Description
+	Package set optimized for the miniv2
+endef
+$(eval $(call Profile,miniv2))
+

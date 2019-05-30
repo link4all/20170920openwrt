@@ -45,7 +45,7 @@ echo "}"
   hour=`echo $FORM_time |awk -F: '{print $1}'`
   minute=`echo $FORM_time |awk -F: '{print $2}'`
   sed -i '/reboot/d' /etc/crontabs/root
-  echo "$minute $hour * * * /sbin/reboot" >> /etc/crontabs/root
+  echo "$minute $hour * * * sleep 5 && touch /etc/banner && reboot" >> /etc/crontabs/root
   /etc/init.d/cron restart >/dev/null 2>&1
 fi
 
@@ -63,7 +63,7 @@ echo "}"
   minute=`echo $FORM_time |awk -F: '{print $2}'`
   week=`echo $FORM_week | sed  's/[ ]/,/g'`
   sed -i '/reboot/d' /etc/crontabs/root
-  echo "$minute $hour * * $week /sbin/reboot" >> /etc/crontabs/root
+  echo "$minute $hour * * $week sleep 5 && touch /etc/banner && reboot" >> /etc/crontabs/root
   /etc/init.d/cron restart >/dev/null 2>&1
 fi
 

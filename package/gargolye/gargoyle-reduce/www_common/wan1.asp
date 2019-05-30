@@ -144,7 +144,11 @@ lang=`uci get gargoyle.global.lang`
                     <label class="">
                         <div class="name"><%= $metric%>：</div>
                         <div>
-                            <input id="metric" name="metric" type="text" value="<% uci -q get network.wan.metric %>"  />
+                            <!-- <input id="metric" name="metric" type="text" value="<% uci -q get network.wan.metric %>"  /> -->
+                            <select name="metric" >
+								<option value="1" <% [ `uci get network.wan.metric |grep "1"` ] && echo 'selected="true"' %> >WAN <%= $metric%></option>
+								<option value="3" <% [ `uci get network.wan.metric |grep "3"` ] && echo 'selected="true"' %> >4G <%= $metric%></option>
+							</select>
                         </div>
                     </label>
             </form>

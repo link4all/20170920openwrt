@@ -21,5 +21,6 @@ web_access="Web访问管理"
 bak_restore="备份/恢复"
 upgrade="固件升级"
 time_setting="系统时间"
+remotehelp="远程协助"
 reboot="重新启动"
 

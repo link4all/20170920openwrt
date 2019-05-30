@@ -35,6 +35,17 @@ lang=`uci get gargoyle.global.lang`
           }
         });
    }
+
+    function verify_pass(){
+       if($("input[name='epwd']").val().length < 8) {
+        alert("<%= $pass_veri%>");
+       }
+       else{
+        setwifi();
+       }
+
+       
+    }
 	  $(window).on('load', function () {
 
       });
@@ -129,7 +140,7 @@ lang=`uci get gargoyle.global.lang`
                     </label>
                 </form>
 				  <div class="btn-wrap">
-					<div class="save-btn fr"><a href="javascript:setwifi()"><%= $save%></a></div>
+					<div class="save-btn fr"><a href="javascript:verify_pass()"><%= $save%></a></div>
 					</div>
             </div>
         </div>

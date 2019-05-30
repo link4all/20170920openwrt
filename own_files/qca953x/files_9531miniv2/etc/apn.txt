@@ -1,0 +1,886 @@
+46019|ZTE Test|||*99#|0|zte.com|1|||1||IP|PAP|0|0
+74402|clarointernet|ctigprs|ctigprs999|*99#|0|ba.amx|1|||1||IP|PAP|0|0
+41303|SriLanka Etisalat3G|||*99#|0|ebb|1|||1||IP|PAP|0|0
+25905|Unite Internet Postpaid|||*99#|0|internet.unite.md|1|||1||IP|PAP|0|0
+25999|Unite Internet Postpaid|||*99#|0|internet.unite.md|1|||1||IP|PAP|0|0
+25905|Unite Internet Prepaid|||*99#|0|internet3g.unite.md|1|||1||IP|PAP|0|0
+25999|Unite Internet Prepaid|||*99#|0|internet3g.unite.md|1|||1||IP|PAP|0|0
+26002|T-Mobile PL|||*99#|0|internet|1|||1||IP|PAP|0|0
+22299|3 Italia|||*99#|0|datacard.tre.it|1|||1||IP|PAP|0|0
+45601|Mobitel|mobitel|mobitel|*99***1#|0|cellcard|1|||1||IP|PAP|0|0
+45604|QB|||*99***1#|0|WAP|1|||1||IP|PAP|0|0
+45605|Star Cell|||*99#|0|intemet|1|||1||IP|PAP|0|0
+45606|Smart mobile|||*99#|0|smart|1|||1||IP|PAP|0|0
+45609|Beeline|||*99#|0|gprs.beeline.com.kh|1|||1||IP|PAP|0|0
+45618|Mfone|||*99#|0|Mfone|1|||1||IP|PAP|0|0
+45400|CSL|||*99#|0|lte.internet|1|||1||IP|PAP|0|0
+45400|Next G|||*99#|0|NextG.Internet|1|||1||IP|NONE|0|0
+45400|1O1O|||*99#|0|lte.internet|1|||1||IP|PAP|0|0
+45402|CSL|||*99#|0|lte.internet|1|||1||IP|PAP|0|0
+45402|one2free Next G Prepaid|||*99#|0|CSLP3|1|||1||IP|PAP|0|0
+51021|M3|gprs|im3|*99#|0|indosatgprs|1|||1||IP|PAP|0|0
+43215|Irancell|||*99#|0|mtnirancell|1|||1||IP|PAP|0|0
+50213|Celcom|||*99#|0|celcom3g|1|||1||IP|PAP|0|0
+50212|Postpaid|maxis|wap|*99#|0|maxisbb|1|||1||IP|CHAP|0|0
+50212|Prepaid|maxis|wap|*99#|0|bbnet|1|||1||IP|CHAP|0|0
+51501|Sun Nomad|||*99#|0|mbband|1|||1||IP|PAP|0|0
+51501|Sun Standard|||*99#|0|fbband|1|||1||IP|PAP|0|0
+51503|Smart|||*99#|0|internet|1|||1||IP|PAP|0|0
+51505|Sun Nomad|||*99#|0|mbband|1|||1||IP|PAP|0|0
+51505|Sun Standard|||*99#|0|fbband|1|||1||IP|PAP|0|0
+51505|Sun Internet|||*99#|0|minternet|1|||1||IP|PAP|0|0
+42001|Telecom|||*99#|0|jawalnet.com.sa|1|||1||IP|PAP|0|0
+42401|Etisalat|Mnet|Mnet|*99#|0|mnet|1|||1||IP|PAP|0|0
+42402|Etisalat|Mnet|Mnet|*99#|0|mnet|1|||1||IP|PAP|0|0
+45402|1O1O Public|||*99#|0|lte.public|1|||1||IP|PAP|0|0
+45410|CSL|||*99#|0|lte.internet|1|||1||IP|PAP|0|0
+45410|one2free Next G Prepaid|||*99#|0|CSLP3|1|||1||IP|PAP|0|0
+45410|NextG|||*99#|0|lte.public|1|||1||IP|PAP|0|0
+45418|CSL|||*99#|0|lte.internet|1|||1||IP|PAP|0|0
+45418|one2free Next G Prepaid|||*99#|0|CSLP3|1|||1||IP|PAP|0|0
+45418|NextG Pulic|||*99#|0|lte.public|1|||1||IP|PAP|0|0
+73602|ENTEL 4G|||*99#|0|4g.entel|1|||1||IP|CHAP|0|0
+73602|ENTEL Internet|||*99#|0|int.movil.com.bo|1|||1||IP|CHAP|0|0
+73601|VIVA|||*99#|0|3g.nuevatel.com|1|||1||IP|PAP|0|0
+74405|Internet Personal|personal|personal|*99#|0|internetba|1|||1||IP|CHAP|0|0
+43603|MLT(Internet)|||*99#|0|internet|1|||1||IP|PAP|0|0
+63903|Airtel Kenya|none|none|*99#|0|ke.celtel.com|1|||1||IP|PAP|0|0
+62120|Airtel Nigeria|none|none|*99#|0|internet.ng.zain.com|1|||1||IP|PAP|0|0
+64501|Airtel Zambia|none|none|*99#|0|internet|1|||1||IP|PAP|0|0
+64101|Airtel Uganda|none|none|*99#|0|web.ug.zain.com|1|||1||IP|PAP|0|0
+61302|Airtel BURKINA FASO|none|none|*99#|0|internet.bf.celtel.com|1|||1||IP|PAP|0|0
+65010|Airtel Malawi|none|none|*99#|0|internet|1|||1||IP|PAP|0|0
+63002|Airtel DRC|none|none|*99#|0|internet|1|||1||IP|PAP|0|0
+62901|Airtel Congo B|none|none|*99***1#|0|internet.cg.airtel.com|1|||1||IP|PAP|0|0
+62201|Airtel Tchad|none|none|*99#|0|internet.td.zain.com|1|||1||IP|PAP|0|0
+61402|Airtel Niger|none|none|*99#|0|internet.ne.airtel.com|1|||1||IP|PAP|0|0
+64601|Airtel Madagascar|none|none|*99#|0|internet.mg.airtel.com|1|||1||IP|PAP|0|0
+64005|Airtel Tanzania|none|none|*99#|0|internet|1|||1||IP|PAP|0|0
+61901|Airtel Sierra Leone|none|none|*99#|0|internet.sl.airtel.com|1|||1||IP|PAP|0|0
+62803|Airtel Gabon|none|none|*99#|0|internet.ga.airtel.com|1|||1||IP|PAP|0|0
+62006|Airtel Ghana|none|none|*99#|0|internet|1|||1||IP|PAP|0|0
+63310|Airtel Seychelles|none|none|*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+42901|Namaste|||*99#|0|ntnet|1|||1||IP|PAP|0|0
+42902|Ncell|||*99#|0|web|1|||1||IP|PAP|0|0
+45701|LTC|||*99#|0|ltcnet|1|||1||IP|CHAP|0|0
+45702|ETL|||*99***1#|0|etlnet|1|||1||IP|PAP|0|0
+45703|Unitel 3G|||*99#|0|unitel3g|1|||1||IP|PAP|0|0
+45608|Metfone|||*99***1#|0|Metfone|1|||1||IP|PAP|0|0
+45602|hello|||*99***1#|0|hellowww|1|||1||IP|PAP|0|0
+45601|3.5G|||*99#|0|3G|1|||1||IP|PAP|0|0
+41007|Warid Internet|||*99#|0|warid|1|||1||IP|PAP|0|0
+41004|ZONG|||*99#|0|zonginternet|1|||1||IP|PAP|0|0
+45204|Viettel|||*99#|0|e-connect|1|||1||IP|PAP|0|0
+45202|VinaPhone Mobile Broadband|mms|mms|*99#|0|m3-card|1|||1||IP|PAP|0|0
+45208|EVNTelecom 3G|||*99#|0|e-internet|1|||1||IP|PAP|0|0
+47001|GP-Internet|||*99#|0|gpinternet|1|||1||IP|PAP|0|0
+47002|Robi-Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+47003|Banglalink-Internet|||*99#|0|blweb|1|||1||IP|PAP|0|0
+47004|Teletalk-Internet|||*99#|0|wap|1|||1||IP|PAP|0|0
+47006|Citycell|waps|waps|*99#|0|waps|1|||1||IP|PAP|0|0
+47007|Airtel-Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+51402|TT LST|||*99#|0|internet|1|||1||IP|PAP|0|0
+42801|Skynet|||*99#|0|Skynet|1|||1||IP|PAP|0|0
+42899|MobiCom 3.5G|||*99#|0|internet|1|||1||IP|PAP|0|0
+42888|Live|||*99#|0|unitel|1|||1||IP|PAP|0|0
+25704|life|||*99#|0|internet.life.com.by|1|||1||IP|PAP|0|0
+25702|mts|mts|mts|*99#|0|mts|1|||1||IP|PAP|0|0
+40002|Bakcell|||*99#|0|gprs|1|||1||IP|PAP|0|0
+40001|Azercell internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+40004|NAR Mobile|||*99#|0|nar|1|||1||IP|PAP|0|0
+28201|Geocell Connect|||*99#|0|internet|1|||1||IP|PAP|0|0
+28202|MAGTI HSDPA|||*99#|0|3g.ge|1|||1||IP|PAP|0|0
+40101|Beeline|@internet.beeline|beeline|*99***1#|0|internet.beeline.kz|1|||1||IP|PAP|0|0
+43701|Skymobile Internet|||*99#|0|internet.beeline.kg|1|||1||IP|PAP|0|0
+43705|MegaCom|||*99#|0|internet|1|||1||IP|PAP|0|0
+43601|Somoncom|||*99#|0|somon.com|1|||1||IP|PAP|0|0
+43602|Tcell|||*99#|0|tcell|1|||1||IP|PAP|0|0
+43603|MLT(Internet)|||*99#|0|internet|1|||1||IP|PAP|0|0
+43612|Tcell|||*99#|0|tcell|1|||1||IP|PAP|0|0
+43801|Internet MTS|||*99**1*1#|0|internet.mts.tm|1|||1||IP|PAP|0|0
+43802|TM Cell|||*99#|0|gprs.tmcell|1|||1||IP|PAP|0|0
+25501|Service Mobile GPRS-Internet(MTC)|||*99#|0|www.umc.ua|1|||1||IP|PAP|0|0
+25501|Service HyperActive|||*99#|0|active|1|||1||IP|PAP|0|0
+25501|Service Hyper.NET|||*99#|0|hyper.net|1|||1||IP|PAP|0|0
+25502|Beeline Internet|||*99#|0|internet.beeline.ua|1|||1||IP|PAP|0|0
+25502|Beeline Internet|||*99#|0|corporate.beeline.ua|1|||1||IP|PAP|0|0
+25503|Internet Prepaid|||*99#|0|www.ab.kyivstar.net|1|||1||IP|PAP|0|0
+25503|Internet Contract|||*99#|0|www.kyivstar.net|1|||1||IP|PAP|0|0
+25503|Internet Djuice|||*99#|0|www.djuice.com.ua|1|||1||IP|PAP|0|0
+25503|Internet 3G|||*99#|0|3g.kyivstar.net|1|||1||IP|PAP|0|0
+25506|life|||*99#|0|internet|1|||1||IP|PAP|0|0
+25507|OGO!Mobile(Utel)|||*99#|0|3g.utel.ua|1|||1||IP|PAP|0|0
+43404|BEELINE|beeline|beeline|*99#|0|nternet.beeline.uz|1|||1||IP|PAP|0|0
+43407|UZB MTS|mts|mts|*99#|0|hsdpa.mts.uz|1|||1||IP|PAP|0|0
+43405|ucell|||*99#|0|internet|1|||1||IP|PAP|0|0
+28301|Beeline|internet|internet|*99#|0|Internet.beeline.am|1|||1||IP|PAP|0|0
+28305|VivaCell-MTS Connect|||*99#|0|connect|1|||1||IP|PAP|0|0
+25001|Internet MTS|mts|mts|*99#|0|internet.mts.ru|1|||1||IP|PAP|0|0
+25099|BEELINE|beeline|beeline|*99#|0|home.beeline.ru|1|||1||IP|PAP|0|0
+25002|MegaFon Internet|gdata|gdata|*99#|0|internet|1|||1||IP|CHAP|0|0
+28967|Aquafon Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+29702|T-Mobile CG|38267|38267|*99#|0|tmcg-data|1|||1||IP|PAP|0|0
+24701|Lattelecom|||*99#|0|open.lmt.lv|1|||1||IP|PAP|0|0
+40401|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40405|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40411|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40413|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40415|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40420|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40427|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40430|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40443|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40446|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40460|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40484|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40486|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40488|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40566|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40567|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+405750|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+405751|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+405752|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+405753|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+405754|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+405755|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+405756|Vodafone|||*99#|0|www|1|||1||IP|PAP|0|0
+40402|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40403|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40410|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40416|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40431|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40440|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40445|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40449|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40470|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40490|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40492|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40493|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40494|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40495|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40496|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40497|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40498|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40551|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40552|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40553|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40554|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40555|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40556|Airtel Internet|||*99#|0|airtelgprs.com|1|||1||IP|PAP|0|0
+40404|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+40407|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+40412|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+40419|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+40422|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+40424|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+40456|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+40478|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+40482|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+40487|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+40489|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+40570|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+405799|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+405845|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+405846|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+405847|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+405848|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+405849|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+405850|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+405851|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+405852|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+405853|Idea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+40417|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+40425|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+40428|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+40429|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+40433|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+40435|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+40437|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+40441|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+40442|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+40491|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+405800|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+405801|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+405802|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+405803|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+405804|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+405805|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+405806|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+405807|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+405808|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+405809|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+405810|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+405811|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+405812|Aircel Internet-3G|||*99#|0|aircelinternet|1|||1||IP|PAP|0|0
+40409|RELIANCE|||*99#|0|smartnet|1|||1||IP|PAP|0|0
+40418|RELIANCE|||*99#|0|smartnet|1|||1||IP|PAP|0|0
+40436|RELIANCE|||*99#|0|smartnet|1|||1||IP|PAP|0|0
+40450|RELIANCE|||*99#|0|smartnet|1|||1||IP|PAP|0|0
+40452|RELIANCE|||*99#|0|smartnet|1|||1||IP|PAP|0|0
+40467|RELIANCE|||*99#|0|smartnet|1|||1||IP|PAP|0|0
+40483|RELIANCE|||*99#|0|smartnet|1|||1||IP|PAP|0|0
+40485|RELIANCE|||*99#|0|smartnet|1|||1||IP|PAP|0|0
+40501|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40503|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40504|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40505|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40506|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40507|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40508|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40509|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40510|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40511|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40512|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40513|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40514|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40515|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40517|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40518|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40519|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40520|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40521|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40522|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+40523|RELIANCE|||*99#|0|rcomnet|1|||1||IP|PAP|0|0
+405025|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405026|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405027|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405028|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405029|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405030|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405031|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405032|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405033|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405034|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405035|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405036|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405037|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405038|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405039|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405040|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405041|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405042|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405043|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405044|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405045|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405046|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+405047|Tata Docomo 3G|||*99#|0|tatadocomo3g|1|||1||IP|CHAP|0|0
+40434|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40438|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40451|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40453|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40454|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40455|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40457|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40458|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40459|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40462|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40464|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40466|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40471|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40472|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40473|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40474|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40475|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40476|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40477|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40479|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40480|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40481|BSNL 3G|||*99#|0|bsnlnet|1|||1||IP|PAP|0|0
+40468|MTNL GPRS(Delhi Pre-pay)|mtnl|mtnl123|*99#|0|gprsppsdel|1|||1||IP|PAP|0|0
+40469|MTNL GPRS (Mumbai Pre-pay)|mtnl|mtnl123|*99#|0|gprsppsmum|1|||1||IP|PAP|0|0
+405854|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405855|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405856|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405857|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405858|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405859|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405860|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405861|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405862|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405863|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405864|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405865|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405866|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405867|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405868|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405869|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405870|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405871|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405872|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+405873|Loop Internet|||*99#|0|WWW|1|||1||IP|PAP|0|0
+20201|Cosmote Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+20210|WINDHellas|web|web|*99#|0|gint.b-online.gr|1|||1||IP|PAP|0|0
+20205|Vodafone Prepaid|||*99#|0|internet.vodafone.gr|1|||1||IP|PAP|0|0
+20205|VF Mobile Broadband|||*99#|0|internet|1|||1||IP|PAP|0|0
+20210|WIND Internet|||*99#|0|gint.b-online.gr|1|||1||IP|PAP|0|0
+20408|KPN Mobile|||*99#|0|internet|1|||1||IP|PAP|0|0
+20412|Telfort|||*99#|0|internet|1|||1||IP|PAP|0|0
+20416|T-Mobile NL|||*99#|0|internet|1|||1||IP|PAP|0|0
+20404|Internet Pelephone|pcl@3g|pcl|*99#|0|internet.pelephone.net.il|1|||1||IP|PAP|0|0
+20402|Tele2 Mobiel Internet|||*99#|0|mobileinternet.tele2.nl|1|||1||IP|PAP|0|0
+20620|Base|Base|Base|*99#|0|gprs.base.be|1|||1||IP|PAP|0|0
+20610|Mobistar|||*99#|0|internet.be|1|||1||IP|PAP|0|0
+20601|Proximus|||*99#|0|internet.proximus.be|1|||1||IP|PAP|0|0
+20801|Orange Internet|orange|orange|*99#|0|orange.fr|1|||1||IP|PAP|0|0
+20801|Orange Business Everywhere|orange|orange|*99#|0|internet-entreprise|1|||1||IP|PAP|0|0
+20801|Orange Pass Mobile|orange|orange|*99#|0|orange.ie|1|||1||IP|PAP|0|0
+20801|Orange Pass internet|orange|orange|*99#|0|orange-home.ie|1|||1||IP|PAP|0|0
+20801|Orange - M6 mobile|orange|orange|*99#|0|orange-m6.ie|1|||1||IP|PAP|0|0
+20810|SFR Wap|||*99#|0|wapsfr|1|||1||IP|PAP|0|0
+20820|Bouygues Telecom internet et MMS|||*99#|0|mmsbouygtel.com|1|||1||IP|PAP|0|0
+21401|Vodafone ES 01|vodafone|vodafone|*99#|0|ac.vodafone.es|1|||1||IP|PAP|0|0
+21406|Vodafone ES 06|vodafone|vodafone|*99#|0|ac.vodafone.es|1|||1||IP|PAP|0|0
+21403|Orange Internet PC|orange|orange|*99#|0|internet|1|||1||IP|PAP|0|0
+21409|Orange ES 09|||*99#|0|internet|1|||1||IP|PAP|0|0
+21407|Movistar ES 07|movistar|movistar|*99#|0|movistar.es|1|||1||IP|PAP|0|0
+21405|Movistar ES 05|movistar|movistar|*99#|0|movistar.es|1|||1||IP|PAP|0|0
+21404|Yoigo|||*99#|0|internet|1|||1||IP|PAP|0|0
+21408|Euskaltel|CLIENTE|EUSKALTEL|*99#|0|internet.euskaltel.mobi|1|||1||IP|PAP|0|0
+21416|Telecable|telecable|telecable|*99#|0|internet.telecable.es|1|||1||IP|PAP|0|0
+21417|R m&#243;vil|||*99#|0|internet.mundo-r.com|1|||1||IP|PAP|0|0
+21418|ONO|||*99#|0|internet.ono.com|1|||1||IP|PAP|0|0
+21419|Symio|||*99#|0|gprs.pepephone.com|1|||1||IP|PAP|0|0
+21421|Jazztel|||*99#|0|jazzinternet|1|||1||IP|PAP|0|0
+21601|Pannon|||*99#|0|net|1|||1||IP|PAP|0|0
+21670|Vodafone HU|||*99#|0|internet.vodafone.net|1|||1||IP|PAP|0|0
+21630|T-Mobile H internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+21805|Telekom Srpske|||*99#|0|mobisgprs1|1|||1||IP|PAP|0|0
+21901|T-Mobile HR|||*99#|0|web.htgprs|1|||1||IP|PAP|0|0
+21910|VIP|||*99#|0|gprs0.vipnet.hr|1|||1||IP|PAP|0|0
+22001|Mobtel|mobtel|gprs|*99#|0|internet|1|||1||IP|PAP|0|0
+22004|Monet|||*99#|0|gprs.monetcg.com|1|||1||IP|PAP|0|0
+22003|Telekom Srbija|mts|64|*99#|0|gprsinternet|1|||1||IP|PAP|0|0
+22299|3 Italia Ricaricabile|||*99#|0|tre.it|1|||1||IP|PAP|0|0
+22298|BLU|||*99#|0|INTERNET|1|||1||IP|PAP|0|0
+22210|Vodafone IT|||*99#|0|web.omnitel.it|1|||1||IP|PAP|0|0
+22288|Wind IT|||*99#|0|internet.wind|1|||1||IP|PAP|0|0
+22299|Fastweb|||*99#|0|apn.fastweb.it|1|||1||IP|PAP|0|0
+22201|TIM|||*99#|0|ibox.tim.it|1|||1||IP|PAP|0|0
+22610|Orange Internet|||*99#|0|net|1|||1||IP|CHAP|0|0
+22601|Connex|internet.vodafone.ro|vodafone|*99#|0|internet.vodafone.ro|1|||1||IP|PAP|0|0
+22605|Digi|||*99#|0|internet|1|||1||IP|PAP|0|0
+22803|Orange SZ|||*99#|0|internet|1|||1||IP|PAP|0|0
+22802|Sunrise|||*99#|0|internet|1|||1||IP|PAP|0|0
+22801|Swisscom|||*99#|0|gprs.swisscom.ch|1|||1||IP|PAP|0|0
+23002|O2|||*99#|0|internet|1|||1||IP|PAP|0|0
+23001|T-Mobile CZ|wap|wap|*99#|0|internet.t-mobile.cz|1|||1||IP|PAP|0|0
+23003|Oskar|||*99#|0|internet|1|||1||IP|PAP|0|0
+23102|T-Mobile SK|||*99#|0|internet|1|||1||IP|PAP|0|0
+23101|Orange SK|||*99#|0|internet|1|||1||IP|PAP|0|0
+23106|O2 SK|||*99#|0|O2internet|1|||1||IP|PAP|0|0
+23201|A1|ppp@a1plus.at|ppp|*99#|0|A1.net|1|||1||IP|PAP|0|0
+23203|T-Mobile A|t-mobile|tm|*99#|0|gprsinternet|1|||1||IP|PAP|0|0
+23205|Orange|||*99#|0|fullspeed|1|||1||IP|PAP|0|0
+23207|tele.ring|web@telering.at|web|*99#|0|web|1|||1||IP|PAP|0|0
+23210|3-AT|||*99#|0|drei.at|1|||1||IP|PAP|0|0
+23450|JT Local|||*99#|0|pepper|1|||1||IP|PAP|0|0
+23458|Manx Pronto|gprs|gprs|*99#|0|web.manxpronto.net|1|||1||IP|PAP|0|0
+23410|Pay as you go|o2bb|password|*99#|0|m-bb.o2.co.uk|1|||1||IP|PAP|0|0
+23410|Pay Monthly|o2web|password|*99#|0|mobile.o2.co.uk|1|||1||IP|NONE|0|0
+23433|Orange UK|||*99#|0|consumerbroadband|1|||1||IP|PAP|0|0
+23434|Orange UK|||*99#|0|consumerbroadband|1|||1||IP|PAP|0|0
+23430|T-Mobile|t-mobile|tm|*99#|0|general.t-mobile.uk|1|||1||IP|PAP|0|0
+23431|T-Mobile|t-mobile|tm|*99#|0|general.t-mobile.uk|1|||1||IP|PAP|0|0
+23432|T-Mobile|t-mobile|tm|*99#|0|general.t-mobile.uk|1|||1||IP|PAP|0|0
+23431|Virgin UK 31|user||*99#|0|goto.virginmobile.uk|1|||1||IP|PAP|0|0
+23432|Virgin UK 32|user||*99#|0|goto.virginmobile.uk|1|||1||IP|PAP|0|0
+23415|BT Mobile|bt|bt|*99#|0|btmobile2.bt.com|1|||1||IP|CHAP|0|0
+23415|BT Mobile|bt|bt|*99#|0|btmobile.bt.com|1|||1||IP|CHAP|0|0
+23415|Vodafone UK|web|web|*99#|0|Internet|1|||1||IP|PAP|0|0
+23420|Three|||*99#|0|3internet|1|||1||IP|PAP|0|0
+23801|TDC|||*99#|0|internet|1|||1||IP|PAP|0|0
+23830|Orange DK|||*99#|0|web.orange.dk|1|||1||IP|PAP|0|0
+23802|Telenor DK|||*99#|0|internet|1|||1||IP|PAP|0|0
+23820|TeliaDK|||*99#|0|www.internet.mtelia.dk|1|||1||IP|PAP|0|0
+23806|3 DK|||*99#|0|bredband.tre.dk|1|||1||IP|PAP|0|0
+23866|Telia-Telenor DK|||*99#|0|internet|1|||1||IP|PAP|0|0
+23877|Telenor DK|||*99#|0|internet|1|||1||IP|PAP|0|0
+23820|Siminn DK|||*99#|0|websp|1|||1||IP|PAP|0|0
+23801|Siminn|||*99#|0|internet|1|||1||IP|PAP|0|0
+24001|Telia|||*99#|0|online.telia.se|1|||1||IP|PAP|0|0
+24001|Halebop internet|||*99#|0|online.telia.se|1|||1||IP|PAP|0|0
+24008|Telenor|||*99#|0|internet.telenor.se|1|||1||IP|PAP|0|0
+24002|3 SE|||*99#|0|bredband.tre.se|1|||1||IP|PAP|0|0
+24007|Tele2 Sweden|||*99#|0|4g.tele2.se|1|||1||IP|CHAP|0|0
+240077|Comviq|||*99#|0|4g.comviq.se|1|||1||IP|CHAP|0|0
+240078|Comviq|||*99#|0|4g.comviq.se|1|||1||IP|CHAP|0|0
+240079|Comviq|||*99#|0|4g.comviq.se|1|||1||IP|CHAP|0|0
+24004|Telenor SE|||*99#|0|internet.telenor.se|1|||1||IP|PAP|0|0
+24006|Telenor SE|||*99#|0|internet.telenor.se|1|||1||IP|PAP|0|0
+24024|Telenor SE|||*99#|0|internet.telenor.se|1|||1||IP|PAP|0|0
+24202|NetCom|||*99#|0|internet.netcom.no|1|||1||IP|PAP|0|0
+24205|Tele2 NO|wap|wap|*99#|0|internet.tele2.no|1|||1||IP|PAP|0|0
+24203|Teletopia|||*99#|0|www.teletopia.no|1|||1||IP|PAP|0|0
+24202|Chess Internett|||*99#|0|internet.netcom.no|1|||1||IP|PAP|0|0
+24201|Telenor NO|||*99#|0|telenor.mbb|1|||1||IP|PAP|0|0
+24201|Ventelo|||*99#|0|internet.ventelo.no|1|||1||IP|PAP|0|0
+24202|Telio|||*99#|0|internet.netcom.no|1|||1||IP|PAP|0|0
+24205|NWN internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+24205|OneCall|||*99#|0|internet|1|||1||IP|PAP|0|0
+24405|Elisa|||*99#|0|internet|1|||1||IP|PAP|0|0
+24491|Sonera|||*99#|0|internet|1|||1||IP|PAP|0|0
+24412|DNA|||*99#|0|data.dna.fi|1|||1||IP|PAP|0|0
+24421|Saunalahti|||*99#|0|internet.saunalahti|1|||1||IP|PAP|0|0
+24602|Bite|||*99#|0|banga|1|||1||IP|PAP|0|0
+24601|Omnitel|omni|omni|*99#|0|omnitel|1|||1||IP|PAP|0|0
+24603|Tele2 LT|||*99#|0|internet.tele2.lt|1|||1||IP|PAP|0|0
+24701|LMT|lmt|lmt|*99#|0|internet.lmt.lv|1|||1||IP|PAP|0|0
+24702|Tele2 LV|||*99#|0|internet.tele2.lv|1|||1||IP|PAP|0|0
+24801|EMT|||*99#|0|internet.emt.ee|1|||1||IP|CHAP|0|0
+24802|RLE|||*99#|0|internet|1|||1||IP|PAP|0|0
+24803|Tele2 EE|wap|wap|*99#|0|internet.tele2.ee|1|||1||IP|PAP|0|0
+25099|Beeline|beeline|beeline|*99#|0|internet.beeline.ru|1|||1||IP|PAP|0|0
+25028|Extel|beeline|beeline|*99#|0|internet.beeline.ru|1|||1||IP|PAP|0|0
+25002|Megafon|||*99#|0|internet.msk|1|||1||IP|PAP|0|0
+25001|MTS|mts|mts|*99#|0|internet.mts.ru|1|||1||IP|PAP|0|0
+25092|Primtel|||*99#|0|internet.primtel.ru|1|||1||IP|PAP|0|0
+25503|Kyivstar|igprs|internet|*99#|0|www.kyivstar.net|1|||1||IP|PAP|0|0
+25501|UMC|||*99#|0|www.umc.ua|1|||1||IP|PAP|0|0
+25701|Velcom|web|web|*99#|0|web.velcom.by|1|||1||IP|PAP|0|0
+26002|Era|erainternet|erainternet|*99#|0|erainternet|1|||1||IP|PAP|0|0
+26003|Orange Internet|internet|internet|*99#|0|internet|1|||1||IP|PAP|0|0
+26001|Plus|||*99#|0|www.plusgsm.pl|1|||1||IP|PAP|0|0
+26001|Plus|||*99#|0|internet|1|||1||IP|PAP|0|0
+26203|E-Plus|none|none|*99#|0|internet.eplus.de|1|||1||IP|PAP|0|0
+26207|o2 Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+26201|Telekom.de|t-mobile|tm|*99#|0|internet.t-mobile|1|||1||IP|PAP|0|0
+26202|Vodafone DE|||*99#|0|web.vodafone.de|1|||1||IP|PAP|0|0
+26803|Optimus|||*99#|0|internet|1|||1||IP|PAP|0|0
+26806|TMN|||*99#|0|internet|1|||1||IP|PAP|0|0
+26801|Vodafone PT|vodafone|vodafone|*99#|0|internet.vodafone.pt|1|||1||IP|PAP|0|0
+27001|LUXGSM|||*99#|0|web.pt.lu|1|||1||IP|PAP|0|0
+27077|Tango|||*99#|0|internet|1|||1||IP|PAP|0|0
+27201|Vodafone IE|vodafone|vodafone|*99#|0|isp.vodafone.ie|1|||1||IP|PAP|0|0
+27202|O2 IE|user|user123|*99#|0|internet|1|||1||IP|PAP|0|0
+27203|Meteor|my|meteor|*99#|0|isp.mymeteor.ie|1|||1||IP|PAP|0|0
+27401|Siminn|||*99#|0|gprs.simi.is|1|||1||IP|PAP|0|0
+27411|NOVA|||*99#|0|internet.nova.is|1|||1||IP|PAP|0|0
+27601|AMC INTERNET|||*99#|0|internet.amc|1|||1||IP|PAP|0|0
+27602|Vod|web|web|*99#|0|vodafoneweb|1|||1||IP|PAP|0|0
+27603|EAGLE SPEED|||*99#|0|internet|1|||1||IP|PAP|0|0
+27604|PLUS INTERNET|||*99#|0|plusweb|1|||1||IP|PAP|0|0
+27801|Vodafone MT|||*99#|0|internet|1|||1||IP|PAP|0|0
+27821|GO Surfing|||*99#|0|gosurfingun|1|||1||IP|PAP|0|0
+28001|CYTA|user|pass|*99#|0|cytamobile|1|||1||IP|PAP|0|0
+28310|Orange Armenia|||*99#|0|internet.orange|1|||1||IP|CHAP|0|0
+28401|M-TEL|mtel|mtel|*99#|0|inet-gprs.mtel.bg|1|||1||IP|PAP|0|0
+28403|VIVACOM Internet|VIVACOM|VIVACOM|*99#|0|internet.vivacom.bg|1|||1||IP|PAP|0|0
+28403|VIVACOM MMS|mms|mms|*99#|0|mms.vivacom.bg|1|||1||IP|PAP|0|0
+28603|Avea|||*99#|0|internet|1|||1||IP|PAP|0|0
+28602|Telsim|||*99#|0|telsim|1|||1||IP|PAP|0|0
+28601|Turkcell|||*99#|0|internet|1|||1||IP|PAP|0|0
+29341|Instant Internet|mobitel|internet|*99#|0|internet|1|||1||IP|PAP|0|0
+29340|SI.mobil|simobil|internet|*99#|0|internet.simobil.si|1|||1||IP|PAP|0|0
+29370|TUS INTERNET|tusmobil|internet|*99#|0|internet.tusmobil.si|1|||1||IP|PAP|0|0
+29401|TMMK Internet|internet|t-mobile|*99#|0|internet|1|||1||IP|PAP|0|0
+29402|One|||*99#|0|internet|1|||1||IP|PAP|0|0
+29403|VIP Internet|vipoperator|vipoperator|*99#|0|VIPOPERATOR|1|||1||IP|PAP|0|0
+29505|FL1|ppp@A1plus.at||*99#|0|mobilkom.li|1|||1||IP|PAP|0|0
+302720|Rogers|wapuser1|wap|*99#|0|internet.com|1|||1||IP|PAP|0|0
+30237|Fido 37|||*99#|0|internet.fido.ca|1|||1||IP|PAP|0|0
+302370|Fido 370|||*99#|0|internet.fido.ca|1|||1||IP|PAP|0|0
+31016|T-Mobile USA 16|||*99#|0|internet2.voicestream.com|1|||1||IP|PAP|0|0
+31021|T-Mobile USA 21|||*99#|0|internet2.voicestream.com|1|||1||IP|PAP|0|0
+31022|T-Mobile USA 22|||*99#|0|internet2.voicestream.com|1|||1||IP|PAP|0|0
+31023|T-Mobile USA 23|||*99#|0|internet2.voicestream.com|1|||1||IP|PAP|0|0
+31024|T-Mobile USA 24|||*99#|0|internet2.voicestream.com|1|||1||IP|PAP|0|0
+31025|T-Mobile USA 25|||*99#|0|internet2.voicestream.com|1|||1||IP|PAP|0|0
+31026|T-Mobile USA 26|||*99#|0|internet2.voicestream.com|1|||1||IP|PAP|0|0
+31027|T-Mobile USA 27|||*99#|0|internet2.voicestream.com|1|||1||IP|PAP|0|0
+31031|T-Mobile USA 31|||*99#|0|internet2.voicestream.com|1|||1||IP|PAP|0|0
+310420|CBW|cbw||*99#|0|web.gocbw.com|1|||1||IP|PAP|0|0
+310150|Cingular 150|ISP@CINGULARGPRS.COM|CINGULAR1|*99#|0|ISP.CINGULAR|1|||1||IP|PAP|0|0
+310170|Cingular 170|ISP@CINGULARGPRS.COM|CINGULAR1|*99#|0|ISP.CINGULAR|1|||1||IP|PAP|0|0
+310380|Cingular 380|ISP@CINGULARGPRS.COM|CINGULAR1|*99#|0|ISP.CINGULAR|1|||1||IP|PAP|0|0
+310410|Cingular 410|ISP@CINGULARGPRS.COM|CINGULAR1|*99#|0|ISP.CINGULAR|1|||1||IP|PAP|0|0
+310980|Cingular 980|ISP@CINGULARGPRS.COM|CINGULAR1|*99#|0|ISP.CINGULAR|1|||1||IP|PAP|0|0
+310160|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310200|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310210|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310220|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310230|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310240|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310250|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310260|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310270|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310280|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310290|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310300|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310310|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310320|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310490|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310530|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310580|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310590|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310640|T-Mobile|||*99#|0|epc.tmobile.com|1|||1||IP|PAP|0|0
+310660|T-Mobile USA 660|||*99#|0|internet2.voicestream.com|1|||1||IP|PAP|0|0
+310800|T-Mobile USA 800|||*99#|0|internet2.voicestream.com|1|||1||IP|PAP|0|0
+31030|Centennial Wireless|privuser|priv|*99#|0|private.centennialwireless.com|1|||1||IP|PAP|0|0
+310160|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310200|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310210|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310220|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310230|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310240|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310250|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310260|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310270|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310300|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310310|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310490|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310530|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310580|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310590|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310640|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310660|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+310800|T-Mobile|||*99#|0|fast.t-mobile.com|1|||1||IPv4v6|PAP|0|0
+311360|Stelera|||*99#|0|isp.stelera.net|1|||1||IP|PAP|0|0
+31130|Indigo Wireless|user1@indigo.internet|indigo|*99#|0|internet.indigo|1|||1||IP|PAP|0|0
+33420|Telcel|||*99#|0|ba.amx|1|||1||IP|PAP|0|0
+33403|Internet GPRS|movistar|movistar|*99#|0|internet.movistar.mx|1|||1||IP|PAP|0|0
+33420|Internet MODEM|iusacellgsm|iusacellgsm|*99#|0|modem.iusacellgsm.mx|1|||1||IP|PAP|0|0
+338070|Claro Web|amx|amx|*99#|0|ba.amx|1|||1||IP|PAP|0|0
+338180|PrepaidLIME|||*99#|0|ppinternet|1|||1||IP|PAP|0|0
+338180|PostpaidLIME|||*99#|0|internet|1|||1||IP|PAP|0|0
+33805|Digicel|wapuser|wap03jam|*99#|0|web|1|||1||IP|PAP|0|0
+34001|Orange GP|||*99#|0|orangewap|1|||1||IP|PAP|0|0
+34712|TSTT|||*99#|0|internet|1|||1||IP|PAP|0|0
+36291|CHIPPIE|netuser|net123|*99#|0|utsnet.uts.an|1|||1||IP|PAP|0|0
+36301|Setar|||*99#|0|internet.setar.aw|1|||1||IP|PAP|0|0
+37201|Voila Internet 3G+|||*99#|0|internet.voila.ht|1|||1||IP|PAP|0|0
+40102|Kcell|||*99#|0|internet|1|||1||IP|PAP|0|0
+41003|PK-Ufone|ufone|ufone|*99#|0|ufone.internet|1|||1||IP|PAP|0|0
+41301|Mobitel 3G|||*99#|0|mobitel3g|1|||1||IP|CHAP|0|0
+41302|Dialog (Pre Paid)|||*99#|0|ppwap|1|||1||IP|CHAP|0|0
+41302|Dialog Contract|||*99#|0|dialogbb|1|||1||IP|CHAP|0|0
+41305|Airtel 3G|||*99#|0|Airtellive|1|||1||IP|CHAP|0|0
+41305|Airtel (Unlimited)|||*99#|0|Airteldata|1|||1||IP|CHAP|0|0
+41308|Hutch|||*99#|0|hutch3g|1|||1||IP|PAP|0|0
+41501|Alfa 3G+|||*99#|0|usb.mic1.com.lb|1|||1||IP|PAP|0|0
+41503|mtc touch|||*99#|0|mtc|1|||1||IP|PAP|0|0
+41601|zain|||*99#|0|zain|1|||1||IP|PAP|0|0
+41677|Orange Jordan|net|net|*99#|0|net.orange.jo|1|||1||IP|PAP|0|0
+41603|umniah|||*99#|0|net|1|||1||IP|PAP|0|0
+41702|MTN Speed|||*99#|0|internet|1|||1||IP|PAP|0|0
+41805|Asianet (GPRS-WEB)|||*99#|0|net.asiacell.com|1|||1||IP|PAP|0|0
+41902|MTC-Vodafone KW|||*99#|0|apn01|1|||1||IP|PAP|0|0
+41903|Wnet|||*99#|0|action.wataniya.com|1|||1||IP|PAP|0|0
+41902|Viva Telecom|||*99#|0|VIVA|1|||1||IP|PAP|0|0
+41902|ZAIN 3.5G|hspps|hspps|*99#|0|hspps|1|||1||IP|PAP|0|0
+41904|VIVA Internet KW|||*99#|0|VIVA|1|||1||IP|PAP|0|0
+42001|STC|||*99#|0|jawalnet.com.sa|1|||1||IP|PAP|0|0
+42007|STC|stc|stc|*99#|0|wogstc.com|1|||1||IP|PAP|0|0
+42003|mobily postpaid|||*99#|0|Web1|1|||1||IP|PAP|0|0
+42003|mobily prepaid|||*99#|0|web2|1|||1||IP|PAP|0|0
+42004|ZainSA|n/a|n/a|*99#|0|zain|1|||1||IP|PAP|0|0
+42202|Oman Mobile|taif|taif|*99#|0|taif|1|||1||IP|PAP|0|0
+42203|Nawras(OQTC)|||*99#|0|isp.nawras.com.om|1|||1||IP|PAP|0|0
+42401|Etisalat UAE 01|Mnet|Mnet|*99#|0|etisalat.ae|1|||1||IP|PAP|0|0
+42402|Etisalat|Mnet|Mnet|*99#|0|etisalat.ae|1|||1||IP|PAP|0|0
+42403|du|||*99#|0|du|1|||1||IP|CHAP|0|0
+42502|Cellcom|||*99#|0|internetg|1|||1||IP|PAP|0|0
+42501|Orange|||*99#|0|uwap.orange.co.il|1|||1||IP|PAP|0|0
+42503|Pelephone|pcl@3g|pcl|*99#|0|internet.pelephone.net.il|1|||1||IP|PAP|0|0
+42507|HOT mobile|||*99#|0|dun.hotm|1|||1||IP|PAP|0|0
+42508|Golan Telecom|||*99#|0|internet.golantelecom.net.il|1|||1||IP|PAP|0|0
+20404|Pelephone|pcl@3g|pcl|*99#|0|internet.pelephone.net.il|1|||1||IP|PAP|0|0
+42503|Rami Levi|rl@3g|rl|*99#|0|internet.rl|1|||1||IP|PAP|0|0
+42514|YouPhone|||*99#|0|data.youphone.co.il|1|||1||IP|PAP|0|0
+42515|Home Cellular|||*99#|0|hcminternet|1|||1||IP|PAP|0|0
+42601|Batelco|wap|wap|*99#|0|internet.batelco.com|1|||1||IP|PAP|0|0
+42602|Zain Bahrain|hsdpa|hsdpa|*99#|0|hsdpa|1|||1||IP|PAP|0|0
+42701|Qtel Mobile Broadband|||*99#|0|web.qtel|1|||1||IP|PAP|0|0
+42701|Qtel Pre-Paid Mobile Broadband|||*99#|0|gprs.qtel|1|||1||IP|PAP|0|0
+42701|Our default|||*99#|0|data|1|||1||IP|PAP|0|0
+43211|MCI-GPRS|||*99#|0|mcinet|1|||1||IP|PAP|0|0
+44000|EMobile|em|em|*99#|0|emb.ne.jp|1|||1||IP|PAP|0|0
+44000|EMOBILE Limited||||0||1|||1||IP|PAP|0|0
+44001|NTT docomo|||*99***1|0||1|||1||IP|PAP|0|0
+44002|NTT DoCoMo Kansai|||*99***1|0||1|||1||IP|PAP|0|0
+44003|NTT DoCoMo Hokuriku|||*99***1|0||1|||1||IP|PAP|0|0
+44008|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44009|NTT DoCoMo Kansai|||*99***1|0||1|||1||IP|PAP|0|0
+44010|NTT DoCoMo Kansai|||*99***1|0||1|||1||IP|PAP|0|0
+44011|NTT DoCoMo Tokai|||*99***1|0||1|||1||IP|PAP|0|0
+44012|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44013|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44014|NTT DoCoMo Tohoku|||*99***1|0||1|||1||IP|PAP|0|0
+44015|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44016|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44017|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44018|NTT DoCoMo Tokai|||*99***1|0||1|||1||IP|PAP|0|0
+44019|NTT DoCoMo Hokkaido|||*99***1|0||1|||1||IP|PAP|0|0
+44020|Commercial|axgp003softbank|t4k6pvka3waeqd4w|*99#|0|axgpdata.softbank.ne.jp|1|||1||IP|CHAP|0|0
+44021|NTT DoCoMo|||*99#|0||1|||1||IP|PAP|0|0
+44022|NTT DoCoMo Kansai|||*99***1|0||1|||1||IP|PAP|0|0
+44023|NTT DoCoMo Tokai|||*99***1|0||1|||1||IP|PAP|0|0
+44024|NTT DoCoMo Chugoku|||*99***1|0||1|||1||IP|PAP|0|0
+44025|NTT DoCoMo Hokkaido|||*99***1|0||1|||1||IP|PAP|0|0
+44026|NTT DoCoMo Kyushu|||*99***1|0||1|||1||IP|PAP|0|0
+44027|NTT DoCoMoTohoku|||*99***1|0||1|||1||IP|PAP|0|0
+44028|NTT DoCoMo Shikoku|||*99***1|0||1|||1||IP|PAP|0|0
+44029|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44030|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44031|NTT DoCoMo Kansai|||*99***1|0||1|||1||IP|PAP|0|0
+44032|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44033|NTT DoCoMo Tokai|||*99***1|0||1|||1||IP|PAP|0|0
+44034|NTT DoCoMo Kyushu|||*99***1|0||1|||1||IP|PAP|0|0
+44035|NTT DoCoMo Kansai|||*99***1|0||1|||1||IP|PAP|0|0
+44036|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44037|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44038|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44039|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44049|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44050|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44051|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44052|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44053|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44054|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44055|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44056|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44058|NTT DoCoMo Kansai|||*99***1|0||1|||1||IP|PAP|0|0
+44060|NTT DoCoMo Kansai|||*99***1|0||1|||1||IP|PAP|0|0
+44061|NTT DoCoMo Chugoku|||*99***1|0||1|||1||IP|PAP|0|0
+44062|NTT DoCoMo Kyushu|||*99***1|0||1|||1||IP|PAP|0|0
+44063|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44064|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44065|NTT DoCoMo Shikoku|||*99***1|0||1|||1||IP|PAP|0|0
+44066|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44067|NTT DoCoMo Tohoku|||*99***1|0||1|||1||IP|PAP|0|0
+44068|NTT DoCoMo Kyushu|||*99***1|0||1|||1||IP|PAP|0|0
+44069|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+44071|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44072|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44073|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44074|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44075|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44076|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44077|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44079|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44087|NTT DoCoMo Chugoku|||*99***1|0||1|||1||IP|PAP|0|0
+44088|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44089|KDDI Corporation||||0||1|||1||IP|PAP|0|0
+44099|NTT DoCoMo|||*99***1|0||1|||1||IP|PAP|0|0
+45201|Mobifone|mms|mms|*99#|0|m-wap|1|||1||IP|PAP|0|0
+45202|Vinaphone|mms|mms|*99#|0|m3-world|1|||1||IP|PAP|0|0
+45410|NewWorld|||*99#|0|internet|1|||1||IP|PAP|0|0
+45406|smartone|||*99#|0|smartone|1|||1||IP|PAP|0|0
+45404|3 HK DATA|||*99#|0|ipc.lte.three.com.hk|1|||1||IP|PAP|0|0
+45403|3 HK DATA|||*99#|0|ipc.lte.three.com.hk|1|||1||IP|PAP|0|0
+45412|CMHK|||*99#|0|cmhk|1|||1||IP|PAP|0|0
+45413|CMHK|||*99#|0|cmhk|1|||1||IP|PAP|0|0
+45416|PCCW|||*99#|0|pccw|1|||1||IP|PAP|0|0
+45419|PCCW|||*99#|0|pccw|1|||1||IP|PAP|0|0
+45501|CTM|||*99#|0|ctm-mobile|1|||1||IP|PAP|0|0
+45503|3 Macau|||*99#|0|mobile.three.com.mo|1|||1||IP|PAP|0|0
+45500|SmarToneMacau|||*99#|0|smartgprs|1|||1||IP|PAP|0|0
+45504|CTM Mobile|||*99#|0|ctm-mobile|1|||1||IP|PAP|0|0
+45502|Macau Telecom 4G|||*99#|0|4GDCTF|1|||1||IP|PAP|0|0
+45502|Macau Telecom 3G|ctnet@mycdma.cn|vnet.mobi|#777|0|ctnet|1|||1||IP|CHAP|0|0
+46000|CMCC|||*99#|0|cmnet|1|||1||IP|PAP|0|0
+46001|China Unicom|||*99#|0|3gnet|1|||1||IP|PAP|0|0
+46002|CMCC|||*99#|0|cmnet|1|||1||IP|PAP|0|0
+46003|China Telecom 4G|||*99#|0|ctlte|1|||1||IP|PAP|0|0
+46003|China Telecom 3G|ctnet@mycdma.cn|vnet.mobi|#777|0|ctnet|1|||1||IP|CHAP|0|0
+46601|FET|||*99#|0|internet|1|||1||IP|PAP|0|0
+46688|FET-KGT|||*99#|0|internet|1|||1||IP|PAP|0|0
+46689|VIBO|||*99#|0|internet|1|||1||IP|PAP|0|0
+46689|VIBOONE|||*99#|0|viboone|1|||1||IP|PAP|0|0
+46692|CHT|||*99#|0|internet|1|||1||IP|PAP|0|0
+46693|TWN-Mobitai|||*99#|0|internet|1|||1||IP|PAP|0|0
+46697|TWN|||*99#|0|internet|1|||1||IP|PAP|0|0
+46699|TWN-TAT|||*99#|0|internet|1|||1||IP|PAP|0|0
+46601|FET|||*99#|0|fetims|1|||1||IP|PAP|0|0
+46689|VIBO|||*99#|0|vibo|1|||1||IP|PAP|0|0
+50219|Celcom 3G|||*99#|0|celcom3g|1|||1||IP|PAP|0|0
+50216|Digi|||*99#|0|3gdgnet|1|||1||IP|PAP|0|0
+50212|Maxis 3G|maxis|wap|*99#|0|maxisbb|1|||1||IP|PAP|0|0
+50213|TM Touch|||*99#|0|internet|1|||1||IP|PAP|0|0
+50218|U Mobile|||*99#|0|my3g|1|||1||IP|PAP|0|0
+50501|Telstra|||*99#|0|telstra.internet|1|||1||IP|PAP|0|0
+50502|YesOptus|||*99#|0|internet|1|||1||IP|PAP|0|0
+50503|Vodafone AU|||*99#|0|vfinternet.au|1|||1||IP|PAP|0|0
+50506|3 AU|||*99#|0|3netaccess|1|||1||IP|PAP|0|0
+50514|AAPT|||*99#|0|vfinternet.au|1|||1||IP|PAP|0|0
+51089|3|3gprs|3gprs|*99#|0|3gprs|1|||1||IP|PAP|0|0
+51001|IM2|||*99#|0|indosatm2|1|||1||IP|PAP|0|0
+51001|Indosat|indosat|indosat|*99#|0|indosatgprs|1|||1||IP|PAP|0|0
+51001|Indosat 3G|indosat|indosat|*99#|0|indosat3g|1|||1||IP|PAP|0|0
+51011|XL 3G|xlgprs|proxl|*99#|0|www.xlgprs.net|1|||1||IP|PAP|0|0
+51011|XL-Unlimited|||*99#|0|xlunlimited|1|||1||IP|PAP|0|0
+51010|Telkomsel 3G|||*99#|0|flash|1|||1||IP|PAP|0|0
+51010|Telkomsel Unlimited|||*99#|0|internet|1|||1||IP|PAP|0|0
+51008|Axis|axis|123456|*99#|0|AXIS|1|||1||IP|PAP|0|0
+51021|Indosat|gprs|im3|*99#|0|www.indosat-m3.net|1|||1||IP|PAP|0|0
+51010|Telkomsel Flash|||*99#|0|flash|1|||1||IP|PAP|0|0
+51011|XL-Instan|xlgprs|proxl|*99#|0|www.xlgprs.net|1|||1||IP|PAP|0|0
+51001|Indosat M2|||*99#|0|indosatm2|1|||1||IP|PAP|0|0
+51089|3(three)|3gprs|3gprs|*99#|0|3gprs|1|||1||IP|PAP|0|0
+51502|myGlobe Internet(Postpaid)|||*99#|0|internet.globe.com.ph|1|||1||IP|CHAP|0|0
+51502|myGlobe Inet(Prepaid)|||*99#|0|http.globe.com.ph|1|||1||IP|CHAP|0|0
+51503|Smart Bro|||*99#|0|SMARTBRO|1|||1||IP|PAP|0|0
+51501|Sun Internet|||*99#|0|minternet|1|||1||IP|PAP|0|0
+52001|AIS|||*99#|0|internet|1|||1||IP|PAP|0|0
+52001|TH GSM|||*99#|0|internet|1|||1||IP|PAP|0|0
+52023|Hello|||*99#|0|internet|1|||1||IP|PAP|0|0
+52018|DTAC|||*99#|0|www.dtac.co.th|1|||1||IP|PAP|0|0
+52099|true|true|true|*99#|0|internet|1|||1||IP|PAP|0|0
+52099|Orange TH|orange|orange|*99#|0|internet|1|||1||IP|PAP|0|0
+52015|TOT 3G|||*99#|0|internet|1|||1||IP|PAP|0|0
+52015|IEC 3G|||*99#|0|internet|1|||1||IP|PAP|0|0
+52015|i-Mobile|||*99#|0|internet|1|||1||IP|PAP|0|0
+52015|TOT|||*99#|0|internet|1|||1||IP|PAP|0|0
+52503|M1|||*99#|0|sunsurf|1|||1||IP|PAP|0|0
+52501|SingTel 01|||*99#|0|internet|1|||1||IP|PAP|0|0
+52502|SingTel 02|||*99#|0|internet|1|||1||IP|PAP|0|0
+52505|StarHub|||*99#|0|shinternet|1|||1||IP|PAP|0|0
+52802|B-mobile|||*98#|0|bmobilewap|1|||1||IP|PAP|0|0
+52811|DST Mobile|internet|internet|*99#|0|dst.internet|1|||1||IP|PAP|0|0
+52811|DST 3G|||*99#|0|dst.internet|1|||1||IP|PAP|0|0
+53001|Vodafone NZ|||*99#|0|www.vodafone.net.nz|1|||1||IP|PAP|0|0
+54201|inkknet|||*99#|0|inkknet.fj|1|||1||IP|PAP|0|0
+60201|MobiNil|||*99#|0|mobinilweb|1|||1||IP|PAP|0|0
+60202|Vodafone EG|internet|internet|*99#|0|internet.vodafone.net|1|||1||IP|PAP|0|0
+60203|Etisalat|||*99#|0|etisalat|1|||1||IP|CHAP|0|0
+60203|Vodafone Internet|||*99#|0|Vodafone|1|||1||IP|CHAP|0|0
+60203|etisalat Internet|||*99#|0|mobinilweb|1|||1||IP|CHAP|0|0
+60203|Etisalat Combo|||*99#|0|combo.etisalat|1|||1||IP|CHAP|0|0
+60400|Internet Meditel|MEDINET|MEDINET|*99#|0|internet1.meditel.ma|1|||1||IP|PAP|0|0
+60401|Internet pr&#233;pay&#233; mobile|||*99#|0|www.iamgprs2.ma|1|||1||IP|PAP|0|0
+60600|Libyana Net|||*99#|0|web|1|||1||IP|PAP|0|0
+60601|almadar|||*99#|0|almadar.net|1|||1||IP|PAP|0|0
+61807|Cellcom|||*99#|0|web.cellcomnet.net|1|||1||IP|PAP|0|0
+62130|MTN HSPA|web|web|*99#|0|web.gprs.mtnnigeria.net|1|||1||IP|CHAP|0|0
+62150|Globdirect|gprs|gprs|*99#|0|glosecure|1|||1||IP|PAP|0|0
+62150|GLO BOLT|flat|flat|*99#|0|gloflat|1|||1||IP|CHAP|0|0
+62501|CVM&#243;vel|||*99#|0|internet-aac|1|||1||IP|PAP|0|0
+62901|Airtel|||*99#|0|cg.zain.com|1|||1||IP|PAP|0|0
+63102|Unitel|||*99#|0|internet.unitel.co.ao|1|||1||IP|PAP|0|0
+63401|ZAIN Sudan|||*99#|0|internet|1|||1||IP|CHAP|0|0
+63407|sudani|sudani|sudani|*99#|0|sudaninet|1|||1||IP|PAP|0|0
+63902|Safaricom|saf|data|*99#|0|Safaricom|1|||1||IP|PAP|0|0
+64282|Leo Mobile|||*99#|0|ucnet|1|||1||IP|CHAP|0|0
+64604|TELMA|||*99#|0|internet|1|||1||IP|PAP|0|0
+65501|VodaCom|||*99#|0|internet|1|||1||IP|PAP|0|0
+65507|Cell C|||*99#|0|internet|1|||1||IP|PAP|0|0
+65510|MTN ZA|mtnwap|mtnwap|*99#|0|internet|1|||1||IP|PAP|0|0
+65510|MTN|MTN|MTN|*99#|0|myMTN|1|||1||IP|CHAP|0|0
+65501|Vodacom|||*99#|0|Unrestricted|1|||1||IP|PAP|0|0
+70401|CLARO|||*99#|0|ba.amx|1|||1||IP|PAP|0|0
+70402|BROADBAND TIGO GT|||*99#|0|broadband.tigo.gt|1|||1||IP|PAP|0|0
+70403|movistar GT|movistargt|movistargt|*99#|0|internet.movistar.gt|1|||1||IP|PAP|0|0
+70602|Digicel|||*99#|0|web|1|||1||IP|PAP|0|0
+70601|CLARO|||*99#|0|ba.amx|1|||1||IP|PAP|0|0
+70604|Movistar El Salvador|movistarsv|movistarsv|*99#|0|internet.movistar.sv|1|||1||IP|PAP|0|0
+70603|BROADBAND TIGO SV|||*99#|0|broadband.tigo.sv|1|||1||IP|PAP|0|0
+71021|Enitel Nicaragua|webemovil|webemovil|*99#|0|web.emovil|1|||1||IP|PAP|0|0
+71021|Alo Nicaragua|internet|internet|*99#|0|internet.ideasalo.ni|1|||1||IP|PAP|0|0
+71073|PCS ALO|internet|internet|*99#|0|internet.ideasalo.ni|1|||1||IP|PAP|0|0
+710300|Movistar Nicaragu|movistarni|movistarni|*99#|0|internet.movistar.ni|1|||1||IP|PAP|0|0
+71201|ICE Costa Rica|||*99#|0|kolbi3g|1|||1||IP|PAP|0|0
+71204|movistar Internet|movistarcr|movistarcr|*99#|0|internet.movistar.cr|1|||1||IP|PAP|0|0
+71420|Internet HSDPA|movistarpa|movistarpa|*99#|0|internet.movistar.pa|1|||1||IP|PAP|0|0
+71401|Wap|||*99#|0|apn01.cwpanama.com.pa|1|||1||IP|PAP|0|0
+71403|Claro|||*99#|0|ba.amx|1|||1||IP|PAP|0|0
+71610|TIM PE|||*99#|0|tim.pe|1|||1||IP|PAP|0|0
+71606|movistar Internet|movistar@datos|movistar|*99#|0|movistar.pe|1|||1||IP|PAP|0|0
+71610|CLARO DATOS|amx|amx|*99#|0|ba.amx|1|||1||IP|PAP|0|0
+72207|Movistar Banda Ancha Movil|internet|internet|*99#|0|internet|1|||1||IP|PAP|0|0
+72234|Modem Personal 3G USB|gprs|adgj|*99#|0|internet.personal.com|1|||1||IP|PAP|0|0
+722310|Claro Internet|ctigprs|ctigprs999|*99#|0|ba.amx|1|||1||IP|PAP|0|0
+72234|Arnet Movil|||*99#|0|arnet.personal.com|1|||1||IP|PAP|0|0
+72402|TIM BR 02|||*99#|0|Tim.br|1|||1||IP|PAP|0|0
+72403|TIM BR 03|||*99#|0|Tim.br|1|||1||IP|PAP|0|0
+72404|TIM BR 04|||*99#|0|Tim.br|1|||1||IP|PAP|0|0
+72405|Banda Larga  3G|claro|claro|*99#|0|bandalarga.claro.com.br|1|||1||IP|PAP|0|0
+72406|Vivo BR 06|vivo|vivo|*99#|0|zap.vivo.com.br|1|||1||IP|PAP|0|0
+72410|Vivo BR 10|vivo|vivo|*99#|0|zap.vivo.com.br|1|||1||IP|PAP|0|0
+72411|Vivo BR 11|vivo|vivo|*99#|0|zap.vivo.com.br|1|||1||IP|PAP|0|0
+72416|BrT Internet|BrT|BrT|*99***1#|0|brt.br|1|||1||IP|PAP|0|0
+72423|Vivo|vivo|vivo|*99#|0|zap.vivo.com.br|1|||1||IP|PAP|0|0
+72424|Amazonia Celular|celular|celular|*99#|0|gprs.amazoniacelular.com.br|1|||1||IP|PAP|0|0
+72431|Oi Internet|oi|oi|*99***1#|0|gprs.oi.com.br|1|||1||IP|PAP|0|0
+72432|CTBC Internet|ctbc|1212|*99#|0|ctbc.br|1|||1||IP|PAP|0|0
+72433|CTBC 33|ctbc|1212|*99#|0|ctbc.br|1|||1||IP|PAP|0|0
+72434|CTBC 34|ctbc|1212|*99#|0|ctbc.br|1|||1||IP|PAP|0|0
+72407|CTBC 07|ctbc|1212|*99#|0|ctbc.br|1|||1||IP|PAP|0|0
+72408|TIM BR 08|tim|tim|*99#|0|Tim.br|1|||1||IP|PAP|0|0
+72415|Sercomtel|sercomtel|sercomtel|*99#|0|sercomtel.com.br|1|||1||IP|PAP|0|0
+73001|entel|entelpcs|entelpcs|*99#|0|imovil.entelpcs.cl|1|||1||IP|PAP|0|0
+73010|Entel|entelpcs|entelpcs|*99#|0|imovil.entelpcs.cl|1|||1||IP|PAP|0|0
+73002|movistar CL|web|web|*99#|0|web.tmovil.cl|1|||1||IP|PAP|0|0
+73003|Postpago|clarochile|clarochile|*99#|0|bam.clarochile.cl|1|||1||IP|CHAP|0|0
+73003|Prepago|clarochile|clarochile|*99#|0|bap.clarochile.cl|1|||1||IP|CHAP|0|0
+73008|Modem|vtr|vtr|*99#|0|bam.vtr.com|1|||1||IP|CHAP|0|0
+732002|EDATEL|||*99#|0|Dynamic APN|1|||1||IP|PAP|0|0
+732101|Claro|||*99#|0|ba.amx|1|||1||IP|PAP|0|0
+732103|INTERNET TIGO COL|||*99#|0|web.colombiamovil.com.co|1|||1||IP|PAP|0|0
+732123|internet movil movistar|movistar|movistar|*99#|0|Internet.movistar.com.co|1|||1||IP|PAP|0|0
+73402|Digitel GSM|||*99#|0|gprsweb.digitel.ve|1|||1||IP|PAP|0|0
+73402|Digitel|||*99#|0|gprsweb.digitel.ve|1|||1||IP|PAP|0|0
+73402|Internet|||*99#|0|internet.digitel.ve|1|||1||IP|PAP|0|0
+73404|Movistar|||*99#|0|internet.movistar.ve|1|||1||IP|PAP|0|0
+73406|Movilnet|||*99#|0|int.movilnet.com.ve|1|||1||IP|PAP|0|0
+74000|movistar|||*99#|0|navega.movistar.ec|1|||1||IP|PAP|0|0
+74000|Internet Porta|||*99#|0|ba.amx|1|||1||IP|PAP|0|0
+74001|Claro|||*99#|0|ba.amx|1|||1||IP|PAP|0|0
+74002|CNT INTERNET MOVIL|||*99#|0|internet3g.alegro.net.ec|1|||1||IP|PAP|0|0
+74404|BROADBAND TIGO PY|||*99#|0|broadband.tigo.py|1|||1||IP|PAP|0|0
+74807|movistar|movistar|movistar|*99#|0|apnumt.movistar.com.uy|1|||1||IP|PAP|0|0
+74801|Banda Ancha M&#243;vil 1|||*99#|0|gprs.ancel|1|||1||IP|PAP|0|0
+74801|Banda Ancha M&#243;vil 3|BAM|BAM|*99#|0|prepago.ancel|1|||1||IP|PAP|0|0
+74801|Banda Ancha M&#243;vil 2|set by usser|set by usser|*99#|0|adslmovil|1|||1||IP|PAP|0|0
+26803|Kanguru|||*99#|0||1|||1||IP|PAP|0|0
+23201|aonFlex|||*99#|0|aon.data|1|||1||IP|PAP|0|0
+23212|Yesss!|||*99#|0|web.yesss.at|1|||1||IP|PAP|0|0
+26006|Mobilny Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+20820|Bouygues Telecom Entreprises|||*99#|0|a2bouygtel.com|1|||1||IP|PAP|0|0
+34002|ONLY|||*99#|0|onlyweb|1|||1||IP|PAP|0|0
+20810|Neuf|||*99#|0|Internetneuf|1|||1||IP|PAP|0|0
+22002|Internet Bilo gdje|||*99#|0|internet|1|||1||IP|PAP|0|0
+26806|TMN|||*99#|0|internet|1|||1||IP|PAP|0|0
+26801|ZON NET MOBILE|||*99#|0|internet.zon.pt|1|||1||IP|PAP|0|0
+28603|Avea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+28604|Avea Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+28601|Turkcell 3G|||*99#|0|mgb|1|||1||IP|PAP|0|0
+28601|Turkcell Internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+28601|Turkcell 3G Statik IP|||*99#|0|mgbs|1|||1||IP|PAP|0|0
+21404|Yoigo|||*99#|0|internet|1|||1||IP|PAP|0|0
+63102|Unitel|||*99#|0|internet.unitel.co.ao|1|||1||IP|PAP|0|0
+64282|Leo Mobile|||*99#|0|ucnet|1|||1||IP|CHAP|0|0
+62501|CVM&#243;vel|||*99#|0|internet-aac|1|||1||IP|PAP|0|0
+62901|Zain Congo|||*99#|0|internet.cg.zain.com|1|||1||IP|PAP|0|0
+61105|Cellcom GN|internet|cellcom|*99#|0|internet.cellcom.com|1|||1||IP|PAP|0|0
+62003|Tigo Web|||*99#|0|web.tigo.com.gh|1|||1||IP|PAP|0|0
+64804|Econetmobile|||*99#|0|Econet.net|1|||1||IP|PAP|0|0
+64803|Telecel|||*99#|0|Internet|1|||1||IP|PAP|0|0
+62401|MTN Mobile Internet|mtnuser|mtnuser|*99#|0|mtnwap|1|||1||IP|CHAP|0|0
+62401|MTN Internet|||*99#|0|internet|1|||1||IP|CHAP|0|0
+63905|yu internet|||*99#|0|internet|1|||1||IP|PAP|0|0
+63510|MTN Rwanda|||*99#|0|internet.mtn|1|||1||IP|PAP|0|0
+63513|Tigo|||*99#|0|web.tigo.rw|1|||1||IP|PAP|0|0
+63512|Rwandatel|rwandatel|rwandatel|*99#|0|rtel3g|1|||1||IP|PAP|0|0
+64903|leo|||*99#|0|Internet|1|||1||IP|PAP|0|0
+64901|Netman Prepaid|ppsuser|ppsuser|*99#|0|ppsinternet|1|||1||IP|CHAP|0|0
+64901|Netman Postpaid|||*99#|0|internet|1|||1||IP|CHAP|0|0
+62160|Etisalat-NG|||*99#|0|etisalat|1|||1||IP|PAP|0|0
+65310|MTN|||*99***1#|0|mymtn.co.sz|1|||1||IP|PAP|0|0
+64502|MTN ZAMBIA|||*99#|0|INTERNET|1|||1||IP|CHAP|0|0
+26202|1&amp;1|||*99#|0|web.vodafone.de|1|||1||IP|PAP|0|0
+22605|DIGI|||*99#|0|DIGI|1|||1||IP|PAP|0|0
+28305|VivaCell-MTS Connect|||*99#|0|connect|1|||1||IP|PAP|0|0
+28305|VivaCell-MTS|||*99#|0|connect.vivacell.am|1|||1||IP|PAP|0|0
+22603|COSMOTE RO|||*99#|0|broadband|1|||1||IP|PAP|0|0
+22606|COSMOTE RO|||*99#|0|broadband|1|||1||IP|PAP|0|0
+28405|GLOBUL|||*99#|0|globul|1|||1||IP|PAP|0|0
+45205|Vietnamobile|||*99#|0|internet|1|||1||IP|PAP|0|0
+45207|Beeline VN|||*99#|0|internet|1|||1||IP|PAP|0|0
+52000|TRUE-H INTERNET|true|true|*99#|0|hinternet|1|||1||IP|PAP|0|0
+52000|CAT|||*99#|0|internet|1|||1||IP|CHAP|0|0
+52003|AIS|||*99#|0|internet|1|||1||IP|PAP|0|0
+52004|TRUE-H INTERNET|true|true|*99#|0|internet|1|||1||IP|PAP|0|0
+52005|dtac internet|||*99#|0|www.dtac.co.th|1|||1||IP|PAP|0|0
+46011|China Telecom 4G|||*99#|0|ctlte|1|||1||IP|PAP|0|0
+46007|CMCC|||*99#|0|cmnet|1|||1||IP|PAP|0|0
+46009|China Unicom|||*99#|0|3gnet|1|||1||IP|PAP|0|0
+46004|CHINA MOBILE|||*99#|0|3gnet|1|||1||IP|PAP|0|0

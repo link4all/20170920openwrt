@@ -42,13 +42,13 @@ endef
 
 define Package/ChinaDNS/conffiles
 /etc/config/chinadns
-/etc/chinadns_chnroute.txt
+/etc/china.txt
 endef
 
 define Package/ChinaDNS/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/chinadns.init $(1)/etc/init.d/chinadns
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/chnroute.txt $(1)/etc/chinadns_chnroute.txt
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/chnroute.txt $(1)/etc/china.txt
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_DATA) ./files/chinadns.config $(1)/etc/config/chinadns
 	$(INSTALL_DIR) $(1)/usr/bin
